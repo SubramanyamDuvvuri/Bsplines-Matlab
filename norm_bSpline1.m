@@ -1,8 +1,9 @@
 function val = norm_bSpline1(x,knots)
-
-if (( knots <= x )&& (x> knots+1))
-    val = 1;
-else
-    val = 0;
+val =0;
+for i = 1:length(knots)
+    
+    if ((x>=knots(i))&(x<knots(end)))
+        val =1;
+    end
 end
 
