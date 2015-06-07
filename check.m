@@ -34,7 +34,7 @@ for k=1:nKnots
     end
     
      var=weights(k)*ySpline;
-     %plot(xSpline, var,'r');
+     plot(xSpline, var,'r');
      %plot (xSpline,ySpline,'+')
      hold on; 
       [xx,yy] = meshgrid(xSpline,var);
@@ -42,21 +42,20 @@ for k=1:nKnots
       
       for i = 1 : size(xx,1)
           for j = 1: size (xx , 2)
-              %z(i,j)= bSpline3(xx (i,j))*bSpline3 (yy (i,j));
-              z(i,j)= bSpline3(xx (i,j)).^bSpline3 (yy (i,j));
+              z(i,j)= bSpline3(xx (i,j))*bSpline3 (yy (i,j));
               
           end       
     end
       hold on
-     surf(xx,yy,z)
+%       figure
+    mesh(xx,yy,z)
      hold on;
   yVec(xIndex:xIndex+xPoints-1) = yVec(xIndex:xIndex+xPoints-1) + weights(k)*ySpline;
   hold on
-  set(gca,'fontSize',8)
    
 end
 
-%plot (xVec,yVec,':')
+plot (xVec,yVec,':')
 
 %plot3(xVec,yVec,zVec,':');
 hold off;

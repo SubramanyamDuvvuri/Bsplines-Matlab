@@ -1,7 +1,7 @@
 % fitB_Spline
-nSensors = 140;
-noise = 0.01;
-knots = -5:8;
+nSensors = 112;
+noise = 0;
+knots = [-3 :3 ];
 
 xMin = -5;
 xMax =  8;
@@ -12,19 +12,13 @@ xGrid = 10;
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
+
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
 end
-for i=1:xLen
-    zVec(i) = dummyCurve(xVec(i));
-end
+
 figure(2)
-%plot (xVec,yVec,'c')
-
-
-%plot3(xVec, yVec,zVec,'c','LineWidth',2);      %for 2D plot
-
- 
+plot(xVec, yVec,'c','LineWidth',2);
 hold on;
 
 % create noisy measurements
@@ -35,14 +29,8 @@ ySensors = NaN(nSensors,1);
 for i=1:nSensors
     ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
 end
-for i=1:nSensors
-    zSensors(i)=dummyCurve(xSensors(i)) + noise*randn();
-end
 
-%plot (xSensors,ySensors,'rd')
-
-
-%plot3(xSensors, ySensors,zSensors ,'rd');          % for 2D Plot
+plot(xSensors, ySensors, 'rd');
 
 % creating table with influence of knots
 nKnots = length(knots);
@@ -56,17 +44,19 @@ for k=1:nKnots
         BS(k,s) = bSpline3(xs-xk);
     end
 end
+figure
+%plot (BS);
 
 % now get the weights by Penrose Pseudo Inverse
 weights = BS'\ySensors;
 
 % now plotting the result
-spanSpline = 4; % of 3rd order B-Spline
+spanSpline = 2; % of 3rd order B-Spline
 
 
 %xLen = xGrid*(xMax-xMin)+1;
 yFit = zeros(xLen,1);
-zFit = zeros (xLen,1);
+
 
 for k=1:nKnots
     xStart = knots(k)-spanSpline;
@@ -80,32 +70,37 @@ for k=1:nKnots
         x=-spanSpline+(i-1)/xGrid;
         y = bSpline3(x);
         ySpline(i)=y;
-        indexY = xIndex+i-1
+        indexY = xIndex+i-1;
         if(indexY>0 && indexY<=xLen)
-            yFit(indexY)=yFit(indexY)+ weights(k)*y
+            yFit(indexY)=yFit(indexY)+ weights(k)*y;
         end
     end
-    var=weights(k)*ySpline;
-    %plot(xSpline, var, 'g');
-    %plot(xMin,0,'b'); % dummy for legend
-    
-   for i = 1 : length (var)
-       z(i)= bSpline3(xSpline(i)).*bSpline3(var(i));
-      plot3 (xSpline(i),z(i),var(i),'r','Linewidth',5);
-   end
-     
-   
-    hold on;
-   % hold on;
-   % yFit(xIndex:xIndex+xPoints-1) = yFit(xIndex:xIndex+xPoints-1) + weights(k)*ySpline;
+    plot(xSpline, weights(k)*ySpline, 'g');
+    hold on
+    plot(xMin,0,'b'); % dummy for legend
+    %hold on;
+    %yFit(xIndex:xIndex+xPoints-1) = yFit(xIndex:xIndex+xPoints-1) + weights(k)*ySpline;
 end
 
 
 
-%plot(xVec,yFit,'b');
-%legend('Clean Data','Noisy Measurements','Spines','Fit');
+plot(xVec,yFit,'b');
+legend('Clean Data','Noisy Measurements','Spines','Fit');
 hold off;
 
 
+for i=1:nKnots
+    fprintf('Spline height %3.3f at postion %3.3f \n',weights(i),knots(i));
+end
 
+
+ figure(3)
+ plot(xVec, yVec,'g:');
+ hold on;
+ plot(xSensors, ySensors);
+% %cs = csapi ( xSensors, ySensors);  %Cubic spline interpolation 
+% %fnplt (cs,1,'r-')
+% %cs = fit( xSensors, ySensors,'smoothingspline');
+ %plot(cs,xSensors, ySensors);
+% hold off;
 
