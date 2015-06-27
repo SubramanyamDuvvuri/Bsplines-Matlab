@@ -1,9 +1,23 @@
-function val = norm_bSpline1(x,knots)
+function val = norm_bSpline1(x)
+
+%%%%%%%%
+%order 0 
+%%%%%%%%%
 val =0;
-for i = 1:length(knots)
-    
-    if ((x>=knots(i))&(x<knots(end)))
+
+    if ((x>=-.5)&&(x<.5))
         val =1;
     end
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%order 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% val = 0 ;
+% if ((x>= -1) & ( x <=0))
+%     val = x+1;
+% elseif ((x>=0)&(x<=1))
+%     val= (1-x)
+% end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
