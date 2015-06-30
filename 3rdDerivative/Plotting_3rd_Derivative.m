@@ -4,6 +4,7 @@ hold off
 xLin = -10:.1:20;
 lenx=length(xLin);
 y = NaN(lenx,1);
+add =0;
 
 for i = 1:lenx
     aa= quadruple_reccurence_start(xLin(i),-5);
@@ -22,12 +23,15 @@ end
 basicspline=[-5:3];
  for j =1:length(basicspline)
      for i= 1:lenx
+        
            dd =Basic_Spline_start(xLin(i),basicspline(j));
            d(i,j)=dd;
-           
+       
      end
      hold on
-      plot (xLin,d);
+     add = add + d(:,j)
+     %plot (xLin,d(:,j));
+      
       hold on
  end
 
@@ -49,10 +53,10 @@ for i = 1:lenx
     
 end
 
- plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
+ %plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
+
 hold on
-for i = 1:lenx
-       add(i)=a(i)+b(i)+c(i)+e(i)+f(i)+g(i)+h(i);
-end
-%plot ( xLin,add)
+add = add'
+add = a+b+c+e+f+g+h+add;
+plot ( xLin,add,'r')
 hold on
