@@ -86,7 +86,7 @@ p=4;
       plot (xVec,mul);
       p=p+1;
       end
-        add = add + mul
+        add = add + mul;
       hold on
  end
 
