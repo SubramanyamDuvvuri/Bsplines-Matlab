@@ -11,21 +11,26 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.3;
+lamda=0.1;
 
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
 end
 
+figure(1)
 
     plot(xVec, yVec,'g','LineWidth',2);
 hold on;
-xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
+load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
+
+%xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
+xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ingore first 4 samples in random list, due to fixed postions
 xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
 
 for i=1:nSensors
-    ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
+    %ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
+    ySensors(i)=dummyCurve(xSensors(i)) + noise*randomZ(i);
 end
 
 plot(xSensors, ySensors, 'rd');
@@ -122,7 +127,7 @@ legend('Clean Data','Noisy Measurements','Spines','Fit');
  add_derv = a_derv+b_derv+c_derv+f_derv+g_derv+h_derv+add_derv;
  %plot (xVec,a_derv,'r',xVec,b_derv,'r',xVec,c_derv,'r',xVec,f_derv,'b',xVec,g_derv,'g',xVec,h_derv,'g');
  plot (xVec,add_derv,'r');
-
+axis([-5.5 8.5 -1 3]);
 hold off
 
 
