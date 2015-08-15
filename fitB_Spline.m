@@ -1,7 +1,7 @@
 % fitB_Spline
 nSensors = 112;
 noise = 0;
-knots = [-3 :3 ];
+knots = [-5 :8 ];
 
 xMin = -5;
 xMax =  8;
@@ -17,7 +17,8 @@ for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
 end
 
-figure(2)
+
+
 plot(xVec, yVec,'c','LineWidth',2);
 hold on;
 
@@ -44,7 +45,7 @@ for k=1:nKnots
         BS(k,s) = bSpline3(xs-xk);
     end
 end
-figure
+
 %plot (BS);
 
 % now get the weights by Penrose Pseudo Inverse
@@ -83,10 +84,10 @@ for k=1:nKnots
 end
 
 
+% 
+% plot(xVec,yFit,'b');
+% legend('Clean Data','Noisy Measurements','Spines','Fit');
 
-plot(xVec,yFit,'b');
-legend('Clean Data','Noisy Measurements','Spines','Fit');
-hold off;
 
 
 for i=1:nKnots
@@ -94,7 +95,7 @@ for i=1:nKnots
 end
 
 
- figure(3)
+hold on
  plot(xVec, yVec,'g:');
  hold on;
  plot(xSensors, ySensors);

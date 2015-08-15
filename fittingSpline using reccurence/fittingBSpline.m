@@ -16,7 +16,7 @@ for i=1:xLen
 end
 
 figure(2)
-   % plot(xVec, yVec,'c','LineWidth',2);
+    %plot(xVec, yVec,'c','LineWidth',2);
 hold on;
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
@@ -81,7 +81,7 @@ p=4;
            
      end
      hold on
-      if p<16
+      if p<nKnots+2
        mul =   d(j,:)*weights (p);
       plot (xVec,mul);
       p=p+1;

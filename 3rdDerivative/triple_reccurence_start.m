@@ -1,10 +1,11 @@
-function val = triple_reccurence_start(x_val,shift)
+function [val,derv] = triple_reccurence_start(x_val,shift)
 x = x_val-shift  ;
 val =0;
+derv=0;
 if ((x> 0) &&( x <=1))
-    %val =   (7*x^3)/4 - (9*x^2)/2 + 3*x     % x*(1-x)*(1-x) + (2-x)*(x)*(1-x)/2+(2-x)*(x)*(2-x)/4 ;|| 
-    val =val + 21/2;
+    val =   (7*x^3)/4 - (9*x^2)/2 + 3*x;     % x*(1-x)*(1-x) + (2-x)*(x)*(1-x)/2+(2-x)*(x)*(2-x)/4 ;|| 
+    derv =21/2;
 elseif ((x>=1)&&(x<2))
-   % val= - x^3/4 + (3*x^2)/2 - 3*x + 2      %(2-x)*(2-x)*(2-x)/4 ;||
-    val =val +-3/2;
+   val= - x^3/4 + (3*x^2)/2 - 3*x + 2;      %(2-x)*(2-x)*(2-x)/4 ;||
+    derv =-3/2;
 end
