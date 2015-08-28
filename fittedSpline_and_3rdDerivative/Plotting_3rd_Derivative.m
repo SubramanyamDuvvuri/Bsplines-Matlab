@@ -2,7 +2,7 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
-knots = -4:10;
+knots = -2:7;
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 20;
@@ -12,14 +12,14 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=2;
-Grid_opt = .1;
+lamda=.09;
+Grid_opt =.1;
 
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
 end
 
-figure(1)
+figure(1)          
 
     plot(xVec, yVec,'g--','LineWidth',3);
     legend ('nknots');
@@ -59,8 +59,10 @@ for s=1:nSensors
     BS(nknots+2,s) =quadruple_reccurence_end(xs,lastKnot);
     
 end
+
 weights = BS'\ySensors;
 %weights = ones (16,1);
+
 for i = 1:xLen
     [aaval,aaderv]= quadruple_reccurence_start(xVec(i),firstKnot);
     a_spline(i)=aaval*weights(1);               %spline values
@@ -84,7 +86,7 @@ p=4;
  
 for j= 1:nknots-4
          for i =1:xLen
-                  [ddval,ddderv] =Basic_Spline_start(xVec(i),knots(j));
+                  [ddval,ddderv] = Basic_Spline_start(xVec(i),knots(j));
                  d_spline(j,i)=ddval;
                  d_derv(j,i)=ddderv;
          end
@@ -93,7 +95,7 @@ for j= 1:nknots-4
              mul_val =   d_spline(j,:)*weights (p);       % multiplying with the weights
             mul_derv = d_derv(j,:)*weights(p)*lamda;
             plot (xVec,mul_val);                          %plotting splines
-            %plot ( xVec, mul_derv);                      %plotting the third derivative
+            %plot ( xVec,mul_derv);                      %plotting the third derivative
             p=p+1;
         end
         add_spline = add_spline + mul_val;
@@ -142,14 +144,14 @@ hold off
 %%%PLOTTING THE SMOOTHING SPLINE%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- hold on;
- add_spline_opt = 0;
- add_derv_opt=0;
+hold on;
+add_spline_opt = 0;
+add_derv_opt=0;
 M_Derivatives =NaN(nknots-1,nknots+2);
-M_splines = NaN (nknots-1,nknots+2);
+M_splines = zeros (nknots-1,nknots+2);
 count=0; 
 %%Finding M_Derivatives
-for x = xMin+.5:Grid_opt :xMax
+for x = xMin:1 :xMax
     
     count=count+1;
     xx(count)=x;
@@ -177,23 +179,23 @@ for x = xMin+.5:Grid_opt :xMax
     
 end  
    
- opt = [M_Derivatives'*lamda,BS];
- ySensors_opt = [zeros(size(M_Derivatives,1),1);ySensors  ];
+ opt = [BS,M_Derivatives'*lamda];
+ ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
 weights_opt = opt'\ySensors_opt;                    %Finding the weights
 
 %%%%%%%
 %SPLINES 
 %%%%%%%
 
- for x = xMin+.5:Grid_opt:xMax 
+ for x = xMin:.1:xMax 
      count=count+1;
      xx(count)=x;
      [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
-     M_splines(count,1) = aaval*weights_opt(1);%     
+     M_splines(count,1) = aaval*weights_opt(1);    
      [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
      M_splines(count,2) = bbval*weights_opt(2);     
      [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
-     M_splines(count,3) = ccval*weights_opt(2);
+     M_splines(count,3) = ccval*weights_opt(3);
      
      for j= 1:nknots-4
          [ddval,ddderv] =Basic_Spline_start(x,knots(j));
@@ -232,7 +234,7 @@ add_spline_opt = 0;
      plot (xx, add_spline_opt, 'k-','LineWidth',1.6)
      
      legend('Clean Data','Spines');
-     text(xMin+3.2,2.8,sprintf('Sensors =%g', nSensors));
+     text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
       text(xMin+2,2.8,sprintf('Lambda =%g', lamda));
      text(xMin+2, 2.7,sprintf('Number of knots= %g', nknots +2));
 text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
@@ -242,8 +244,8 @@ text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
       hold off
       
  
- 
- 
-
- 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %2Dimentional
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ a=NaN(5,5,5,5);
  

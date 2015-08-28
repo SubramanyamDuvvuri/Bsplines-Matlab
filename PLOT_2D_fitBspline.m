@@ -3,17 +3,20 @@ clear
 noise = 0;    % Can be changed to observe the noise
 nsensors = 140;
 weights = [ 0.468 0.0261 0.3314 0.0610 0.3828 0.4987 1.8069 2.7012 1.8445 0.8098 0.5679 0.7946 0.7368 0.9659 ];
-%----------------------------------
-xLin = -5:0.1:8;
-yLin = -5:0.1:5;
-xMin = -5
-xMax= 8;
-yMin=-5;
-yMax=8;
-[xx,yy ] = meshgrid(xLin,yLin);
-lenX = length(xLin)
-lenY = length(yLin);
-zz = NaN(lenX, lenY);
+%---------------------------------
+knots= [-5:8];
+nknots=length(knots);
+xMin = knots(1);
+xMax= knots(end);
+yMin = knots(1);
+yMax= knots(end); 
+
+xVec = xMin-1:.1:xMax+3;
+yVec= yMin-1:.1:yMax+3;
+[xx,yy ] = meshgrid(xVec,yVec);
+lenX = length(xVec);
+lenY = length(yVec);
+%zz = NaN(lenX, lenY);
 
 %--------------------------------------------------------
 %plot(xSensors,ySensors)
@@ -45,78 +48,79 @@ end
  title(sprintf(' NOISE = %f and SENSORS = %d', noise,nsensors));
  %axis([-6 9 -6 9 0 6]);
 axis auto
-%+++++++++++++++++++++++++++++++++++++++++
-weights = [ 0.468 0.0261 0.3314 0.0610 0.3828 0.4987 1.8069 2.7012 1.8445 0.8098 0.5679 0.7946 0.7368 0.9659 ];
-knots = -5:8;
-nKnots = length(knots);
-xGrid =10;
-yGrid=10;
-BS = NaN(nKnots,nsensors);
-for k=1:nKnots
+%++++++++++++++++++++++++++++++++++++++++ 
+
+
+BS = NaN(nknots,nsensors,nknots);
+for k=1:nknots
     xk = knots(k);
     for s=1:nsensors
         xs = xSensors(s);
         BS(k,s) = bSpline3(xs-xk);
     end
 end
-%weights = BS'\ySensors;
-spanSpline = 2
+weights = BS'\sensorZ;
+%spanSpline = 2
 
-for k=1:nKnots
-    xStart = knots(k)-spanSpline;
-    xEnd = knots(k)+spanSpline;
-    xPoints = 2*spanSpline*xGrid+1;
-    xIndex = (xStart-xMin)*xGrid+1;
-     xSpline = xStart:1/xGrid:xEnd;
-    yStart = knots(k)-spanSpline;
-    yEnd = knots(k)+spanSpline;
-    yPoints = 2*spanSpline*yGrid+1;
-    yIndex = (yStart-yMin)*xGrid+1;
-    ySpline = yStart:1/yGrid:yEnd;
-    
-    
-    [xxSpline,yySpline]=meshgrid(xSpline,ySpline);
-    
-    
-    
-    zzSpline = NaN(xPoints,yPoints);
-    
-    z=0;
-    for i=1:xPoints
-        for j = 1:yPoints
-             x=-spanSpline+(i-1)/xGrid;
-             y=-spanSpline+(j-1)/yGrid;
-              z = bSpline3(x)*bSpline3(y);
-              zzSpline(i,j)=z;
+% % % for k=1:nKnots
+% % %     xStart = knots(k)-spanSpline;
+% % %     xEnd = knots(k)+spanSpline;
+% % %     xPoints = 2*spanSpline*xGrid+1;
+% % %     xIndex = (xStart-xMin)*xGrid+1;
+% % %      xSpline = xStart:1/xGrid:xEnd;
+% % %     yStart = knots(k)-spanSpline;
+% % %     yEnd = knots(k)+spanSpline;
+% % %     yPoints = 2*spanSpline*yGrid+1;
+% % %     yIndex = (yStart-yMin)*xGrid+1;
+% % %     ySpline = yStart:1/yGrid:yEnd;
+% % %     
+% % %     
+% % %     [xxSpline,yySpline]=meshgrid(xSpline,ySpline);
+% % %     
+% % %     
+% % %     
+% % %     zzSpline = NaN(xPoints,yPoints);
+% % %     
+% % %     z=0;
+% % %     for i=1:xPoints
+% % %         for j = 1:yPoints
+% % %              x=-spanSpline+(i-1)/xGrid;
+% % %              y=-spanSpline+(j-1)/yGrid;
+% % %               z = bSpline3(x)*bSpline3(y);
+% % %               zzSpline(i,j)=z;
+% % %         end
+% % %             
+% % %     end
+% % %     figure(2)
+% % %     surf(xxSpline, yySpline,zzSpline*weights(k));
+% % %    hold on
+% % % end
+
+for i = 1:lenX
+    for j = 1:lenY
+        x_temp = xx(i,j);
+        y_temp = yy(i,j);
+        add = 0;
+        
+        for shiftx = knots(1):3:knots(end)
+            for shifty = knots(1):3:knots(end)
+                        add = add+bSpline3(x_temp-shiftx)*bSpline3(y_temp-shifty);
+            end
         end
-            
+        zz(i,j)=add;
     end
-    figure(2)
-    surf(xxSpline, yySpline,zzSpline*weights(k));
-   hold on
 end
 
-% 
-%  
-% for xi=1:lenX
-%     for yi=1:lenY
-%         x = xx(xi,yi);
-%         y = yy(xi,yi);
-%         
-%         z=0;
-%         
-%         for xOffset =-1
-%           for  yOffset =-1
-%                 z = bSpline3(x-xOffset)*dummyCurve(y-yOffset)
-%           end
-%         end
-%         zz(xi,yi)=z;
-%     end
-% end
-% 
-% figure(1);
-% h=surf(xx,yy,zz');
-% title('Idle Curve without noise');
+
+surf(xx,yy,zz);
+
+
+
+         
+        
+        
+        
+        
 
 
 
@@ -124,8 +128,3 @@ end
 
 
 
-
-% 
-% xlabel('x-->')
-% ylabel('<--y')
-% zlabel('z-->')
