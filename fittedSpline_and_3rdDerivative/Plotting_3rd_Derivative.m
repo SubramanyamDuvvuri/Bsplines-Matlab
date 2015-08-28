@@ -2,7 +2,11 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
+<<<<<<< HEAD
 knots = -5:8;
+=======
+knots = -2:7;
+>>>>>>> 078ffd4...  adding few files
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 20;
@@ -12,7 +16,11 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
+<<<<<<< HEAD
 lamda=0;
+=======
+lamda=.09;
+>>>>>>> 078ffd4...  adding few files
 Grid_opt =.1;
 
 for i=1:xLen
