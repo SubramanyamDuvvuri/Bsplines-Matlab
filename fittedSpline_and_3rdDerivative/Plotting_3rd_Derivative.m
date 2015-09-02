@@ -2,7 +2,7 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
-knots = -2:7;
+knots = -5:8;
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 20;
@@ -12,7 +12,7 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.09;
+lamda=0;
 Grid_opt =.1;
 
 for i=1:xLen

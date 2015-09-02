@@ -1,4 +1,3 @@
-
 function [val,derv]= quadruple_reccurence_start(x_val,shift)
 x = x_val-shift  ;
 val =0;

@@ -37,42 +37,41 @@ for i = 1:length(xVec)
 
          basic_start2=0;
           basic_start3  =0;
-          basic_start4 =0;
-          basaic_start5 = 0;
+          basic_spline4 =0;
          
-        for a =0:.9:nknots-1
-            
+        for a =0:.1:nknots-1
+             for b =0
                 
             %STARTING SPLINES
                 
-            quadruple_start1 = quadruple_start1   + quadruple_reccurence_start(x_temp,xMin+a)   *  quadruple_reccurence_start(y_temp,xMin);
-            quadruple_start2 = quadruple_start2   + quadruple_reccurence_start(x_temp,xMin)    *   quadruple_reccurence_start(y_temp,xMin+a);
-%              
-             triple_start1    = triple_start1      + triple_reccurence_start(x_temp,xMin+a) *   triple_reccurence_start(y_temp,xMin);
-             triple_start2    = triple_start2      + triple_reccurence_start(x_temp,xMin)       *   triple_reccurence_start(y_temp,xMin+a);
-%              
-             double_start1    = double_start1      + Double_reccurence_start(x_temp,xMin+a) *   Double_reccurence_start(y_temp,xMin);
-             double_start2    = double_start2      + Double_reccurence_start(x_temp,xMin)       *   Double_reccurence_start(y_temp, xMin+a);
-%              
-%              
-%              %%ENDING SPLINES
+            quadruple_start1 = quadruple_start1   + quadruple_reccurence_start(-x_temp,xMin+a)   *  quadruple_reccurence_start(y_temp,xMin);
+%             quadruple_start2 = quadruple_start2   + quadruple_reccurence_start(x_temp,xMin)    *   quadruple_reccurence_start(y_temp,xMin+a);
+% %              
+%              triple_start1    = triple_start1      + triple_reccurence_start(x_temp,xMin+a) *   triple_reccurence_start(y_temp,xMin);
+%              triple_start2    = triple_start2      + triple_reccurence_start(x_temp,xMin)       *   triple_reccurence_start(y_temp,xMin+a);
+% %              
+%              double_start1    = double_start1      + Double_reccurence_start(x_temp,xMin+a) *   Double_reccurence_start(y_temp,xMin);
+%              double_start2    = double_start2      + Double_reccurence_start(x_temp,xMin)       *   Double_reccurence_start(y_temp, xMin+a);
+% %              
+% %              
+% %              %%ENDING SPLINES
+% %               
+%               quadruple_end1 = quadruple_end1  + quadruple_reccurence_end(x_temp,xMax-a)  *   quadruple_reccurence_end(y_temp,xMax);
+%               quadruple_end2 = quadruple_end2   + quadruple_reccurence_end(x_temp,xMax)  *   quadruple_reccurence_end(y_temp,xMax-a);
 %               
-              quadruple_end1 = quadruple_end1  + quadruple_reccurence_end(x_temp,xMax-a)  *   quadruple_reccurence_end(y_temp,xMax);
-              quadruple_end2 = quadruple_end2   + quadruple_reccurence_end(x_temp,xMax)  *   quadruple_reccurence_end(y_temp,xMax-a);
-              
-               triple_end1    = triple_end1     + triple_reccurence_end(x_temp,xMax-a)     *   triple_reccurence_end(y_temp,xMax);
-               triple_end2    = triple_end2     + triple_reccurence_end(x_temp,xMax)     *   triple_reccurence_end(y_temp,xMax-a);
-              
-               double_end1    = double_end1     + Double_reccurence_end(x_temp,xMax-a)     *   Double_reccurence_end(y_temp,xMax);
-             double_end2    = double_end2     + Double_reccurence_end(x_temp,xMax)     *   Double_reccurence_end(y_temp, xMax-a);
-              
-             
-             for shiftx= 0:.9:nknots-1
-                  for shifty= 1:.9:nknots-1
-                          basic_start1     = basic_start1     + Basic_Spline_start(x_temp,xMin+shiftx)   * Basic_Spline_start(y_temp,xMin);
-                          basic_start2     = basic_start2     + Basic_Spline_start(x_temp,xMin)   * Basic_Spline_start(y_temp,xMin+shifty);
-                          %basic_start3     = basic_start3     + Basic_Spline_start(x_temp,xMin)    * Basic_Spline_start(y_temp,xMin+shiftx);   
-                  end
+%                triple_end1    = triple_end1     + triple_reccurence_end(x_temp,xMax-a)     *   triple_reccurence_end(y_temp,xMax);
+%                triple_end2    = triple_end2     + triple_reccurence_end(x_temp,xMax)     *   triple_reccurence_end(y_temp,xMax-a);
+%               
+%                double_end1    = double_end1     + Double_reccurence_end(x_temp,xMax-a)     *   Double_reccurence_end(y_temp,xMax);
+%              double_end2    = double_end2     + Double_reccurence_end(x_temp,xMax)     *   Double_reccurence_end(y_temp, xMax-a);
+%               
+%              
+%              for shiftx= 0:.9:nknots-1
+%                   for shifty= 1:.9:nknots-1
+%                           basic_start1     = basic_start1     + Basic_Spline_start(x_temp,xMin+shiftx)   * Basic_Spline_start(y_temp,xMin);
+%                           basic_start2     = basic_start2     + Basic_Spline_start(x_temp,xMin)   * Basic_Spline_start(y_temp,xMin+shifty);
+%                           basic_start3     = basic_start3     + Basic_Spline_start(x_temp,xMin)    * Basic_Spline_start(y_temp,xMin+shiftx);   
+%                   end
              end
        end 
          
