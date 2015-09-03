@@ -2,29 +2,24 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
-<<<<<<< HEAD
-knots = -5:8;
-=======
-knots = -2:7;
->>>>>>> 078ffd4...  adding few files
+knots = 0:4;
 xMin = knots(1);
 xMax =  knots(end);
-xGrid = 20;
+xGrid = 100;
 nknots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-<<<<<<< HEAD
-lamda=0;
-=======
-lamda=.09;
->>>>>>> 078ffd4...  adding few files
+lamda=.1;
 Grid_opt =.1;
 
 for i=1:xLen
-    yVec(i) = dummyCurve(xVec(i));
+    %yVec(i) = dummyCurve(xVec(i));
+    yVec (i) = example_curve (xVec(i));
+    %yVec (i) = example_curve_2 (xVec(i)); %knot value should be 0:1
+    
 end
 
 figure(1)          
@@ -40,8 +35,9 @@ xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
 
 for i=1:nSensors
-    %ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
-    ySensors(i)=dummyCurve(xSensors(i)) + noise*randomZ(i);
+      ySensors(i)=dummyCurve(xSensors(i)) + noise*randomZ(i);
+      ySensors(i)=example_curve(xSensors(i)) + noise*randn();
+     %ySensors(i)=example_curve(xSensors(i)) + noise*randn();
 end
 
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
@@ -137,7 +133,7 @@ hold on
 legend('Clean Data','Noisy Measurements','Spines');
 
 %plotting the derivatives
-
+hold off
 
  add_derv = a_derv+b_derv+c_derv+f_derv+g_derv+h_derv+add_derv;
  %plot (xVec,a_derv,'r',xVec,b_derv,'r',xVec,c_derv,'r',xVec,f_derv,'b',xVec,g_derv,'g',xVec,h_derv,'g');
@@ -145,7 +141,7 @@ legend('Clean Data','Noisy Measurements','Spines');
 text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
 
 text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));
-axis ([xMin-.25 xMax+.25 -.525  3.25])
+
 hold off
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,8 +149,8 @@ hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 hold on;
-add_spline_opt = 0;
-add_derv_opt=0;
+
+add_derv_opt=0
 M_Derivatives =NaN(nknots-1,nknots+2);
 M_splines = zeros (nknots-1,nknots+2);
 count=0; 
@@ -189,7 +185,7 @@ end
    
  opt = [BS,M_Derivatives'*lamda];
  ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
-weights_opt = opt'\ySensors_opt;                    %Finding the weights
+weights_opt = opt'\ySensors_opt                   %Finding the weights
 
 %%%%%%%
 %SPLINES 
@@ -222,7 +218,7 @@ figure (4);
 xxLen =length (xx);
 yyVec = NaN(xxLen,1);
 for i=1:xxLen
-    yyVec(i) = dummyCurve(xx(i));
+    yyVec(i) = example_curve(xx(i));
 end
 %plot ( xx , yyVec, 'r--');
  plot(xVec, yVec,'g--','LineWidth',3);
@@ -241,19 +237,16 @@ add_spline_opt = 0;
      plot (xx,M_splines,'b','LineWidth',1.3)
      plot (xx, add_spline_opt, 'k-','LineWidth',1.6)
      
-     legend('Clean Data','Spines');
-     text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
+      legend('Clean Data','Spines');
+      text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
       text(xMin+2,2.8,sprintf('Lambda =%g', lamda));
-     text(xMin+2, 2.7,sprintf('Number of knots= %g', nknots +2));
-text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
+      text(xMin+2, 2.7,sprintf('Number of knots= %g', nknots +2));
+      text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
       title('After Optimisation')
       plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 
       hold off
       
  
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- %2Dimentional
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- a=NaN(5,5,5,5);
+
  
