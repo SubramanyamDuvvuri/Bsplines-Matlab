@@ -182,10 +182,7 @@ for x = xMin:.1 :xMax
     M_Derivatives(count,nknots+2)=hhderv;
     
 end  
-   lamda = 0;
-   for i = .1:.01:.2
-       lamda = lamda +i;
-       hold on
+   
  opt = [BS,M_Derivatives'*lamda];
  ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
 weights_opt = opt'\ySensors_opt;                   %Finding the weights
@@ -249,7 +246,7 @@ add_spline_opt = 0;
       title('After Optimisation')
       plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
       hold off
-   end
+
    
   
    
