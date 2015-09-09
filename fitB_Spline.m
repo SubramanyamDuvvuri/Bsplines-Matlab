@@ -1,11 +1,11 @@
 % fitB_Spline
 nSensors = 112;
 noise = 0;
-knots = [-5 :8 ];
+knots = [-4:.5:4];
 
-xMin = -5;
-xMax =  8;
-xGrid = 10;
+xMin = -4;
+xMax =  4;
+xGrid = 100;
 
 
 

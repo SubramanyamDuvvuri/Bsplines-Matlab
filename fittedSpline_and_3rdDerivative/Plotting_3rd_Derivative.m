@@ -2,7 +2,7 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
-knots = 0:4;
+knots = -5:8;
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 100;
@@ -12,12 +12,12 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.1;
+lamda=.4;
 Grid_opt =.1;
 
 for i=1:xLen
-    %yVec(i) = dummyCurve(xVec(i));
-    yVec (i) = example_curve (xVec(i));
+    yVec(i) = dummyCurve(xVec(i));
+    %yVec (i) = example_curve (xVec(i));
     %yVec (i) = example_curve_2 (xVec(i)); %knot value should be 0:1
     
 end
@@ -36,7 +36,7 @@ ySensors = NaN(nSensors,1);
 
 for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i)) + noise*randomZ(i);
-      ySensors(i)=example_curve(xSensors(i)) + noise*randn();
+      %ySensors(i)=example_curve(xSensors(i)) + noise*randn();
      %ySensors(i)=example_curve(xSensors(i)) + noise*randn();
 end
 
@@ -155,7 +155,7 @@ M_Derivatives =NaN(nknots-1,nknots+2);
 M_splines = zeros (nknots-1,nknots+2);
 count=0; 
 %%Finding M_Derivatives
-for x = xMin:1 :xMax
+for x = xMin:.1 :xMax
     
     count=count+1;
     xx(count)=x;
@@ -182,10 +182,13 @@ for x = xMin:1 :xMax
     M_Derivatives(count,nknots+2)=hhderv;
     
 end  
-   
+   lamda = 0;
+   for i = .1:.01:.2
+       lamda = lamda +i;
+       hold on
  opt = [BS,M_Derivatives'*lamda];
  ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
-weights_opt = opt'\ySensors_opt                   %Finding the weights
+weights_opt = opt'\ySensors_opt;                   %Finding the weights
 
 %%%%%%%
 %SPLINES 
@@ -193,7 +196,7 @@ weights_opt = opt'\ySensors_opt                   %Finding the weights
 
  for x = xMin:.1:xMax 
      count=count+1;
-     xx(count)=x;
+     xxVec(count)=x;
      [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
      M_splines(count,1) = aaval*weights_opt(1);    
      [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
@@ -218,10 +221,11 @@ figure (4);
 xxLen =length (xx);
 yyVec = NaN(xxLen,1);
 for i=1:xxLen
-    yyVec(i) = example_curve(xx(i));
+    %yyVec(i) = example_curve(xx(i));
+    yyVec(i) = dummyCurve(xx(i));
 end
 %plot ( xx , yyVec, 'r--');
- plot(xVec, yVec,'g--','LineWidth',3);
+ plot(xx, yyVec,'g--','LineWidth',3);
 hold on
 add_opt = 0;
 add_spline_opt = 0;
@@ -234,8 +238,8 @@ add_spline_opt = 0;
         add_spline_opt = add_spline_opt + M_splines( :,i)';
  end
      
-     plot (xx,M_splines,'b','LineWidth',1.3)
-     plot (xx, add_spline_opt, 'k-','LineWidth',1.6)
+     plot (xxVec,M_splines,'b','LineWidth',1.3)
+     plot (xxVec, add_spline_opt, 'k-','LineWidth',1.6)
      
       legend('Clean Data','Spines');
       text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
@@ -244,9 +248,19 @@ add_spline_opt = 0;
       text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
       title('After Optimisation')
       plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
-
       hold off
-      
- 
-
+   end
+   
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
  
