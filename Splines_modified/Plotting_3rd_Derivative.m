@@ -2,7 +2,7 @@ clc
 clear
 nSensors = 100;
 noise = 0.1;
-knots = -5:8;
+knots = -1.5:.5:6.5;
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 100;
@@ -12,7 +12,7 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.4;
+lamda=0.01;
 Grid_opt =.1;
 
 for i=1:xLen
@@ -52,15 +52,15 @@ lastKnot =knots(end);
 
 for s=1:nSensors
     xs = xSensors(s);
-    BS(1,s) =quadruple_reccurence_start(xs,firstKnot);
-    BS(2,s)=triple_reccurence_start(xs,firstKnot);
-    BS(3,s)=Double_reccurence_start(xs,firstKnot);        
+    BS(1,s) =quadruple_reccurence_start_modified(xs,firstKnot);
+    BS(2,s)=triple_reccurence_start_modified(xs,firstKnot);
+    BS(3,s)=Double_reccurence_start_modified(xs,firstKnot);        
     for k=1:nknots-4;
-        BS(3+k,s)=Basic_Spline_start(xs,knots(k));
+        BS(3+k,s)=Basis_Spline_modified(xs,knots(k));
     end
-     BS(nknots,s)=Double_reccurence_end(xs,lastKnot);
-    BS(nknots+1,s) =triple_reccurence_end(xs,lastKnot);
-    BS(nknots+2,s) =quadruple_reccurence_end(xs,lastKnot);
+     BS(nknots,s)=Double_reccurence_end_modified(xs,lastKnot);
+    BS(nknots+1,s) =triple_reccurence_end_modified(xs,lastKnot);
+    BS(nknots+2,s) =quadruple_reccurence_end_modified(xs,lastKnot);
     
 end
 
@@ -68,20 +68,20 @@ weights = BS'\ySensors;
 %weights = ones (16,1);
 
 for i = 1:xLen
-    [aaval,aaderv]= quadruple_reccurence_start(xVec(i),firstKnot);
+    [aaval,aaderv]= quadruple_reccurence_start_modified(xVec(i),firstKnot);
     a_spline(i)=aaval*weights(1);               %spline values
      a_derv(i)=aaderv*weights(1)*lamda;              %third derivative
 end
 
 for i = 1:xLen
-    [bbval,bbderv]=triple_reccurence_start(xVec(i),firstKnot);
+    [bbval,bbderv]=triple_reccurence_start_modified(xVec(i),firstKnot);
     b_spline(i)=bbval*weights(2);
     b_derv(i)=bbderv*weights(2)*lamda;
 end
 
 
  for i = 1:xLen
-     [ccval,ccderv]= Double_reccurence_start(xVec(i),firstKnot);
+     [ccval,ccderv]= Double_reccurence_start_modified(xVec(i),firstKnot);
      c_spline(i)=ccval*weights(3);
      c_derv(i)=ccderv*weights(3)*lamda;
  end
@@ -90,7 +90,7 @@ p=4;
  
 for j= 1:nknots-4
          for i =1:xLen
-                  [ddval,ddderv] = Basic_Spline_start(xVec(i),knots(j));
+                  [ddval,ddderv] = Basis_Spline_modified(xVec(i),knots(j));
                  d_spline(j,i)=ddval;
                  d_derv(j,i)=ddderv;
          end
@@ -108,19 +108,19 @@ for j= 1:nknots-4
  end
 
 for i = 1:xLen
-    [ffval,ffderv]=Double_reccurence_end(xVec(i),lastKnot);
+    [ffval,ffderv]=Double_reccurence_end_modified(xVec(i),lastKnot);
     f_spline(i)=ffval*weights(nknots);
     f_derv(i)=ffderv*weights(nknots)*lamda;
 end 
 
 for i = 1:xLen
-    [ggval,ggderv]=triple_reccurence_end(xVec(i),lastKnot);
+    [ggval,ggderv]=triple_reccurence_end_modified(xVec(i),lastKnot);
     g_spline(i)=ggval*weights(nknots+1);
     g_derv(i)=ggderv*weights(nknots+1)*lamda;
 end 
 
 for i = 1:xLen
-    [hhval,hhderv]=quadruple_reccurence_end(xVec(i),lastKnot);
+    [hhval,hhderv]=quadruple_reccurence_end_modified(xVec(i),lastKnot);
     h_spline(i)=hhval*weights(nknots+2);   
     h_derv(i)=hhderv*weights(nknots+2)*lamda; 
 end
@@ -159,26 +159,26 @@ for x = xMin:.1 :xMax
     
     count=count+1;
     xx(count)=x;
-    [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
+    [aaval,aaderv]= quadruple_reccurence_start_modified(x,firstKnot);
     M_Derivatives(count,1)=aaderv;
     
-    [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
+    [bbval,bbderv]= triple_reccurence_start_modified(x,firstKnot);
     M_Derivatives(count,2)=bbderv;
     
-    [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
+    [ccval,ccderv]= Double_reccurence_start_modified(x,firstKnot);
     M_Derivatives(count,3)=ccderv;
     
     for j= 1:nknots-4
-        [ddval,ddderv] =Basic_Spline_start(x,knots(j));
+        [ddval,ddderv] =Basis_Spline_modified(x,knots(j));
          M_Derivatives(count,j+3)=ddderv;
     end  
-    [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
+    [ffval,ffderv]=Double_reccurence_end_modified(x,lastKnot);
      M_Derivatives(count,nknots)=ffderv;
     
-    [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
+    [ggval,ggderv]=triple_reccurence_end_modified(x,lastKnot);
      M_Derivatives(count,nknots+1)=ggderv;
     
-    [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
+    [hhval,hhderv]=quadruple_reccurence_end_modified(x,lastKnot);
     M_Derivatives(count,nknots+2)=hhderv;
     
 end  
@@ -194,26 +194,26 @@ weights_opt = opt'\ySensors_opt;                   %Finding the weights
  for x = xMin:.1:xMax 
      count=count+1;
      xxVec(count)=x;
-     [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
+     [aaval,aaderv]= quadruple_reccurence_start_modified(x,firstKnot);
      M_splines(count,1) = aaval*weights_opt(1);    
-     [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
+     [bbval,bbderv]= triple_reccurence_start_modified(x,firstKnot);
      M_splines(count,2) = bbval*weights_opt(2);     
-     [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
+     [ccval,ccderv]= Double_reccurence_start_modified(x,firstKnot);
      M_splines(count,3) = ccval*weights_opt(3);
      
      for j= 1:nknots-4
-         [ddval,ddderv] =Basic_Spline_start(x,knots(j));
+         [ddval,ddderv] =Basis_Spline_modified(x,knots(j));
           M_splines(count,j+3) = ddval*weights_opt(j+3);
      end  
-     [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
+     [ffval,ffderv]=Double_reccurence_end_modified(x,lastKnot);
      M_splines(count,nknots) = ffval*weights_opt(nknots);
      
-       [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
+       [ggval,ggderv]=triple_reccurence_end_modified(x,lastKnot);
       M_splines(count,nknots+1) = ggval*weights_opt(nknots+1);     
-     [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
+     [hhval,hhderv]=quadruple_reccurence_end_modified(x,lastKnot);
       M_splines(count,nknots+2) = hhval*weights_opt(nknots+2);     
  end  
-
+hold off
 figure (4);
 xxLen =length (xx);
 yyVec = NaN(xxLen,1);
@@ -235,7 +235,7 @@ add_spline_opt = 0;
         add_spline_opt = add_spline_opt + M_splines( :,i)';
  end
      
-     plot (xxVec,M_splines,'b','LineWidth',1.3)
+    plot (xxVec,M_splines,'b','LineWidth',1.3)
      plot (xxVec, add_spline_opt, 'k-','LineWidth',1.6)
      
       legend('Clean Data','Spines');

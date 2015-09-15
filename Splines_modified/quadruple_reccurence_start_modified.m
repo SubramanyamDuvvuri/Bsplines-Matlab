@@ -3,7 +3,7 @@ x = x_val-shift  ;
 val =0;
 derv=0;
 if ((x>0) &&( x <=.5))
-    val =    (.5-x)*(.5-x)*(.5-x);
-    derv =-6;
+    val =    ((.5-x)/.5)^3;
+    derv =-48;
 end
 

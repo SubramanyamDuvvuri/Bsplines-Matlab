@@ -1,58 +1,62 @@
 clear
 clc
 hold off
-xLin = -10:.1:20;
+xLin = 0:.001:4;
 lenx=length(xLin);
 y = NaN(lenx,1);
-
+firstknot = xLin (1);
+lastknot =xLin(end);
+add = NaN(1,length(xLin));
 for i = 1:lenx
-    aa= quadruple_reccurence_start_modified(xLin(i),0);
+    aa= quadruple_reccurence_start_modified(xLin(i),firstknot);
     a(i)=aa;
      
 end
+plot (xLin , a)
 for i = 1:lenx
-    bb= triple_reccurence_start_modified(xLin(i),0);
+    bb= triple_reccurence_start_modified(xLin(i),firstknot);
     b(i)=bb;
 end
  for i = 1:lenx
-     cc= Double_reccurence_start_modified(xLin(i),0);
+     cc= Double_reccurence_start_modified(xLin(i),firstknot);
      c(i)=cc;
  end
  
-basicspline=[0:2];
+basicspline=[0:.5:2];
  for j =1:length(basicspline)
      for i= 1:lenx
-           dd =Basic_Spline_modified(xLin(i),basicspline(j));
+           dd =Basis_Spline_modified(xLin(i),basicspline(j));
            d(i,j)=dd;
            
      end
      hold on
       plot (xLin,d);
+      add = add + d;
       hold on
  end
 
 for i = 1:lenx
-ee=Basic_Spline_end(xLin(i),2);
-     e(i)=ee;
-    ff=Double_reccurence_end_modified(xLin(i),2);
+
+    ff=Double_reccurence_end_modified(xLin(i),lastknot);
     f(i)=ff;
 end 
 
 for i = 1:lenx
-    gg=triple_reccurence_end_modified(xLin(i),2);
+    gg=triple_reccurence_end_modified(xLin(i),lastknot);
     g(i)=gg;
 end 
 
 for i = 1:lenx
-    hh=quadruple_reccurence_end_modified(xLin(i),2);
+    hh=quadruple_reccurence_end_modified(xLin(i),lastknot);
     h(i)=hh;  
     
 end
 
- plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
+ plot (xLin,a,'b',xLin,b,xLin,c,xLin ,f,xLin,g,xLin,h)
 hold on
-for i = 1:lenx
-       add(i)=a(i)+b(i)+c(i)+e(i)+f(i)+g(i)+h(i);
-end
-%plot ( xLin,add)
+
+
+add = add+a +b+c+f+g+h+d;
+
+plot ( xLin,add,'+')
 hold on
