@@ -1,8 +1,8 @@
 clc
 clear
-nSensors = 200;
+nSensors = 100;
 noise = 0.1;
-knotspan=0.25;
+knotspan=0.5;
 knots = -5:knotspan:8;
 xMin = knots(1);
 xMax =  knots(end);
@@ -35,6 +35,9 @@ xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ing
 xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
 
+
+
+
 for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i)) + noise*randomZ(i);
       %ySensors(i)=example_curve(xSensors(i)) + noise*randn();
@@ -42,6 +45,15 @@ for i=1:nSensors
 end
 
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+
+% Example leave out sensor 5
+xLeave = xSensors(5);
+yLeave = ySensors(5);
+
+xSensors = [xSensors(1:4); xSensors(6:100)];
+ySensors = [ySensors(1:4); ySensors(6:100)];
+
+nSensors = nSensors-1;
 
 % creating table with influence of knots
 
@@ -249,9 +261,9 @@ add_spline_opt = 0;
       hold off
 
    
-  
-   
-   
+ hold on; 
+ plot(  xLeave, yLeave, 'rx');
+ hold off  
    
    
    

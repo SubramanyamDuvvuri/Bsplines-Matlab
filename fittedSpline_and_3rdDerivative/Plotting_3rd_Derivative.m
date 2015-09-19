@@ -1,18 +1,18 @@
 clc
 clear
-nSensors = 100;
+nSensors = 140;
 noise = 0.1;
 knots = -5:8;
 xMin = knots(1);
 xMax =  knots(end);
-xGrid = 100;
+xGrid = 10;
 nknots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.4;
+lamda=.06;
 Grid_opt =.1;
 
 for i=1:xLen
@@ -150,7 +150,7 @@ hold off
 
 hold on;
 
-add_derv_opt=0
+add_derv_opt=0;
 M_Derivatives =NaN(nknots-1,nknots+2);
 M_splines = zeros (nknots-1,nknots+2);
 count=0; 
@@ -248,8 +248,63 @@ add_spline_opt = 0;
       hold off
 
    
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %Calculating auomated values
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %lambda = .01;
+ % claculating weights based on n-1 sensors
+ 
+ 
+% % for i=2:nSensors
+% %       ySensors1(i)=dummyCurve(xSensors(i-1)) + noise*randomZ(i-1);
+% %       
+% % end
+% %  for s=1:nSensors
+% %     xs = xSensors(s);
+% %     BS(1,s) =quadruple_reccurence_start(xs,firstKnot);
+% %     BS(2,s)=triple_reccurence_start(xs,firstKnot);
+% %     BS(3,s)=Double_reccurence_start(xs,firstKnot);        
+% %     for k=1:nknots-4;
+% %         BS(3+k,s)=Basic_Spline_start(xs,knots(k));
+% %     end
+% %      BS(nknots,s)=Double_reccurence_end(xs,lastKnot);
+% %     BS(nknots+1,s) =triple_reccurence_end(xs,lastKnot);
+% %     BS(nknots+2,s) =quadruple_reccurence_end(xs,lastKnot);
+% %     
+% % end
+  %weigths_leftout = BS'\ySensors1;
+  
+  
+  
+  
+  
+  
+  
+  sum_error = 0;
+  for i =2 :nSensors
+      ySens_prediction(i) = dummyCurve(xSensors(i-1)) + noise*randomZ(i-1);
+      sum_error = sum_error+( ySens_prediction(i)- ySensors(i)).^2;
+  end
+  RMSE = (sqrt(sum_error)/length (ySensors));
+  
+  
+ %rmse =  RMSE_calculate (ySensors', ySens_prediction )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
    
+  
+  
+  
    
    
    
