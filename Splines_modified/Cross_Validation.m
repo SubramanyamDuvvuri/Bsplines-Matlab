@@ -1,9 +1,9 @@
 clc
 clear
-nSensors = 120;
+nSensors = 130;
 noise = 0.1;
 Start_point =-5;
-End_point = 9;
+End_point = 8;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -15,21 +15,23 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.01;
-Grid_opt =.001;
+%lamda=[.001:.001:.005];
+lamda=1;
+sum_Error= 0;
+Grid_opt =.1;
+RMS = NaN ( length (lamda ),nSensors);
 
 
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
     %yVec (i) = example_curve (xVec(i));
-    %yVec (i) = example_curve_2 (xVec(i)); %knot value should be 0:1
-    
+    %yVec (i) = example_curve_2 (xVec(i)); %knot value should be 0:1    
 end
 
 figure(8)          
 
-    plot(xVec, yVec,'g--','LineWidth',3);
-    legend ('nknots');
+plot(xVec, yVec,'g--','LineWidth',3);
+legend ('nknots');
 hold on;
 load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
 
@@ -48,38 +50,41 @@ for i=1:nSensors
 end
 %plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 %For loop to calculate the cross validation
- leftout_point =32; % put 0 to include all the values
- for j = 1
-for i = 1 : nSensors-1
-    %leftout_point =leftout_point +1;% comment this incase only one point  or no point needs to be left out
+
+
+ leftout_point =0; % put 0 to include all the values
+nSensors = nSensors -1;
+for lmda = 1:length(lamda)
+    xleftout = 0;
+    yleftout = 0;
+    leftout_point = 0;
+for i = 1 : nSensors+1
+     add_spline_opt = 0;
+     add_spline =0;
+    leftout_point =leftout_point +1;% comment this incase only one point  or no point needs to be left out
     if isequal (leftout_point,0)
-         xleftout = [xSensors(1:nSensors) ];
-        yleftout =  [ySensors(1:nSensors) ];
+         xleftout = [xSensors(1:nSensors+1) ];
+        yleftout =  [ySensors(1:nSensors+1) ];
         nSensors = nSensors +1;
         break;
     end
     if isequal(leftout_point,1)
-        xleftout = [xSensors(leftout_point +1:nSensors) ];
-        yleftout =  [ySensors(leftout_point +1:nSensors) ];
-    elseif isequal(leftout_point ,nSensors)
-        xleftout = [xSensors(1:nSensors-1) ];
-        yleftout =  [ySensors(1:nSensors-1) ];
+        xleftout = [xSensors(leftout_point +1:nSensors+1) ];
+        yleftout =  [ySensors(leftout_point +1:nSensors+1) ];
+    elseif isequal(leftout_point ,nSensors+1)
+        xleftout = [xSensors(1:nSensors) ];
+        yleftout =  [ySensors(1:nSensors) ];
     else
-        xleftout = [xSensors(1:leftout_point-1) ; xSensors(leftout_point+1:nSensors)];
-        yleftout =  [ySensors(1:leftout_point-1) ; ySensors(leftout_point+1:nSensors)];
+        xleftout = [xSensors(1:leftout_point-1) ; xSensors(leftout_point+1:nSensors+1)];
+        yleftout =  [ySensors(1:leftout_point-1) ; ySensors(leftout_point+1:nSensors+1)];
     end
- %  ss(j) = yleftout(j) -ySensors(j);
-   
-end
-end
-nSensors = nSensors-1;
-plot (xleftout,yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
-   
 
+
+ 
+%nSensors = nSensors -1;
+%plot (xleftout,yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
 % creating table with influence of knots
-
 BS = NaN(nknots+2,nSensors);
-
 firstKnot=knots(1);
 lastKnot =knots(end);
 
@@ -90,7 +95,7 @@ for s=1:nSensors
     BS(2,s)=triple_reccurence_start_modified(xs,firstKnot,knotspan);
     BS(3,s)=Double_reccurence_start_modified(xs,firstKnot,knotspan);        
     for k=1:nknots-4;
-        BS(3+k,s)=Basis_Spline_modified(xs,knots(k),knotspan);
+     BS(3+k,s)=Basis_Spline_modified(xs,knots(k),knotspan);
     end
      BS(nknots,s)=Double_reccurence_end_modified(xs,lastKnot,knotspan);
     BS(nknots+1,s) =triple_reccurence_end_modified(xs,lastKnot,knotspan);
@@ -104,20 +109,20 @@ weights = BS'\yleftout;
 for i = 1:xLen
     [aaval,aaderv]= quadruple_reccurence_start_modified(xVec(i),firstKnot,knotspan);
     a_spline(i)=aaval*weights(1);               %spline values
-     a_derv(i)=aaderv*weights(1)*lamda;              %third derivative
+    a_derv(i)=aaderv*weights(1)*lamda(lmda);              %third derivative
 end
 
 for i = 1:xLen
     [bbval,bbderv]=triple_reccurence_start_modified(xVec(i),firstKnot,knotspan);
     b_spline(i)=bbval*weights(2);
-    b_derv(i)=bbderv*weights(2)*lamda;
+    b_derv(i)=bbderv*weights(2)*lamda(lmda);
 end
 
 
  for i = 1:xLen
      [ccval,ccderv]= Double_reccurence_start_modified(xVec(i),firstKnot,knotspan);
      c_spline(i)=ccval*weights(3);
-     c_derv(i)=ccderv*weights(3)*lamda;
+     c_derv(i)=ccderv*weights(3)*lamda(lmda);
  end
  
 p=4;
@@ -131,7 +136,7 @@ for j= 1:nknots-4
         hold on
         if p<nknots+2
              mul_val =   d_spline(j,:)*weights (p);       % multiplying with the weights
-            mul_derv = d_derv(j,:)*weights(p)*lamda;
+            mul_derv = d_derv(j,:)*weights(p)*lamda(lmda);
             %plot (xVec,mul_val);                          %plotting splines
             %plot ( xVec,mul_derv);                      %plotting the third derivative
             p=p+1;
@@ -144,19 +149,19 @@ for j= 1:nknots-4
 for i = 1:xLen
     [ffval,ffderv]=Double_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     f_spline(i)=ffval*weights(nknots);
-    f_derv(i)=ffderv*weights(nknots)*lamda;
+    f_derv(i)=ffderv*weights(nknots)*lamda(lmda);
 end 
 
 for i = 1:xLen
     [ggval,ggderv]=triple_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     g_spline(i)=ggval*weights(nknots+1);
-    g_derv(i)=ggderv*weights(nknots+1)*lamda;
+    g_derv(i)=ggderv*weights(nknots+1)*lamda(lmda);
 end 
 
 for i = 1:xLen
     [hhval,hhderv]=quadruple_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     h_spline(i)=hhval*weights(nknots+2);   
-    h_derv(i)=hhderv*weights(nknots+2)*lamda; 
+    h_derv(i)=hhderv*weights(nknots+2)*lamda(lmda); 
 end
 %ploting the splines
  %plot (xVec,a_spline,'b',xVec,b_spline,'b',xVec,c_spline,'b',xVec,f_spline,'b',xVec,g_spline,'b',xVec,h_spline,'b','LineWidth',1.4)%Plotting Splines
@@ -223,7 +228,7 @@ for x = xMin:Grid_opt :xMax
     
 end
 
-opt = [BS,M_Derivatives'*lamda];
+opt = [BS,M_Derivatives'*lamda(lmda)];
 ySensors_opt = [yleftout ;zeros(size(M_Derivatives,1),1) ];
 weights_opt = opt'\ySensors_opt;                   %Finding the weights
 
@@ -273,9 +278,13 @@ add_spline_opt = 0;
 for i = 1:nknots+2
         add_opt = add_opt + M_Derivatives ( :,i)';
         add_spline_opt = add_spline_opt + M_splines( :,i)';
- end
-     
-    plot (xxVec,M_splines,'b','LineWidth',1.3)
+end
+RMS(lmda,leftout_point) = RMSE_calculate (ySensors' , add_spline_opt );
+end
+end
+
+
+    %plot (xxVec,M_splines,'b','LineWidth',1.3)
      plot (xxVec, add_spline_opt, 'k-','LineWidth',1.6)
      
       legend('Clean Data','Spines');
@@ -286,7 +295,7 @@ for i = 1:nknots+2
       text(xMin+1,print_pos+.1,sprintf(' First Value=> %g    Last value= %g ',xMin, xMax));
       text(xMin+1,print_pos+0,sprintf(' Knotspan=> %g ',knotspan));
       title('After Optimisation')
-      plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
+     % plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
       hold off
 
    hold on
@@ -295,11 +304,11 @@ for i = 1:nknots+2
   end
 
   hold off
-  
-  
- for i = 1 : length(yleftout)
-ss (i) = yleftout(i)-ySensors(i);
- end
+  plot(xVec, yVec,'g--','LineWidth',3);
+legend ('nknots');
+hold on;
+  plot (xleftout,yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
+ 
 
 
    
