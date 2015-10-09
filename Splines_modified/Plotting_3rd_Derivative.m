@@ -1,9 +1,9 @@
 clc
 clear
-nSensors = 120;
+nSensors = 100;
 noise = 0.1;
 Start_point =-5;
-End_point = 9;
+End_point = 5;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -16,7 +16,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 lamda=.01;
-Grid_opt =.001;
+Grid_opt =.0004;
 
 
 for i=1:xLen
