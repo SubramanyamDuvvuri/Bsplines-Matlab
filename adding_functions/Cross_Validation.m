@@ -54,7 +54,7 @@ end
 
  leftout_point =0; % put 0 to include all the values
 nSensors = nSensors -1;
-for lmda = 1:length(lamda)
+for lamda_counter = 1:length(lamda)
     xleftout = 0;
     yleftout = 0;
     leftout_point = 0;
@@ -110,20 +110,20 @@ weights = BS'\yleftout;
 for i = 1:xLen
     [aaval,aaderv]= quadruple_reccurence_start_modified(xVec(i),firstKnot,knotspan);
     a_spline(i)=aaval*weights(1);               %spline values
-    a_derv(i)=aaderv*weights(1)*lamda(lmda);              %third derivative
+    a_derv(i)=aaderv*weights(1)*lamda(lamda_counter);              %third derivative
 end
 
 for i = 1:xLen
     [bbval,bbderv]=triple_reccurence_start_modified(xVec(i),firstKnot,knotspan);
     b_spline(i)=bbval*weights(2);
-    b_derv(i)=bbderv*weights(2)*lamda(lmda);
+    b_derv(i)=bbderv*weights(2)*lamda(lamda_counter);
 end
 
 
  for i = 1:xLen
      [ccval,ccderv]= Double_reccurence_start_modified(xVec(i),firstKnot,knotspan);
      c_spline(i)=ccval*weights(3);
-     c_derv(i)=ccderv*weights(3)*lamda(lmda);
+     c_derv(i)=ccderv*weights(3)*lamda(lamda_counter);
  end
  
 p=4;
@@ -137,7 +137,7 @@ for j= 1:nknots-4
         hold on
         if p<nknots+2
              mul_val =   d_spline(j,:)*weights (p);       % multiplying with the weights
-            mul_derv = d_derv(j,:)*weights(p)*lamda(lmda);
+            mul_derv = d_derv(j,:)*weights(p)*lamda(lamda_counter);
             %plot (xVec,mul_val);                          %plotting splines
             %plot ( xVec,mul_derv);                      %plotting the third derivative
             p=p+1;
@@ -150,19 +150,19 @@ for j= 1:nknots-4
 for i = 1:xLen
     [ffval,ffderv]=Double_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     f_spline(i)=ffval*weights(nknots);
-    f_derv(i)=ffderv*weights(nknots)*lamda(lmda);
+    f_derv(i)=ffderv*weights(nknots)*lamda(lamda_counter);
 end 
 
 for i = 1:xLen
     [ggval,ggderv]=triple_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     g_spline(i)=ggval*weights(nknots+1);
-    g_derv(i)=ggderv*weights(nknots+1)*lamda(lmda);
+    g_derv(i)=ggderv*weights(nknots+1)*lamda(lamda_counter);
 end 
 
 for i = 1:xLen
     [hhval,hhderv]=quadruple_reccurence_end_modified(xVec(i),lastKnot,knotspan);
     h_spline(i)=hhval*weights(nknots+2);   
-    h_derv(i)=hhderv*weights(nknots+2)*lamda(lmda); 
+    h_derv(i)=hhderv*weights(nknots+2)*lamda(lamda_counter); 
 end
 %ploting the splines
  %plot (xVec,a_spline,'b',xVec,b_spline,'b',xVec,c_spline,'b',xVec,f_spline,'b',xVec,g_spline,'b',xVec,h_spline,'b','LineWidth',1.4)%Plotting Splines
@@ -229,7 +229,7 @@ for x = xMin:Grid_opt :xMax
     
 end
 
-opt = [BS,M_Derivatives'*lamda(lmda)];
+opt = [BS,M_Derivatives'*lamda(lamda_counter)];
 ySensors_opt = [yleftout ;zeros(size(M_Derivatives,1),1) ];
 weights_opt = opt'\ySensors_opt;                   %Finding the weights
 
@@ -283,9 +283,9 @@ end
 PUC = xSensors(i);
 position = find(abs (xxVec-x)<10^-4);
 sum_Error = sum_Error + (ySensors(i)- add_spline_opt(position))^2;
-%RMS(lmda,leftout_point) = RMSE_calculate (ySensors(i) , add_spline_opt(position) );
+%RMS(lamda_counter,leftout_point) = RMSE_calculate (ySensors(i) , add_spline_opt(position) );
 end
-RMS(lmda)= sqrt(sum_Error/length(ySensors));
+RMS(lamda_counter)= sqrt(sum_Error/length(ySensors));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Using automated lamda
