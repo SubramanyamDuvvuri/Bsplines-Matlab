@@ -1,4 +1,4 @@
-clc
+ clc
 clear
 nSensors = 100;
 noise = 0.1;

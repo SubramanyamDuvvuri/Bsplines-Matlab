@@ -1,10 +1,10 @@
 %New script using functions to shorten the code
 clc
 clear
-nSensors = 300;
+nSensors = 100;
 noise = 0.1;
-Start_point =-9;
-End_point = 40;
+Start_point =-5;
+End_point = 10;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -17,7 +17,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=.04100;
+lambda=.1328;
 %lambda=[.1];
 sum_Error= 0;
 Grid_opt =.01;
