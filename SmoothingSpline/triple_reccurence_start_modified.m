@@ -1,4 +1,5 @@
 function [val,derv] =triple_reccurence_start_modified(x_val,shift,width)
+
 % x = x_val-shift  ;
 % val =0;
 % derv=0;
