@@ -95,16 +95,3 @@ title('After Optimisation')
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
 
-<<<<<<< HEAD
-BS1 = NaN(nknots,nSensors);
-firstKnot=knots(1);
-lastKnot =knots(end);
-count = 1;
-
-for s=1:nSensors
- xs = xSensors(s) ;
-BS1 = Calculate_BS (s,xs , firstKnot , lastKnot , knotspan,nknots,knots);
-count = count +1;
-end
-=======
->>>>>>> d6568f2cad6d98b0b5cde30cb302a3f36009f141
