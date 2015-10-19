@@ -47,13 +47,13 @@ end
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 
 
-BS1 = NaN(nSensors);
+BS1 = NaN(nknots,nSensors);
 firstKnot=knots(1);
 lastKnot =knots(end);
 count = 1;
 
 for s=1:nSensors
  xs = xSensors(s) ;
-BS1(:,s) = Calculate_BS (s,xs , firstKnot , lastKnot , knotspan,nknots,knots);
+BS1 = Calculate_BS (s,xs , firstKnot , lastKnot , knotspan,nknots,knots);
 count = count +1;
 end
