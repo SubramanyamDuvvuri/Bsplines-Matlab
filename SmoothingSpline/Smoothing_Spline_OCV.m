@@ -2,7 +2,7 @@
 clc
 clear
 nSensors = 100;
-noise = 0.1;
+noise = 0.2;
 Start_point =-5;
 End_point = 10;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
@@ -17,7 +17,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.1,.2,.5 ];
+lambda=[0.01:.01:2 ];;
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -122,7 +122,7 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-figure (2)%Plotting the curves
+figure (3)%Plotting the curves
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
