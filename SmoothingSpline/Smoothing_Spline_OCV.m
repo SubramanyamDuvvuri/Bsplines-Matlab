@@ -1,6 +1,7 @@
 %New script using functions to shorten the code
 clc
 clear
+<<<<<<< HEAD
 fprintf('Enter a function for consideration')
 fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n  2-->val = 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
@@ -10,6 +11,12 @@ nSensors = 100;
 noise = 0.1;
 Start_point =0;
 End_point =1;
+=======
+nSensors = 100;
+noise = 0.2;
+Start_point =-5;
+End_point = 10;
+>>>>>>> b5a22550ee443ea684c81339723d6a0e362ad536
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -22,7 +29,11 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
+<<<<<<< HEAD
 lambda=[0.001,.02,.005 ];
+=======
+lambda=[0.01:.01:2 ];;
+>>>>>>> b5a22550ee443ea684c81339723d6a0e362ad536
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -127,7 +138,7 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-figure (2)%Plotting the curves
+figure (3)%Plotting the curves
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
