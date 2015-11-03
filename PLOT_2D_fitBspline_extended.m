@@ -82,7 +82,6 @@ for kx=1:nKnotsX
     ySpline = yStart:1/yGrid:yEnd;
     [xxSpline,yySpline]=meshgrid(xSpline,ySpline);
     zzSpline = NaN(xPoints,yPoints);
-    
     z=0;
     for i=1:xPoints
         for j = 1:yPoints
@@ -90,8 +89,7 @@ for kx=1:nKnotsX
              y=-spanSpline+(j-1)/yGrid;
               z = bSpline3(x)*bSpline3(y);
               zzSpline(i,j)=z;
-        end
-             
+        end        
     end
     %figure(2)
   end

@@ -59,7 +59,7 @@ for k=1:nknots
         BS(k,s) = bSpline3(xs-xk);
     end
 end
-weights = BS'\sensorZ;
+%weights = BS'\sensorZ;
 %spanSpline = 2
 
 % % % for k=1:nKnots

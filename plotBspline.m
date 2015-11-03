@@ -4,11 +4,9 @@ clear;
 knots = [0 1 2 3 6];
 weights = [1 1 1 1 1.5];
 nKnots = length(knots); %number od knots =5
-
 xGrid = 10;             % variable defining x axis grid
 xMin = -4;              
 xMax = 12;
-
 spanSpline = 2; % of 3rd order B-Spline
 
 %xLen = xGrid*(xMax-xMin)+1; 
@@ -56,7 +54,7 @@ for k=1:nKnots
    
 end
 
-%plot (xVec,yVec,':')
+plot (xVec,yVec,':')
 
 %plot3(xVec,yVec,zVec,':');
 hold off;

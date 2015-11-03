@@ -10,7 +10,7 @@ function y = dummyCurve(x,option)
      elseif option ==5
              y = cos(x) * sin (x);
      elseif option ==6
-                y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi);
+                y = sqrt(1-(abs(x)-1)^2)* acos((1-abs(x))-pi);
      elseif option ==7
               y =x*x;
         end
