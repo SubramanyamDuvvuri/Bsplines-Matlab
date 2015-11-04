@@ -1,12 +1,10 @@
-%One more example of the regression spline
-%With  the reccurence
 clc
 clear
 nSensors = 140;
 noise = 0.1;
-knots = -5:15;
+knots = -5:8;
 xMin = -5;
-xMax =  15;
+xMax =  8;
 xGrid = 10;
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
@@ -18,7 +16,7 @@ for i=1:xLen
 end
 
 figure(2)
-    plot(xVec, yVec,'c','LineWidth',2);
+    %plot(xVec, yVec,'c','LineWidth',2);
 hold on;
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
@@ -28,7 +26,7 @@ for i=1:nSensors
     ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
 end
 
-plot(xSensors, ySensors,'mo', 'MarkerFaceColor',[.10 1 .63]);
+%plot(xSensors, ySensors, 'rd');
 
 % creating table with influence of knots
 nKnots = length(knots);
@@ -116,6 +114,6 @@ end
        
 add = a+b+c+f+g+h+add;
 plot ( xVec,add,'r')
-hold off
+hold on
 
 

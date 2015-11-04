@@ -28,7 +28,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.010];
+lambda=[0.010:.001:.020 ];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -66,7 +66,7 @@ for lambda_counter = 1:length(lambda)
     for i = 1 : nSensors
         [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
         [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
-       
+        hold off
         %----------------------------------------------
         %calculate optimized weights by lambda for one point left out 
         %------------------------------------------------
@@ -116,7 +116,7 @@ for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
 figure (2)%Plotting the curves
-plot ( vector, M_splines'); %plotting optimised splines
+%plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
 %plot( xSensors , yh_fit , 'k-','LineWidth',1.6);

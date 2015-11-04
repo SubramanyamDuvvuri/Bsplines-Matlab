@@ -1,4 +1,3 @@
-%New script using functions to shorten the code
 clc
 clear
 fprintf('Enter a function for consideration')
@@ -55,8 +54,7 @@ end
 %CALCULATING THE ESTIMATION
 %============================
 %--------------------------------------------------------
- leftout_point =1; % put 0 to include all the values
-nSensors = nSensors -1;
+
 for lambda_counter = 1:length(lambda)
     xleftout = 0;
     yleftout = 0;
@@ -64,27 +62,7 @@ for lambda_counter = 1:length(lambda)
     sum_Error= 0;
     
     for i = 1 : nSensors+1
-         add_M_splines= 0;
-         add_spline_value =0;
-         leftout_point =leftout_point +1;% comment this incase only one point  or no point needs to be left out
-         if isequal (leftout_point,0)
-            xleftout = [xSensors(1:nSensors+1) ];
-            yleftout =  [ySensors(1:nSensors+1) ];
-            nSensors = nSensors +1;
-            break;
-        end
-        if isequal(leftout_point,1)
-            xleftout = [xSensors(leftout_point +1:nSensors+1) ];
-            yleftout =  [ySensors(leftout_point +1:nSensors+1) ];
-        elseif isequal(leftout_point ,nSensors+1)
-            xleftout = [xSensors(1:nSensors) ];
-            yleftout =  [ySensors(1:nSensors) ];
-        else
-            xleftout = [xSensors(1:leftout_point-1) ; xSensors(leftout_point+1:nSensors+1)];
-            yleftout =  [ySensors(1:leftout_point-1) ; ySensors(leftout_point+1:nSensors+1)];
-        end
-
-        [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xleftout);
+        [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
         %[spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
         hold off
         %----------------------------------------------
@@ -100,17 +78,16 @@ for lambda_counter = 1:length(lambda)
         vector_span = 1:vector_length;
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
         opt = [BS_value,M_Derivatives*lambda(lambda_counter)];
-        yleftout_opt = [yleftout ;zeros(size(M_Derivatives',1),1) ];
-        weights_opt = opt'\yleftout_opt;                   %calculating the optimised weights
+        ySensors_opt = [yleftout ;zeros(size(M_Derivatives',1),1) ];
+        weights_opt = opt'\ySensors_opt;                   %calculating the optimised weights
         
-        xMissing = xSensors(leftout_point);
-        yMissing = ySensors(leftout_point);
+        xMissing = xSensors(i);
+        yMissing = ySensors(i);
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,1, xMissing);
         prediction = M_splines'*weights_opt;
         difference = prediction-yMissing;
         sum_Error = sum_Error + difference.^2;
-        %fprintf('Leftout point Nr. %i at x= %3.3f y=%3.3f \tPrediction = %3.3f \tdelta = %3.3f \n', ...
-        %    leftout_point, xMissing, yMissing, prediction, prediction-yMissing);
+     
     end
     
     RMS(lambda_counter)= sqrt(sum_Error/length(ySensors));

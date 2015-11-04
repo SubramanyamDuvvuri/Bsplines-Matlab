@@ -1,5 +1,4 @@
 % plotBspline
-%The basic Beginning plot , demonstratig the spline , and uniform splines form a flat surface
 clear;
 
 knots = [0 1 2 3 7];

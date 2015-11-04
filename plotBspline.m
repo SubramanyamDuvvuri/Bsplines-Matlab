@@ -1,5 +1,6 @@
 % plotBspline
 clear;
+
 knots = [0 1 2 3 6];
 weights = [1 1 1 1 1.5];
 nKnots = length(knots); %number od knots =5
