@@ -19,7 +19,7 @@ for i = 1:length_xSensors
     for j = 1:length_ySensors
         x1=sensorX(i,j);
         y1=sensorY(i,j);
-       z1=dummyCurve(x1)*dummyCurve(y1) + noise*randn();
+       z1=dummyCurve(x1,1)*dummyCurve(y1,1) + noise*randn();
       % z1=dummyCurve(x1)*dummyCurve(y1)
        sensorZ(i,j)=z1;
        

@@ -1,7 +1,7 @@
 function [ Start_point , End_point ] = choose_location( option)
 if option == 1
         Start_point = -5;
-        End_point = 20;
+        End_point = 190;
 elseif option == 2
         Start_point = 0;
         End_point = 1;

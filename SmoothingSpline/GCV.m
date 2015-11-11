@@ -10,9 +10,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
- 
 [Start_point, End_point ] = choose_location (option);
- nSensors = 100; 
+ nSensors = 120; 
 noise = 0.08;
 %Start_point =-2;
 %End_point =2;
@@ -28,7 +27,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.030:.001:.050 ];
+lambda=[0.045];
 %lambda = [.04];
 sum_Error= 0;
 Grid_opt =.001;
@@ -44,7 +43,7 @@ for i=1:xLen
 end
 %plot(xVec, yVec,'g--','LineWidth',3);
 %legend ('nknots');
-%hold on;
+hold on;
 load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
 xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ignore first 4 samples in random list, due to fixed postions
 xSensors = sort(xSensors); %Determining X posotion of sensors
@@ -53,6 +52,7 @@ for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
 end
 %plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+%hold off
 %--------------------------------------------------------
 %CALCULATING THE ESTIMATION
 %============================
@@ -63,11 +63,9 @@ for lambda_counter = 1:length(lambda)
     yleftout = 0;
     leftout_point = 0;
     sum_Error= 0;
-    
     for i = 1 : nSensors
         [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
         [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
-        hold off
 %         ----------------------------------------------
 %         calculate optimized weights by lambda for one point left out 
 %         ------------------------------------------------
@@ -76,7 +74,6 @@ for lambda_counter = 1:length(lambda)
         M_splines = zeros (nknots-1,nknots+2);
         vector=xMin:Grid_opt:xMax;
         vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
-
         vector_length =length(vector);
         vector_span = 1:vector_length;
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
@@ -92,16 +89,14 @@ for lambda_counter = 1:length(lambda)
         X = BS_value';
         H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
         sum_Error = sum_Error + difference.^2;
-     
     end
     division = sum_Error / (1- inv(length(ySensors))*trace (H)).^2;
     RMS(lambda_counter)= sqrt(division/length(ySensors));
     fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
-        lambda(lambda_counter), RMS(lambda_counter));
+    lambda(lambda_counter), RMS(lambda_counter));
 end
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
 lambda_new = lambda ( find ( RMS == min (RMS)));
-
 vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
 vector_length =length(vector);
 [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);

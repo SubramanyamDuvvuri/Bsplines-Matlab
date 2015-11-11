@@ -10,11 +10,11 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
- 
-nSensors = 100; 
-noise = 0.1;
-Start_point =-3;
-End_point =8;
+[Start_point, End_point ] = choose_location (option);
+ nSensors = 100; 
+noise = 0.08;
+%Start_point =-2;
+%End_point =2;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -27,7 +27,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.001:.001:.005 ];
+lambda=[0.0001:.0001:.001 ];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -95,14 +95,12 @@ for lambda_counter = 1:length(lambda)
         M_splines = zeros (nknots-1,nknots+2);
         %vector=xMin:Grid_opt:xMax;
         vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
-
         vector_length =length(vector);
         vector_span = 1:vector_length;
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
         opt = [BS_value,M_Derivatives*lambda(lambda_counter)];
         yleftout_opt = [yleftout ;zeros(size(M_Derivatives',1),1) ];
         weights_opt = opt'\yleftout_opt;                   %calculating the optimised weights
-        
         xMissing = xSensors(leftout_point);
         yMissing = ySensors(leftout_point);
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,1, xMissing);
@@ -112,7 +110,6 @@ for lambda_counter = 1:length(lambda)
         %fprintf('Leftout point Nr. %i at x= %3.3f y=%3.3f \tPrediction = %3.3f \tdelta = %3.3f \n', ...
         %    leftout_point, xMissing, yMissing, prediction, prediction-yMissing);
     end
-    
     RMS(lambda_counter)= sqrt(sum_Error/length(ySensors));
     fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
         lambda(lambda_counter), RMS(lambda_counter));
@@ -132,18 +129,18 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-figure (2)%Plotting the curves
-plot ( vector, M_splines'); %plotting optimised splines
+%figure (4)%Plotting the curves
+%plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
 plot(xVec, yVec,'g--','LineWidth',3);
 %legend('Clean Data','Spines');
 print_pos=max(yleftout-1);
-text(xMin+1,print_pos+.4,sprintf('Sensors =>%g', nSensors));
-text(xMin+1,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
-text(xMin+1, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
-text(xMin+1,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
-text(xMin+1,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
+text(xMin+.2,print_pos+.4,sprintf('Sensors =>%g', nSensors));
+text(xMin+.2,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
+text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
+text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
+text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
 title('After Optimisation')
 plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
