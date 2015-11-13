@@ -1,8 +1,11 @@
+%Regression spline 
+%Smothing spline
+%The example demonstrates both, but the lambda is constant
 clc
 clear
 nSensors = 140;
 noise = 0.1;
-knots = -5:8;
+knots = -5:20;
 xMin = knots(1);
 xMax =  knots(end);
 xGrid = 10;
@@ -12,7 +15,7 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-lamda=.06;
+lamda=.1;
 Grid_opt =.1;
 
 for i=1:xLen
@@ -104,7 +107,8 @@ for j= 1:nknots-4
         end
         add_spline = add_spline + mul_val;
         add_derv= add_derv+mul_derv;
-      hold on
+      
+       
  end
 
 for i = 1:xLen
@@ -126,14 +130,14 @@ for i = 1:xLen
 end
 %plotiing the splines
  plot (xVec,a_spline,'b',xVec,b_spline,'b',xVec,c_spline,'b',xVec,f_spline,'b',xVec,g_spline,'b',xVec,h_spline,'b','LineWidth',1.4)%Plotting Splines
- hold on
+ 
 add_spline = a_spline+b_spline+c_spline+f_spline+g_spline+h_spline+add_spline;
 plot (xVec,add_spline,'k','LineWidth',1.6);
-hold on
+
 legend('Clean Data','Noisy Measurements','Spines');
 
 %plotting the derivatives
-hold off
+
 
  add_derv = a_derv+b_derv+c_derv+f_derv+g_derv+h_derv+add_derv;
  %plot (xVec,a_derv,'r',xVec,b_derv,'r',xVec,c_derv,'r',xVec,f_derv,'b',xVec,g_derv,'g',xVec,h_derv,'g');
@@ -273,21 +277,13 @@ add_spline_opt = 0;
 % %     
 % % end
   %weigths_leftout = BS'\ySensors1;
-  
-  
-  
-  
-  
-  
-  
   sum_error = 0;
   for i =2 :nSensors
       ySens_prediction(i) = dummyCurve(xSensors(i-1)) + noise*randomZ(i-1);
       sum_error = sum_error+( ySens_prediction(i)- ySensors(i)).^2;
   end
   RMSE = (sqrt(sum_error)/length (ySensors));
-  
-  
+ 
  %rmse =  RMSE_calculate (ySensors', ySens_prediction )
   
   

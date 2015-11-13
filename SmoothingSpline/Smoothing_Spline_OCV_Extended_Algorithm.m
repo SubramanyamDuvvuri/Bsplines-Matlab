@@ -10,20 +10,12 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
-<<<<<<< HEAD
- 
-nSensors = 150; 
-noise = 0.1;
-Start_point =-3;
-End_point =8;
-=======
 tic
 [Start_point, End_point ] = choose_location (option);
  nSensors = 120; 
 noise = 0.1;
 %Start_point =-2;
 %End_point =2;
->>>>>>> 899427f550e9a69e148a8302210b7f2e988858a3
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -36,11 +28,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-<<<<<<< HEAD
 lambda=[0.08:.001:.1 ];
-=======
-lambda=[0.01:.01:.2 ];
->>>>>>> 899427f550e9a69e148a8302210b7f2e988858a3
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -99,7 +87,7 @@ for lambda_counter = 1:length(lambda)
 
         [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xleftout);
         %[spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
-        hold off
+        
         %----------------------------------------------
         %calculate optimized weights by lambda for one point left out 
         %------------------------------------------------
@@ -124,8 +112,13 @@ for lambda_counter = 1:length(lambda)
         %    leftout_point, xMissing, yMissing, prediction, prediction-yMissing);
     end
     RMS(lambda_counter)= sqrt(sum_Error/length(ySensors));
-    fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
+    fprintf('average Error for lambda = %3.4f --> %3.8f \n\n', ...
         lambda(lambda_counter), RMS(lambda_counter));
+     if lambda_counter > 1 
+          if RMS(lambda_counter-1)< RMS(lambda_counter)
+              break;
+         end 
+    end
 end
 nSensors = nSensors+1;
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
@@ -142,11 +135,7 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-<<<<<<< HEAD
-figure (2)%Plotting the curves
-=======
 %figure (4)%Plotting the curves
->>>>>>> 899427f550e9a69e148a8302210b7f2e988858a3
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
@@ -159,11 +148,7 @@ text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
 title('After Optimisation')
-<<<<<<< HEAD
-%plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
-hold off
-=======
 plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
+hold off
 toc
->>>>>>> 899427f550e9a69e148a8302210b7f2e988858a3

@@ -1,4 +1,5 @@
 %working with 0 degree normalised b spline curve:norm_bSpline1
+%Example demonstrates that the reccurence of the knots produces FLAT SURFACE 
 clear
 clc
 hold off
@@ -64,11 +65,11 @@ end
 % end
 % plot ( xLin,add)
 % hold on
- %plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
+ plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
 
 %plot (xLin,a,'b')
 hold on
-%plot (xLin,d1,'r',xLin,d2,'r',xLin,d3,'r',xLin,d4,'r',xLin,d5,xLin,d6,xLin,d7,xLin,d8,xLin,d9);
+plot (xLin,d1,'r',xLin,d2,'r',xLin,d3,'r',xLin,d4,'r',xLin,d5,xLin,d6,xLin,d7,xLin,d8,xLin,d9);
 
        add =a +b +c +d1 +d2 +d3 +d4 +d5 +d6 +d7 +d8 +d9 +e +f +g +h
 plot ( xLin,add)
