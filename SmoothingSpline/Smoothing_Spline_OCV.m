@@ -10,9 +10,10 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
+tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 100; 
-noise = 0.08;
+ nSensors = 120; 
+noise = 0.1;
 %Start_point =-2;
 %End_point =2;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
@@ -27,7 +28,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.0001:.0001:.001 ];
+lambda=[0.01:.01:.2 ];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -144,3 +145,4 @@ text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
 title('After Optimisation')
 plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
+toc

@@ -10,7 +10,6 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
- 
 [Start_point, End_point ] = choose_location (option);
  nSensors = 100; 
 noise = 0.08;
