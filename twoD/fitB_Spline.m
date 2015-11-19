@@ -1,32 +1,41 @@
 % fitB_Spline
-%The first example with the dummy curve
-% it is the regression spline , without any smoothing parameter
 nSensors = 140;
 noise = 0.1;
 knots = -5:8;
+
 xMin = -5;
 xMax =  8;
 xGrid = 10;
+
+
+
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
+
 for i=1:xLen
-    yVec(i) = dummyCurve(xVec(i));
+    yVec(i) = dummyCurve(xVec(i),1);
 end
+
 figure(2)
 plot(xVec, yVec,'c','LineWidth',2);
 hold on;
+
 % create noisy measurements
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
+
 for i=1:nSensors
-    ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
+    ySensors(i)=dummyCurve(xSensors(i),1) + noise*randn();
 end
+
 plot(xSensors, ySensors, 'rd');
+
 % creating table with influence of knots
 nKnots = length(knots);
 fprintf('Smoothing with %i knots \n',nKnots);
+
 BS = NaN(nKnots,nSensors);
 for k=1:nKnots
     xk = knots(k);
@@ -64,8 +73,8 @@ for k=1:nKnots
             yFit(indexY)=yFit(indexY)+ weights(k)*y;
         end
     end
-    plot(xSpline, weights(k)*ySpline, 'k');
-    plot(xMin,0,'o-'); % dummy for legend
+    plot(xSpline, weights(k)*ySpline, 'g');
+    plot(xMin,0,'b'); % dummy for legend
     %hold on;
     %yFit(xIndex:xIndex+xPoints-1) = yFit(xIndex:xIndex+xPoints-1) + weights(k)*ySpline;
 end
@@ -82,13 +91,13 @@ for i=1:nKnots
 end
 
 
-% figure(3)
-% plot(xVec, yVec,'g:');
-% hold on;
-% plot(xSensors, ySensors);
-%cs = csapi ( xSensors, ySensors);  %Cubic spline interpolation 
-%fnplt (cs,1,'r-')
-% cs = fit( xSensors, ySensors,'smoothingspline');
-% plot(cs,xSensors, ySensors);
+% % figure(3)
+% % plot(xVec, yVec,'g:');
+% % hold on;
+% % plot(xSensors, ySensors);
+% % %cs = csapi ( xSensors, ySensors);  %Cubic spline interpolation 
+% % %fnplt (cs,1,'r-')
+% % cs = fit( xSensors, ySensors,'smoothingspline');
+% % plot(cs,xSensors, ySensors);
 hold off;
 

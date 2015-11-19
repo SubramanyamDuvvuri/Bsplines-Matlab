@@ -1,6 +1,7 @@
 %ExampleMesh to add 2D splines
 clc
 clear
+
 fprintf('Enter a function for consideration')
 fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
@@ -12,7 +13,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 [Start_point, End_point ] = choose_location (option);
  nSensors = 100; 
-noise = 0.08;
+noise = 0.05;
 %Start_point =-2;
 %End_point =2;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
@@ -23,27 +24,65 @@ xGrid = 10;
 nknots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
-yVec = NaN(xLen,1);
+yVec = xMin:1/xGrid:xMax;
 add_spline = 0;
 add_derv=0;
-[Xvec,Yvec] = meshgrid(xVec ,Yvec);
-Zvec = length(Xvec,Yvec);
-for i=1:lenght(Xvec)
-      for j = 1: lenght(Yvec)
-      
-      Zvec(i,j) = dummyCurve( Xvec(i,j),1)* dummyCurve( Yvec(i,j),1) ;
+[Xvec,Yvec] = meshgrid(xVec ,yVec);
+Zvec = NaN(length(Xvec),length(Yvec));
+for i=1:length(Xvec)
+      for j = 1: length(Yvec)
+      x =Xvec(i,j);
+      y = Yvec(i,j);
+      Zvec(i,j) = dummyCurve( x,option)*dummyCurve( y,option) ;
       end
 end
-surf (Xvec,Yvec,Zvec);
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
+figure (1);
+
+surf (Xvec,Yvec,Zvec );
+
+
+
+xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
+xSensors = sort(xSensors);
+ySensors =  xMin + (xMax-xMin)*rand(nSensors,1);
+ySensors = sort(ySensors);
+
+[XSENSORS,YSENSORS]=meshgrid ( xSensors , ySensors);
+ZSENSORS = NaN(length(XSENSORS),length(YSENSORS));
+
+for i=1:nSensors
+    for j =1:nSensors
+    ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),option) *dummyCurve(YSENSORS(i,j),option)  + noise*randn();
+    end
+end
+ 
+
+figure (2)
+surf (XSENSORS,YSENSORS,ZSENSORS);
+
+xKnots = length(knots);
+yKnots =length (knots);
+meshknots = meshgrid (knots);
+
+for i = 1: xKnots
+    for j = 1 : xKnots
+        xk = meshknots (i,j);
+        for p = 1:nSensors
+            for q = 1:nSensors
+                xs = XSENSORS(p,q);
+                ys= YSENSORS (p,q);
+                BS(i,j,p,q) = bSpline3(xs-xk) * bSpline3(ys-xk);
+            end
+        end   
+    end
+end
+weights = BS'\YSENSORS;
+
+
+
+
+
+%plotting the curve with noise
 % % % % %--------------------------------------------------------
 % % % % %plot(xSensors,ySensors)
 % % % % 
@@ -130,9 +169,7 @@ surf (Xvec,Yvec,Zvec);
 % % % %     
 % % % %     
 % % % %     [xxSpline,yySpline]=meshgrid(xSpline,ySpline);
-% % % %     
-% % % %     
-% % % %     
+     
 % % % %     zzSpline = NaN(xPoints,yPoints);
 % % % %     
 % % % %     z=0;
@@ -149,9 +186,7 @@ surf (Xvec,Yvec,Zvec);
 % % % %     surf(xxSpline, yySpline,zzSpline*weights(k));
 % % % %    hold on
 % % % % end
-% % % % 
-% % % % % 
-% % % % %  
+ 
 % % % % % for xi=1:lenX
 % % % % %     for yi=1:lenY
 % % % % %         x = xx(xi,yi);
@@ -171,13 +206,7 @@ surf (Xvec,Yvec,Zvec);
 % % % % % figure(1);
 % % % % % h=surf(xx,yy,zz');
 % % % % % title('Idle Curve without noise');
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
-% % % % 
+
 % % % % 
 % % % % % 
 % % % % % xlabel('x-->')
