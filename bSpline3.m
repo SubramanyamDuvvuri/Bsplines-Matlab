@@ -1,4 +1,5 @@
-function val=bSpline3(x)
+function val=bSpline3(xval ,shift)
+x = xval -shift;
 val = 0;
 if((x<=0) && (x>-2)) 
     if(x<=-1)

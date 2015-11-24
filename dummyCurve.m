@@ -6,13 +6,8 @@ function y = dummyCurve(x,option)
      elseif option ==3
        y  = 4.26 * (exp(-x)-4 * exp (-2*x) +3 * exp (-3 *x)); % (0 ,4 )
      elseif option ==4 
-         y= cos(x);
-     elseif option ==5
-             y = cos(x) * sin (x);
-     elseif option ==6
-                y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi);
-     elseif option ==7
-              y =x*x;
+      y= sin(0.83.*pi.*X) .* cos(1.25.*pi.*x); 
+
         end
 end
 %y=exp(-x^2);
