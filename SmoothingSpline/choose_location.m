@@ -20,5 +20,8 @@ elseif option ==4
  elseif option ==7
         Start_point = 0;
         End_point = 10;
+elseif option == 8 
+    Start_point = -1;
+        End_point = 1;
 end
 

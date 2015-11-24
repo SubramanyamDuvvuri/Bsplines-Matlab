@@ -13,6 +13,8 @@ function y = dummyCurve(x,option)
                 y = sqrt(1-(abs(x)-1)^2)* acos((1-abs(x))-pi);
      elseif option ==7
               y =x*x;
+     elseif option==8 
+       y =  sin(0.83.*pi.*x) .* cos(1.25.*pi.*x);
         end
 end
 %y=exp(-x^2);
