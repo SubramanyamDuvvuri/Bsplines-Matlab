@@ -1,18 +1,15 @@
 % fitB_Spline
-nSensors = 140;
+clear 
+clc
+nSensors = 100;
 noise = 0.1;
 knots = -5:8;
-
 xMin = -5;
 xMax =  8;
 xGrid = 10;
-
-
-
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
-
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i),1);
 end
@@ -38,10 +35,9 @@ fprintf('Smoothing with %i knots \n',nKnots);
 
 BS = NaN(nKnots,nSensors);
 for k=1:nKnots
-    xk = knots(k);
     for s=1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-xk);
+        BS(k,s) = bSpline3(xs-knots(k));
     end
 end
 
