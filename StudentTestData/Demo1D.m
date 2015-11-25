@@ -1,7 +1,7 @@
 %Demo1D
-nSensors = 100;    % maximum 1000 
+nSensors = 1000;    % maximum 1000 
 noiseLevel = 0.07;  % adjust sigma of noise
-FunctionType = 11;  % 1 normal, 2 jump
+FunctionType = 1;  % 1 normal, 2 jump
 doEquispaced = 0;  % 0 or 1
 
 generateTestData1D(nSensors, noiseLevel, FunctionType, doEquispaced)
