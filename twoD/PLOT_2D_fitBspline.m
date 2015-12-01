@@ -92,13 +92,16 @@ surf (XSENSORS,YSENSORS,ZSENSORS);
 % 
 % %   BS = zeros(100,24,24);
 % for k=1:nknots
+for k = 1:nknots
 for i=1:nknots
     for j=1:nSensors
         xs = xSensors(j);
-        BS(i,j) = bSpline3(xs-knots(i));
+        BS(i,j) = bSpline3(xs-knots(i))*bSpline3(xSensors(j)-knots(i));
     end
 end
-weights2 = BS'\ySensors;
+g (:,:,k)=BS;
+end
+%weights2 = BS'\ySensors;
 % end
 %WEIGHTS=meshgrid(weights);
 % 

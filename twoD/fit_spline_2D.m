@@ -10,10 +10,11 @@ xGrid = 10;
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
+
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i),1);
 end
-
+[XVEC,YVEC] = meshgrid (xVec,yVec);
 figure(2)
 plot(xVec, yVec,'c','LineWidth',2);
 hold on;
@@ -21,29 +22,45 @@ hold on;
 % create noisy measurements
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
-ySensors = NaN(nSensors,1);
+ySensors = xSensors;
 
-for i=1:nSensors
-    ySensors(i)=dummyCurve(xSensors(i),1) + noise*randn();
-end
+% for i=1:nSensors
+%     ySensors(i)=dummyCurve(xSensors(i),1) + noise*randn();
+% end
 
-plot(xSensors, ySensors, 'rd');
+[XSENSORS,YSENSORS] = meshgrid(xSensors,ySensors);
+
+
+for i = 1:nSensors
+    for j = 1:nSensors
+        z(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1)+noise*randn();
+    end
+end 
+% plot(xSensors, ySensors, 'rd');
+
+
+%surf (XSENSORS,YSENSORS,z);
 
 % creating table with influence of knots
 nKnots = length(knots);
 fprintf('Smoothing with %i knots \n',nKnots);
 
 BS = NaN(nKnots,nSensors);
-for s=1:nSensors
-    for k=1:6
+
+
+for k=1:nKnots
+    for s=1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-k) * bSpline3(xs-k);
+        BS(k,s) = bSpline3(xs-knots(k)) + bSpline3(xs + knots(k));
     end
 end
-
+BS = rand (14,100);
 % now get the weights by Penrose Pseudo Inverse
-%weights = BS'\ySensors;
-weights = mldivide (BS',ySensors);
+%weights = BS'\z;
+weights= [0.471754249840517;0.140398341671294;0.0954779735393232;0.417093101340756;0.174241617401870;0.530346325531030;1.83584248824306;2.68085237911362;1.79970246159349;0.919967560560143;0.560973010605567;0.766442458473065;0.810477172046388;1.01944042981340];
+
+W=meshgrid(weights);
+W=W';
 % now plotting the result
 spanSpline = 2; % of 3rd order B-Spline
 
@@ -96,6 +113,21 @@ end
 % % cs = fit( xSensors, ySensors,'smoothingspline');
 % % plot(cs,xSensors, ySensors);
 hold off;
-figure (4);
-surf (BS)
+%surf (BS)
+for xi=1:length(XVEC)
+    for yi=1:length(YVEC)
+        x = XVEC(xi,yi);
+        y = YVEC(xi,yi);
+        
+        z=0;
+        
+        for xOffset = 1:nKnots
+            for yOffset = 1:nKnots
+                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset))*W(xOffset,yOffset) ;
+            end
+        end
+        zz(xi,yi)=z;
+    end
+end
 
+surf (XVEC,YVEC,zz);
