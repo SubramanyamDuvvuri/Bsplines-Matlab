@@ -34,16 +34,16 @@ nKnots = length(knots);
 fprintf('Smoothing with %i knots \n',nKnots);
 
 BS = NaN(nKnots,nSensors);
-for s=1:nSensors
-    for k=1:6
+for k=1:nKnots
+    for s=1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-k) * bSpline3(xs-k);
+        BS(k,s) = bSpline3(xs-knots(k));
     end
 end
 
 % now get the weights by Penrose Pseudo Inverse
-%weights = BS'\ySensors;
-weights = mldivide (BS',ySensors);
+weights = BS'\ySensors;
+
 % now plotting the result
 spanSpline = 2; % of 3rd order B-Spline
 
@@ -87,15 +87,6 @@ for i=1:nKnots
 end
 
 
-% % figure(3)
-% % plot(xVec, yVec,'g:');
-% % hold on;
-% % plot(xSensors, ySensors);
-% % %cs = csapi ( xSensors, ySensors);  %Cubic spline interpolation 
-% % %fnplt (cs,1,'r-')
-% % cs = fit( xSensors, ySensors,'smoothingspline');
-% % plot(cs,xSensors, ySensors);
+
 hold off;
-figure (4);
-surf (BS)
 

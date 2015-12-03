@@ -51,10 +51,10 @@ BS = NaN(nKnots,nSensors);
 for k=1:nKnots
     for s=1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-knots(k)) + bSpline3(xs + knots(k));
+        BS(k,s) = bSpline3(xs-knots(k)) ;%+ bSpline3(xs + knots(k));
     end
 end
-BS = rand (14,100);
+%BS = rand (14,100);
 % now get the weights by Penrose Pseudo Inverse
 %weights = BS'\z;
 weights= [0.471754249840517;0.140398341671294;0.0954779735393232;0.417093101340756;0.174241617401870;0.530346325531030;1.83584248824306;2.68085237911362;1.79970246159349;0.919967560560143;0.560973010605567;0.766442458473065;0.810477172046388;1.01944042981340];
@@ -123,7 +123,7 @@ for xi=1:length(XVEC)
         
         for xOffset = 1:nKnots
             for yOffset = 1:nKnots
-                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset))*W(xOffset,yOffset) ;
+                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset));%W(xOffset,yOffset) ;
             end
         end
         zz(xi,yi)=z;

@@ -37,7 +37,7 @@ BS = NaN(nKnots,nSensors);
 for k=1:nKnots
     for s=1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-knots(k));
+        BS(k,s) = bSpline3(xs+knots(k))* bSpline3(xs+knots(k));
     end
 end
 

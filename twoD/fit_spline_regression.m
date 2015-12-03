@@ -1,5 +1,4 @@
 % fitB_Spline
-
 nSensors = 100;
 noise = 0.1;
 knots = -5:8;
@@ -39,7 +38,7 @@ ySensors=xSensors;
     ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1) + noise*randn();
      end
  end
-
+figure(4)
  surf(XSENSORS,YSENSORS,ZSENSORS);
  
  

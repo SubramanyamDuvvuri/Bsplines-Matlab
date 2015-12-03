@@ -1,12 +1,13 @@
 %New script using functions to shorten the code
 clc
 clear
-fprintf('Enter a function for consideration')
-fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
-            '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
-            ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
-           '\n 4-->  y = sin(0.83.*pi.*X) .* cos(1.25.*pi.*x)']);
-option = input ('\n>>');
+%fprintf('Enter a function for consideration')
+% fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
+%             '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
+%             ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
+%            '\n 4-->  y = sin(0.83.*pi.*X) .* cos(1.25.*pi.*x)']);
+%option = input ('\n>>');
+option  =1 ;
 tic
 [Start_point, End_point ] = choose_location (option);
  nSensors = 140; 
@@ -25,7 +26,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda_grid=.01;
+lambda_grid=.4;
 lambda_start =.001;
 lambda_end = 1;
 lambda = lambda_start:lambda_grid:lambda_end;
@@ -121,9 +122,17 @@ for resolution = 1:5
 
              if lambda_counter > 1 
                   if RMS(lambda_counter-1)< RMS(lambda_counter)
-                      lambda_start = lambda(lambda_counter-1);
-                      lambda_end = lambda(lambda_counter);
-                      lambda_grid =lambda_grid/10;
+                      if resolution == 1
+                             increament1 = -2;
+                             increament2 = -1;
+                      end
+                      lambda_start = lambda(lambda_counter+increament1);
+                      lambda_end = lambda(lambda_counter+increament2);
+                      lambda_grid =lambda_grid/5;
+                      if resolution == 1
+                      increament1 = increament1 +1;
+                      increament2 = increament1 +1;
+                      end
                       fprintf('adding more resolution\n');
                       break;
                  end 

@@ -1,16 +1,16 @@
+%ExampleMesh to add 2D splines
 clear 
 clc
 
-% fprintf('Enter a function for consideration')
-% fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
-%             '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
-%             ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
-%             '\n 4--> y = cos(x)'...
-%             '\n 5-->y = cos(x) * sin (x)'...
-%             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
-%             '\n 7 --> y =x*x']);
-% option = input ('\n>>');
-option =1;
+fprintf('Enter a function for consideration')
+fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
+            '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
+            ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
+            '\n 4--> y = cos(x)'...
+            '\n 5-->y = cos(x) * sin (x)'...
+            '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
+            '\n 7 --> y =x*x']);
+option = input ('\n>>');
 [Start_point, End_point ] = choose_location (option);
  nSensors = 100; 
 noise = 0.05;
@@ -61,3 +61,20 @@ end
 
 figure (2)
 surf (XSENSORS,YSENSORS,ZSENSORS);
+
+for i=1:nknots
+    for j = 1: nknots
+        z=0;
+        for k=1:nSensors
+            for l = nSensors                
+                z= z +bSpline3(XSENSORS(k,l)-knots(i))*bSpline3(YSENSORS(k,l)-knots(j));
+            end
+        end
+        BS(i,k) = z;
+    end
+end
+weights2 = BS'\ySensors;
+
+
+
+
