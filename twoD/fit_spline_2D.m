@@ -38,7 +38,6 @@ for i = 1:nSensors
 end 
 % plot(xSensors, ySensors, 'rd');
 
-
 %surf (XSENSORS,YSENSORS,z);
 
 % creating table with influence of knots

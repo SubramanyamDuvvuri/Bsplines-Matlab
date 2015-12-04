@@ -27,7 +27,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=1;
+lambda=.08;
 %lambda=[.1];
 sum_Error= 0;
 Grid_opt =.01;
@@ -66,7 +66,7 @@ for i = 1 : nknots
 end
 %figure (1)
 hold on
-%plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
+plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
 %legend('Clean Data','Noisy Measurements','Spines');
 %text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
 %text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));
