@@ -111,8 +111,8 @@ end
 %          basic_start2=0;
 %          basic_start3  =0;
 %          basic_start4 =0;
-%        for a =1:1:nknots-5
-%                STARTING SPLINES
+%        for a =0:.66:nknots-5
+%                %STARTING SPLINES
 %               quadruple_start1 = quadruple_start1   + quadruple_reccurence_start_modified(x_temp,xMin+a,knotspan)   *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
 %               quadruple_start2 = quadruple_start2   + quadruple_reccurence_start_modified(x_temp,xMin,knotspan)  *   quadruple_reccurence_start_modified(y_temp,xMin+a,knotspan);              
 %               triple_start1    = triple_start1      + triple_reccurence_start_modified(x_temp,xMin+a,knotspan)      *   triple_reccurence_start_modified(y_temp,xMin,knotspan);
@@ -131,7 +131,7 @@ end
 %             add2 (i,j) = quadruple_start2 + triple_start2 + double_start2;
 %             add3 (i,j)=  quadruple_end1+triple_end1+double_end1;
 %             add4 (i,j)=  quadruple_end2+triple_end2+double_end2;
-%             add5 (i,j) = basic_start1 + basic_start2+basic_start3;
+% %            add5 (i,j) = basic_start1 + basic_start2+basic_start3;
 %     end
 % end
 % for i = 1:length(xVec)
@@ -141,7 +141,7 @@ end
 %         basic_start1 = 0;
 %       for shiftx= 0:1:nknots-5
 %         for shifty= 0:1:nknots-5
-%           basic_start1     =  basic_start1     + Basis_Spline_modified(x_temp,xMin+shiftx,knotspan)   * Basis_Spline_modified(y_temp,xMin+shifty,knotspan);               
+%           basic_start1     =  basic_start1+ Basis_Spline_modified(x_temp,xMin+shiftx,knotspan)   * Basis_Spline_modified(y_temp,xMin+shifty,knotspan);               
 %         end
 %       end
 %     add5(i,j) = basic_start1;
@@ -150,7 +150,7 @@ end
 % add_sum =add1 +add2 + add3 +add4+add5;
 % surf(add_sum)
 % hold off
-% 
+
 
 
 
