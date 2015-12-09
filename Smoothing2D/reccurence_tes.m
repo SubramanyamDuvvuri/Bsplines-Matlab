@@ -1,21 +1,54 @@
-% fitB_Spline
-clear all
 clc
-nSensors = 100;
+clear
+fprintf('Enter a function for consideration')
+fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
+            '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
+            ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
+            '\n 4--> y = cos(x)'...
+            '\n 5-->y = cos(x) * sin (x)'...
+            '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
+            '\n 7 --> y =x*x']);
+%option = input ('\n>>');
+option = 1;
+%[Start_point, End_point ] = choose_location (option);
+Start_point = -5;
+End_point = 5;
+
+knotsPerAxis = 12;
+totalKnots = knotsPerAxis^2;
+knotsX = linspace(Start_point, End_point, knotsPerAxis);
+knotsY = linspace(Start_point, End_point, knotsPerAxis);
+
+nSensors = 200;
 noise = 0.1;
-knots = -5:6;
-nKnots = length(knots);
-xMin = -5;
-xMax =  6;
+% Start_point =-5;
+% End_point = 8;
+knotspan=1;%knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
+knots = Start_point:1:End_point;
+xMin = knots(1);
+xMax =  knots(end);
 xGrid = 10;
+nKnots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
-yVec = xMin:1/xGrid:xMax;
-firstKnot =knots(1);
+add_spline = 0;
+add_derv=0;
+%lambda=.005;
+lambda=1;
+%lambda=[.1];
+sum_Error= 0;
+Grid_opt =.01;
+RMS = 0;
+firstKnot=knots(1);
 lastKnot =knots(end);
-knotspan =1;
-hold on;
+
+xVec = xMin:.1:xMax;
+x = 1:length(xVec);
+yVec = xMin:.1:xMax;
+[X,Y]=meshgrid(xVec,yVec);
+Zvec= NaN (length(X),length(Y));
+
 [Xvec,Yvec] = meshgrid(xVec ,yVec);
 Zvec = NaN(length(Xvec),length(Yvec));
 for i = 1:length(Xvec)
@@ -53,26 +86,53 @@ for  i = 1:nKnots
         for q= 1:nSensors
             xs = xSensors (q);
             ys =ySensors(q);
-            %BS(p,q) = bSpline3(xs-knots(i)) * bSpline3(ys-knots(j));
-            value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
-            value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(xs,firstKnot,knotspan);
-            value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(xs,firstKnot,knotspan);
-            for k=1:nKnots-4
-                for l = 1:nKnots -4
-                    [value(3+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(xs,knots(l),knotspan);
-                end
-            end
-            value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(xs,lastKnot,knotspan);
-            value(nKnots+1+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(xs,lastKnot,knotspan);
-            value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
+            value(p,q) = bSpline3(xs-knots(i)) * bSpline3(ys-knots(j));
+%             value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
+%             value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(xs,firstKnot,knotspan);
+%             value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(xs,firstKnot,knotspan);
+%             for k=1:nKnots-4
+%                 for l = 1:nKnots -4
+%                     [value(3+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(xs,knots(l),knotspan);
+%                 end
+%             end
+%             value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(xs,lastKnot,knotspan);
+%             value(nKnots+1+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(xs,lastKnot,knotspan);
+%             value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
         end
+    end
+end
+count = 0;
+for i = 1:nKnots
+   count=count+1;
+   j =[1:nKnots]*count;
+   surf(value(j,:));
+   
+   hold on
+end
+
+weights = value'\zSensors;
+
+q=0;
+for xi=1:length(Xvec)
+    for yi=1:length(Yvec)
+        x = Xvec(xi,yi);
+        y = Yvec(xi,yi);
+        z=0;
+        for xOffset = 1:nKnots
+            for yOffset = 1:nKnots
+                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset));
+            end
+        end
+        zz(xi,yi)=z;
     end
 end
 
 
-
-weights = value'\zSensors;
-
+for  i = 1:nKnots
+    for k=1:nSensors
+        value(i,k)=bSpline3(xSensors(k)-knots(i));
+    end
+end
 
 % 
 % 

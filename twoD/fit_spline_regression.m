@@ -142,3 +142,21 @@ hold off
 % % % plot(cs,xSensors, ySensors);
 % hold off;
 % 
+q=0;
+for xi=1:length(Xvec)
+    for yi=1:length(Yvec)
+        x = Xvec(xi,yi);
+        y = Xvec(xi,yi);
+        
+        z=0;
+        
+        for xOffset = 1:nKnots
+           
+            for yOffset = 1:nKnots
+                
+                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset));%W(xOffset,yOffset) ;
+            end
+        end
+        zz(xi,yi)=z;
+    end
+end
