@@ -1,110 +1,102 @@
+% fitB_Spline
+clear all
 clc
-clear
-fprintf('Enter a function for consideration')
-fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
-            '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
-            ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
-            '\n 4--> y = cos(x)'...
-            '\n 5-->y = cos(x) * sin (x)'...
-            '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
-            '\n 7 --> y =x*x']);
-%option = input ('\n>>');
-option = 1;
-[Start_point, End_point ] = choose_location (option);
-
-knotsPerAxis = 12;
-totalKnots = knotsPerAxis^2;
-knotsX = linspace(Start_point, End_point, knotsPerAxis);
-knotsY = linspace(Start_point, End_point, knotsPerAxis);
-
-nSensors = 400;
+nSensors = 100;
 noise = 0.1;
-% Start_point =-5;
-% End_point = 8;
-knotspan=1;%knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
-knots = Start_point:1:End_point;
-xMin = knots(1);
-xMax =  knots(end);
+knots = -5:6;
+nKnots = length(knots);
+xMin = -5;
+xMax =  6;
 xGrid = 10;
-nknots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
 yVec = NaN(xLen,1);
-add_spline = 0;
-add_derv=0;
-%lambda=.005;
-lambda=1;
-%lambda=[.1];
-sum_Error= 0;
-Grid_opt =.01;
-RMS = 0;
-firstKnot=knots(1);
+yVec = xMin:1/xGrid:xMax;
+firstKnot =knots(1);
 lastKnot =knots(end);
-
-xVec = xMin:.1:xMax;
-x = 1:length(xVec);
-yVec = xMin:.1:xMax;
-[X,Y]=meshgrid(xVec,yVec);
-%Z= NaN (length(X),length(Y));
-for i=1:length(xVec)
-    for j =1:length(yVec)
-        Z(i,j) = dummyCurve(xVec(i),1) * dummyCurve(yVec(j),1);
-    end
-end 
-figure(15)
-surf(Z);
-
-xSensors = xMin + (xMax-xMin)*rand(ceil(sqrt(nSensors)),1);
-%xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
-xSensors = sort(xSensors);
-ySensors = xMin + (xMax-xMin)*rand(nSensors,1);
-ySensors =sort (ySensors);
-%[XSENSORS,YSENSORS] = meshgrid(xSensors,ySensors);
-
-%nSensors = 100;
-%noiseLevel = 0.1;
-
-for i = 1:knotsPerAxis
-    for j = 1:knotsPerAxis
-        plot3(knotsX(i), knotsY(j),-1,'rx');
+knotspan =1;
+hold on;
+[Xvec,Yvec] = meshgrid(xVec ,yVec);
+Zvec = NaN(length(Xvec),length(Yvec));
+for i = 1:length(Xvec)
+    for j = 1:length (Yvec)
+        x =Xvec(i,j);
+         y = Yvec(i,j);
+        Zvec(i,j) = dummyCurve ( x ,1) *dummyCurve (y,1);
     end
 end
-hold off;
+%figure (3);
+%plot3(Xvec,Yvec,Zvec);
+ 
+xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
+xSensors = sort(xSensors);
+ySensors = NaN(nSensors,1);
+ySensors= xMin + (xMax-xMin)*rand(nSensors,1);
 
-stop
 
-
-for i = 1:length(xSensors)
-    for j = 1:length(xSensors)
-        %ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1)+noise*randn();
-    end
-end 
+%taking the matrix of sensors
+[XSENSORS,YSENSORS] = meshgrid ( xSensors , ySensors);
+zSensors = NaN(nSensors,1);
+for i = 1:nSensors
+zSensors(i)= dummyCurve(xSensors(i) ,1) * dummyCurve(ySensors(i),1 ) +noise*randn();
+end
 hold on
-plot3 (XSENSORS , YSENSORS ,ZSENSORS,'or','MarkerFaceColor','k');
+plot3(xSensors,ySensors, zSensors,'y*');
+surf (Xvec,Yvec,Zvec);
 hold off
 
-BS = NaN(nknots*nknots,nSensors);
 
-for i = length(XSENSORS)
-    for j = length(YSENSORS)
-        for p = 1:nknots
-            for q = 1:nknots
-        
-                xs= XSENSORS (i,j);
-                [value(1,j), derv(1,j) ]=quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
-                [value(2,j), derv(2,j) ]=triple_reccurence_start_modified(xs,firstKnot,knotspan);
-                [value(3,j), derv(3,j) ]=Double_reccurence_start_modified(xs,firstKnot,knotspan);        
-                for k=1:nknots-4;
-                    [value(3+k,j), derv(3+k,j) ]=Basis_Spline_modified(xs,knots(k),knotspan);
+p =0;
+for  i = 1:nKnots
+    for j= 1:nKnots
+         p=p+1;
+        for q= 1:nSensors
+            xs = xSensors (q);
+            ys =ySensors(q);
+            %BS(p,q) = bSpline3(xs-knots(i)) * bSpline3(ys-knots(j));
+            value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
+            value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(xs,firstKnot,knotspan);
+            value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(xs,firstKnot,knotspan);
+            for k=1:nKnots-4
+                for l = 1:nKnots -4
+                    [value(3+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(xs,knots(l),knotspan);
                 end
-                [value(nknots,j), derv(nknots,j) ]=Double_reccurence_end_modified(xs,lastKnot,knotspan);
-                [value(nknots+1,j), derv(nknots+1,j)] =triple_reccurence_end_modified(xs,lastKnot,knotspan);
-                [value(nknots+2,j), derv(nknots+2,j)] =quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
             end
-        
+            value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(xs,lastKnot,knotspan);
+            value(nKnots+1+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(xs,lastKnot,knotspan);
+            value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
         end
-   end
+    end
 end
+
+
+
+weights = value'\zSensors;
+
+
+% 
+% 
+% 
+% for i = length(XSENSORS)
+%     for j = length(YSENSORS)
+%         for p = 1:nknots
+%             for q = 1:nknots
+%         
+%                 xs= XSENSORS (i,j);
+%                 [value(1,j), derv(1,j) ]=quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
+%                 [value(2,j), derv(2,j) ]=triple_reccurence_start_modified(xs,firstKnot,knotspan);
+%                 [value(3,j), derv(3,j) ]=Double_reccurence_start_modified(xs,firstKnot,knotspan);        
+%                 for k=1:nknots-4;
+%                     [value(3+k,j), derv(3+k,j) ]=Basis_Spline_modified(xs,knots(k),knotspan);
+%                 end
+%                 [value(nknots,j), derv(nknots,j) ]=Double_reccurence_end_modified(xs,lastKnot,knotspan);
+%                 [value(nknots+1,j), derv(nknots+1,j)] =triple_reccurence_end_modified(xs,lastKnot,knotspan);
+%                 [value(nknots+2,j), derv(nknots+2,j)] =quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
+%             end
+%         
+%         end
+%    end
+% end
 
 % add1 = NaN(length( xVec), length (yVec));
 % add2 = NaN(length( xVec), length (yVec));
