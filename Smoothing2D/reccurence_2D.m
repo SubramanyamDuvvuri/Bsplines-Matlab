@@ -1,4 +1,3 @@
-
 clc
 clear
 fprintf('Enter a function for consideration')
@@ -9,9 +8,18 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 5-->y = cos(x) * sin (x)'...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
-option = input ('\n>>');
-[Start_point, End_point ] = choose_location (option);
-nSensors = 130;
+%option = input ('\n>>');
+option = 1;
+%[Start_point, End_point ] = choose_location (option);
+Start_point = -1;
+End_point = 1;
+
+knotsPerAxis = 12;
+totalKnots = knotsPerAxis^2;
+knotsX = linspace(Start_point, End_point, knotsPerAxis);
+knotsY = linspace(Start_point, End_point, knotsPerAxis);
+
+nSensors = 400;
 noise = 0.1;
 % Start_point =-5;
 % End_point = 8;
@@ -45,18 +53,44 @@ for i=1:length(X)
         Z(i,j) = dummyCurve(X(i,j),1)*dummyCurve(Y(i,j),1);
     end
 end
-figure(1)
-surf(X,Y,Z);
+%figure(1)
+%surf(X,Y,Z);
 
-xSensors = xMin + (xMax-xMin)*rand(ceil(sqrt(nSensors)),1);
-xSensors = sort(xSensors);
-ySensors = xMin + (xMax-xMin)*rand(ceil(sqrt(nSensors)),1);
-[XSENSORS,YSENSORS] = meshgrid(xSensors,ySensors);
+%xSensors = xMin + (xMax-xMin)*rand(ceil(sqrt(nSensors)),1);
+%xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
+%xSensors = sort(xSensors);
+%ySensors = xMin + (xMax-xMin)*rand(nSensors,1);
+%[XSENSORS,YSENSORS] = meshgrid(xSensors,ySensors);
+
+%nSensors = 100;
+%noiseLevel = 0.1;
+FunctionType = 1; 
+doEquispaced = 0;
+
+[xSensors, ySensors, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noise, FunctionType, doEquispaced);
+
+
+figure(9)
+[xx,yy] = meshgrid(CleanRef.xVec, CleanRef.yVec); 
+fontAxis = 14;
+subplot('Position',[0.12 0.1 0.86 0.88])
+surf(xx,yy,CleanRef.zzMatrix','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.6);  % transparent works only with new MATLAB versions
+hold on
+plot3(xSensors, ySensors, zMess, 'bd');
+
+for i = 1:knotsPerAxis
+    for j = 1:knotsPerAxis
+        plot3(knotsX(i), knotsY(j),-1,'rx');
+    end
+end
+hold off;
+
+stop
 
 
 for i = 1:length(xSensors)
     for j = 1:length(xSensors)
-        ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1)+noise*randn();
+        %ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1)+noise*randn();
     end
 end 
 hold on

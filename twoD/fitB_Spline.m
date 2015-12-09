@@ -4,6 +4,7 @@ clc
 nSensors = 100;
 noise = 0.1;
 knots = -5:8;
+nKnots = length(knots);
 xMin = -5;
 xMax =  8;
 xGrid = 10;
@@ -34,10 +35,12 @@ nKnots = length(knots);
 fprintf('Smoothing with %i knots \n',nKnots);
 
 BS = NaN(nKnots,nSensors);
-for s=1:nSensors
-    for k=1:6
+
+
+    for k=1:nKnots
+        for s =1:nSensors
         xs = xSensors(s);
-        BS(k,s) = bSpline3(xs-k) * bSpline3(xs-k);
+        BS(k,s) = bSpline3(xs-knots(k)) ;
     end
 end
 
@@ -95,7 +98,5 @@ end
 % % %fnplt (cs,1,'r-')
 % % cs = fit( xSensors, ySensors,'smoothingspline');
 % % plot(cs,xSensors, ySensors);
-hold off;
-figure (4);
-surf (BS)
+hold off
 

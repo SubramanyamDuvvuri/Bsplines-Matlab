@@ -1,4 +1,6 @@
 % fitB_Spline
+clear all
+clc
 nSensors = 100;
 noise = 0.1;
 knots = -5:8;
@@ -20,27 +22,40 @@ for i = 1:length(Xvec)
         Zvec(i,j) = dummyCurve ( x ,1) *dummyCurve (y,1);
     end
 end
-figure (3);
-surf(Xvec,Yvec,Zvec);
+%figure (3);
+%plot3(Xvec,Yvec,Zvec);
  
-% create noisy measurements
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
-ySensors=xSensors;
+ySensors= xMin + (xMax-xMin)*rand(nSensors,1);
 
 
 %taking the matrix of sensors
 [XSENSORS,YSENSORS] = meshgrid ( xSensors , ySensors);
+zSensors = NaN(nSensors,1);
+for i = 1:nSensors
+zSensors(i)= dummyCurve(xSensors(i) ,1) * dummyCurve(ySensors(i),1 ) +noise*randn();
+end
+hold on
+%plot3(xSensors,ySensors, zSensors,'mo');
+hold off
 
- for i=1:nSensors
-     for j =1:nSensors
-    ZSENSORS(i,j)=dummyCurve(XSENSORS(i,j),1)*dummyCurve(YSENSORS(i,j),1) + noise*randn();
-     end
- end
-figure(4)
- surf(XSENSORS,YSENSORS,ZSENSORS);
- 
+p =0;
+for  i = 1:nKnots
+    for j= 1:nKnots
+         p=p+1;
+        for q= 1:nSensors
+            xs = xSensors (q);
+            ys =ySensors(q);
+            BS(p,q) = bSpline3(xs-knots(i)) * bSpline3(ys-knots(j));
+        end
+    end
+end
+   surf(BS)
+hold off
+
+
  
 % plot(xSensors, ySensors, 'rd');
 % 
