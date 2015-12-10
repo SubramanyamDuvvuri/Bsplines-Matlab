@@ -12,7 +12,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = 1;
 %[Start_point, End_point ] = choose_location (option);
 Start_point = -5;
-End_point = 5;
+End_point = 3;
 
 knotsPerAxis = 12;
 totalKnots = knotsPerAxis^2;
@@ -86,7 +86,7 @@ for  i = 1:nKnots
         for q= 1:nSensors
             xs = xSensors (q);
             ys =ySensors(q);
-            value(p,q) = bSpline3(xs-knots(i)) * bSpline3(ys-knots(j));
+            value(p,q) = bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
 %             value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
 %             value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(xs,firstKnot,knotspan);
 %             value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(xs,firstKnot,knotspan);
@@ -102,17 +102,19 @@ for  i = 1:nKnots
     end
 end
 count = 0;
-for i = 1:nKnots
-   count=count+1;
-   j =[1:nKnots]*count;
-   surf(value(j,:));
-   
-   hold on
-end
+%for calculatng value line by line
+% % for i = 1:nKnots
+% %    count=count+1;
+% %    j =[1:nKnots]*count;
+% %    surf(value(j,:));
+% %    
+% %    hold on
+% % end
 
 weights = value'\zSensors;
 
 q=0;
+for k = 1:nKnots
 for xi=1:length(Xvec)
     for yi=1:length(Yvec)
         x = Xvec(xi,yi);
@@ -120,11 +122,12 @@ for xi=1:length(Xvec)
         z=0;
         for xOffset = 1:nKnots
             for yOffset = 1:nKnots
-                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset));
+                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset)) * weights(k);
             end
         end
         zz(xi,yi)=z;
     end
+end
 end
 
 
