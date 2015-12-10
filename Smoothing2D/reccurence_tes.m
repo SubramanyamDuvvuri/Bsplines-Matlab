@@ -11,8 +11,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 %option = input ('\n>>');
 option = 1;
 %[Start_point, End_point ] = choose_location (option);
-Start_point = -5;
-End_point = 3;
+Start_point = -1;
+End_point = 6;
 
 knotsPerAxis = 12;
 totalKnots = knotsPerAxis^2;
@@ -27,7 +27,7 @@ knotspan=1;%knot_calculation (nSensors,Start_point,End_point); %Automatic Clacul
 knots = Start_point:1:End_point;
 xMin = knots(1);
 xMax =  knots(end);
-xGrid = 10;
+xGrid = 100;
 nKnots = length(knots);
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
@@ -43,9 +43,16 @@ RMS = 0;
 firstKnot=knots(1);
 lastKnot =knots(end);
 
-xVec = xMin:.1:xMax;
+
+%-------------------------------
+xVec = xMin:.05:xMax;
+xVec =xVec';
 x = 1:length(xVec);
-yVec = xMin:.1:xMax;
+yVec = NaN(length(xVec),1);
+yVec = xMin:.05:xMax;
+yVec=yVec';
+xLen = length(xVec);
+%-------------------------------
 [X,Y]=meshgrid(xVec,yVec);
 Zvec= NaN (length(X),length(Y));
 
@@ -82,27 +89,58 @@ hold off
 p =0;
 for  i = 1:nKnots
     for j= 1:nKnots
-         p=p+1;
         for q= 1:nSensors
             xs = xSensors (q);
-            ys =ySensors(q);
-            value(p,q) = bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
-%             value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
-%             value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(xs,firstKnot,knotspan);
-%             value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(xs,firstKnot,knotspan);
-%             for k=1:nKnots-4
-%                 for l = 1:nKnots -4
-%                     [value(3+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(xs,knots(l),knotspan);
-%                 end
-%             end
-%             value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(xs,lastKnot,knotspan);
-%             value(nKnots+1+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(xs,lastKnot,knotspan);
-%             value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(xs,lastKnot,knotspan);
+            ys = ySensors(q);
+            %value(p,q) = bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
+            value(1,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(ys,firstKnot,knotspan);
+            value(2,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(ys,firstKnot,knotspan);
+            value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(ys,firstKnot,knotspan);
+            for k=1:nKnots-4
+                for l = 1:nKnots -4
+                    [value(3+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(ys,knots(l),knotspan);
+                end
+            end
+            value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(ys,lastKnot,knotspan);
+            value(nKnots+1+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(ys,lastKnot,knotspan);
+            value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(ys,lastKnot,knotspan);
         end
+        p=p+1;
     end
 end
-count = 0;
+weights = value'\zSensors;
+
+%surf(value)
+% % % q = 0;
+% % % for  i = 1:nKnots
+% % %     for j = 1:nKnots
+% % %         q=q+1;
+% % %         for k=1:xLen
+% % %           xs = xVec(k);
+% % %           ys=  yVec (k);
+% % %           spline(q,k)=bSpline3(xs-knots(j))*bSpline3(ys - knots(i))*weights(q);
+% % %         end
+% % %     end
+% % % end
+
+% % 
+% % p =0;
+% % for  i = 1:nKnots
+% %     for j= 1:nKnots
+% %         p=p+1;
+% %         for q= 1:xSensors
+% %             xs = xVec(q);
+% %             ys = yVec(q);
+% %             spline(p,q) =bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
+% % 
+% %         end
+% %     end
+% % end
+% % figure (232)
+% % surf (spline)
+
 %for calculatng value line by line
+%count = 0;
 % % for i = 1:nKnots
 % %    count=count+1;
 % %    j =[1:nKnots]*count;
@@ -111,31 +149,40 @@ count = 0;
 % %    hold on
 % % end
 
-weights = value'\zSensors;
 
-q=0;
-for k = 1:nKnots
-for xi=1:length(Xvec)
-    for yi=1:length(Yvec)
-        x = Xvec(xi,yi);
-        y = Yvec(xi,yi);
-        z=0;
-        for xOffset = 1:nKnots
-            for yOffset = 1:nKnots
-                z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset)) * weights(k);
-            end
-        end
-        zz(xi,yi)=z;
-    end
-end
-end
+% 
+% q=0;
+% for k = 1:nKnots
+% for xi=1:length(Xvec)
+%     for yi=1:length(Yvec)
+%         x = Xvec(xi,yi);
+%         y = Yvec(xi,yi);
+%         z=0;
+%         for xOffset = 1:nKnots
+%             for yOffset = 1:nKnots
+%                 z =z+ bSpline3(x-knots(xOffset))*bSpline3(y-knots(yOffset)) * weights(k);
+%             end
+%         end
+%         zz(xi,yi)=z;
+%     end
+% end
+% end
 
 
-for  i = 1:nKnots
-    for k=1:nSensors
-        value(i,k)=bSpline3(xSensors(k)-knots(i));
-    end
-end
+
+
+
+
+
+
+
+
+%Some test ....working on x Axis
+% for  i = 1:nKnots
+%     for k=1:nSensors
+%         value(i,k)=bSpline3(xSensors(k)-knots(i));
+%     end
+% end
 
 % 
 % 
