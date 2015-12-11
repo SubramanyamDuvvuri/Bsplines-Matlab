@@ -123,39 +123,33 @@ weights = value'\zSensors;
 %         end
 %     end
 % end
-% 
-% 
+
+
 p =0;
-for  i = 1:6
-    for j= 1:6
+for m = 1:nKnots
+    for k= 1:xLen
+        for l =1:xLen
         p=p+1;
         q=0;
         z=0;
-        for k= 1:xLen
-            for l =1:xLen
+        for  i = 1:nKnots
+            for j= 1:nKnots
                 q=q+1;
                 xs = Xvec(k,l);
                 ys = Yvec(k,l);
                 z =z+bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
             end
         end
-        spline(p,q)=z;
+        spline(k,l)=z*weights(m);
     end
+end
 end
 figure (232)
 surf (spline)
 
 
 
-% %for calculatng value line by line
-% %count = 0;
-% % % for i = 1:nKnots
-% % %    count=count+1;
-% % %    j =[1:nKnots]*count;
-% % %    surf(value(j,:));
-% % %    
-% % %    hold on
-% % % end
+
 
 % q=0;
 % 

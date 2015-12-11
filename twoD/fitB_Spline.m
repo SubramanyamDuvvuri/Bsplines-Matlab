@@ -54,7 +54,13 @@ spanSpline = 2; % of 3rd order B-Spline
 %xLen = xGrid*(xMax-xMin)+1;
 yFit = zeros(xLen,1);
 
-
+for k = 1:nKnots
+       for s = 1:xLen
+           xs= xVec(s);
+           gg(k,s)= bSpline3(xs-knots(k));
+       end
+end
+plot (gg)
 for k=1:nKnots
     xStart = knots(k)-spanSpline;
     xEnd = knots(k)+spanSpline;
