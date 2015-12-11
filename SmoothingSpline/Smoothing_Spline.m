@@ -67,7 +67,7 @@ for i = 1 : nknots
 end
 %figure (1)
 hold on
-%plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
+plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
 %legend('Clean Data','Noisy Measurements','Spines');
 %text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
 %text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));
