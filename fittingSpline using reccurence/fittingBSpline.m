@@ -115,7 +115,9 @@ end
        plot (xVec,a,xVec,b,xVec,c,xVec,f,xVec,g,xVec,h)
        
 add = a+b+c+f+g+h+add;
-plot ( xVec,add,'r')
+hold on
+plot ( xVec,add,'r');
+
 hold off
 
 
