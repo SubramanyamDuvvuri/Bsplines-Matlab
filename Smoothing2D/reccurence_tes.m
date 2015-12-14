@@ -12,7 +12,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = 1;
 %[Start_point, End_point ] = choose_location (option);
 Start_point = -3;
-End_point = 4;
+End_point = 6;
 
 knotsPerAxis = 12;
 totalKnots = knotsPerAxis^2;
@@ -45,11 +45,19 @@ lastKnot =knots(end);
 
 
 %-------------------------------
+<<<<<<< HEAD
 xVec = xMin:1:xMax;
 xVec =xVec';
 x = 1:length(xVec);
 yVec = NaN(length(xVec),1);
 yVec = xMin:1:xMax;
+=======
+xVec = xMin:1/2:xMax;
+xVec =xVec';
+x = 1:length(xVec);
+yVec = NaN(length(xVec),1);
+yVec = xMin:1/2:xMax;
+>>>>>>> 831430e0f3a4062979742facbfb3e60beca4169a
 yVec=yVec';
 xLen = length(xVec);
 %-------------------------------
@@ -92,6 +100,7 @@ for  i = 1:nKnots
        
         for q= 1:nSensors
             xs = xSensors (q);
+<<<<<<< HEAD
             ys = ySensors(q);  
             %%value(p,q) = bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
             [xvalue,xderv]=quadruple_reccurence_start_modified(xs,firstKnot,knotspan);
@@ -136,11 +145,29 @@ for  i = 1:nKnots
             value(nKnots+2+p,q)=xvalue*yvalue;
             derv (nKnots+2+p,q)=xderv*yderv;
             
+=======
+            ys = ySensors(q);
+            %value(p,q) = bSpline3(xs-knots(j)) * bSpline3(ys-knots(i));
+            value(p,q)=quadruple_reccurence_start_modified(xs,firstKnot,knotspan)*quadruple_reccurence_start_modified(ys,firstKnot,knotspan);
+            value(p,q)=triple_reccurence_start_modified(xs,firstKnot,knotspan)*triple_reccurence_start_modified(ys,firstKnot,knotspan);
+%              value(3,q)=Double_reccurence_start_modified(xs,firstKnot,knotspan)*Double_reccurence_start_modified(ys,firstKnot,knotspan);
+%             for k=1:nKnots-4
+%                 for l = 1:nKnots -4
+%                     [value(2+k+p,q)]=Basis_Spline_modified(xs,knots(k),knotspan)*Basis_Spline_modified(ys,knots(l),knotspan);
+%                 end
+%             end
+%             value(nKnots,q)=Double_reccurence_end_modified(xs,lastKnot,knotspan)*Double_reccurence_end_modified(ys,lastKnot,knotspan);
+%             value(nKnots+p,q)=triple_reccurence_end_modified(xs,lastKnot,knotspan)*triple_reccurence_end_modified(ys,lastKnot,knotspan);
+%             value(nKnots+2+p,q)=quadruple_reccurence_end_modified(xs,lastKnot,knotspan)*quadruple_reccurence_end_modified(ys,lastKnot,knotspan);
+%         end
+>>>>>>> 831430e0f3a4062979742facbfb3e60beca4169a
         end
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     p=p+1;
     end
 end
+surf(value)
 weights = value'\zSensors;
+<<<<<<< HEAD
 %surf(value)
 
 
@@ -252,6 +279,29 @@ weights_opt = opt'\ySensors_opt;
 % end
 % figure (232)
 % surf (spline)
+=======
+% 
+% p=0;
+% for i = 1:nKnots
+%     for j = 1:nKnots
+%         p=p+1;
+%         q=0;
+%          for m= 1: xLen
+%              for n = 1:xLen
+%                     xs=Xvec(m,n);
+%                     ys=Yvec(m,n);
+%                     q=q+1;
+%                      spline(p,q) = bSpline3(xs- knots(i))*bSpline3(ys-knots(j))*weights(p);
+%              end
+%         end
+%     end
+% end
+% surf(spline)
+% 
+% for i = 1:size(spline,2)
+%     ff(i)=sum(spline(:,i));
+% end
+>>>>>>> 831430e0f3a4062979742facbfb3e60beca4169a
 
 
 

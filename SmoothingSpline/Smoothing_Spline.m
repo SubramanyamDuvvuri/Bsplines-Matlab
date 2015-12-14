@@ -39,8 +39,7 @@ lastKnot =knots(end);
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i),option);
 end
-%plot(xVec, yVec,'g--','LineWidth',3);
-%legend ('nknots');
+
 load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
 xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ignore first 4 samples in random list, due to fixed postions
 xSensors = sort(xSensors); %Determining X posotion of sensors
@@ -52,7 +51,7 @@ ySensors = NaN(nSensors,1);
 for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
 end
-%plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
 weights = BS_value /ySensors'; %calculating weights
 [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
@@ -61,16 +60,20 @@ for i = 1: nknots     %multiplying with the weights
     spline_derv(i,:) = spline_derv(i,:)*weights(i);
 end
 add_spline_value = 0;
-for i = 1 : nknots
+for i = 1 : nknots%fitting curve
     add_spline_value = sum(spline_value);
     add_spline_derv = sum(spline_derv);
 end
 %figure (1)
 hold on
-plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
-%legend('Clean Data','Noisy Measurements','Spines');
-%text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
-%text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));
+plot(xVec, yVec,'g--','LineWidth',3);
+plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);%Plotting sensors
+plot ( xVec , spline_value , 'b' );
+plot(xVec, add_spline_value ,'k')
+legend('Clean Data','Noisy Measurements','Splines','fitted curve');
+text(xMin+2, 2.65,sprintf('NUMBER OF KNOTS:: %g', nknots +2));
+text(xMin+2,2.5,sprintf('FIRST VALUE:: %g, LAST VALUE:: %g ',xMin, xMax));
+hold off
 hold off
 %----------------------------------------------
 %Plotting Smoothing Spline 
@@ -94,18 +97,24 @@ for i = 1 : nknots
 end
 
 figure (3)%Plotting the curves
-plot ( vector, M_splines'); %plotting optimised splines
-hold on
-plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
-plot(xVec, yVec,'g--','LineWidth',3);
+%plot ( vector, M_splines'); %plotting optimised splines
+% plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
+%plot(xVec, yVec,'g--','LineWidth',3);
 %legend('Clean Data','Spines');
 print_pos=max(ySensors-1);
+hold on
+%plot ( vector, M_splines'); %plotting optimised splines
+plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%
+plot(xVec, yVec,'g--','LineWidth',3);
+plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+legend('Fitted Curve','Clean data',' Sensors')
+
 text(xMin+1,print_pos+.4,sprintf('Sensors =>%g', nSensors));
 text(xMin+1,print_pos+.3,sprintf('Lambda =>%g', lambda));
 text(xMin+1, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 text(xMin+1,print_pos+.1,sprintf(' First Value=> %g    Last value= %g ',xMin, xMax));
 text(xMin+1,print_pos+0,sprintf(' Knotspan=> %g ',knotspan));
-title('After Optimisation')
+title(['\fontsize{13}AFTER OPTIMISATION'])
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
 

@@ -70,9 +70,9 @@ end
 hold on
 plot (xLin,d1,'r',xLin,d2,'r',xLin,d3,'r',xLin,d4,'r',xLin,d5,xLin,d6,xLin,d7,xLin,d8,xLin,d9);
 for i = 1:lenx
-       add(i)=a(i)+b(i)+c(i)+e(i)+f(i)+g(i)+h(i)+add(i);
+       add_spline(i)=a(i)+b(i)+c(i)+e(i)+f(i)+g(i)+h(i)+add_spline(i);
 end
-plot ( xLin,add)
+plot ( xLin,add_spline)
 hold on
 
 %axis ([-10 10 0 8])

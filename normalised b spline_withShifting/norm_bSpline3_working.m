@@ -3,7 +3,7 @@
 clear
 clc
 hold off
-xLin = -10:.1:20;
+xLin = -10:.1:10;
 lenx=length(xLin);
 y = NaN(lenx,1);
 
@@ -70,10 +70,13 @@ end
 %plot (xLin,a,'b')
 hold on
 plot (xLin,d1,'r',xLin,d2,'r',xLin,d3,'r',xLin,d4,'r',xLin,d5,xLin,d6,xLin,d7,xLin,d8,xLin,d9);
-
-       add =a +b +c +d1 +d2 +d3 +d4 +d5 +d6 +d7 +d8 +d9 +e +f +g +h
+ add =a +b +c +d1 +d2 +d3 +d4 +d5 +d6 +d7 +d8 +d9 +e +f +g +h;
 plot ( xLin,add)
-hold on
+hold off
+
+figure (4)
+plot (xLin ,a,xLin,b,xLin,c,xLin,d1);   
+
 
 %axis ([-10 10 0 8])
 
