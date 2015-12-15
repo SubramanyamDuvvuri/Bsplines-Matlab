@@ -11,8 +11,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 %option = input ('\n>>');
 option = 1;
 %[Start_point, End_point ] = choose_location (option);
-Start_point = -3;
-End_point = 0;
+Start_point = -4;
+End_point = 8;
 
 knotsPerAxis = 12;
 totalKnots = knotsPerAxis^2;
@@ -271,7 +271,7 @@ for i = 1:length(xVec)
          double_start2  = 0;
          quadruple_end1 = 0;
          quadruple_end2 = 0;
-         triple_end1  = 0;
+         triple_end1    = 0;
          triple_end2  = 0;
          double_end1  = 0;
          double_end2  = 0;
@@ -279,28 +279,32 @@ for i = 1:length(xVec)
          basic_start3 =0;
          basic_start4 =0;
        for a =0
-              %STARTING SPLINES
-                 quadruple_start1 = quadruple_start1   + quadruple_reccurence_start_modified(x_temp,xMin+a,knotspan)   *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-% %               quadruple_start2 = quadruple_start2   + quadruple_reccurence_start_modified(x_temp,xMin,knotspan)     *   quadruple_reccurence_start_modified(y_temp,xMin+a,knotspan);              
-                 triple_start1    = triple_start1      + triple_reccurence_start_modified(x_temp,xMin+a,knotspan)      *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-% %               triple_start2    = triple_start2      + triple_reccurence_start_modified(x_temp,xMin,knotspan)        *   triple_reccurence_start_modified(y_temp,xMin+a,knotspan);              
-                 double_start1    = double_start1      + Double_reccurence_start_modified(x_temp,xMin+a,knotspan)      *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-% %               double_start2    = double_start2      + Double_reccurence_start_modified(x_temp,xMin,knotspan)        *   Double_reccurence_start_modified(y_temp, xMin+a,knotspan);                            
-% %               %ENDING SPLINES
-                 quadruple_end1 = quadruple_end1   + quadruple_reccurence_end_modified(x_temp,xMax-a,knotspan)    *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-% %               quadruple_end2 = quadruple_end2   + quadruple_reccurence_end_modified(x_temp,xMax,knotspan)      *   quadruple_reccurence_end_modified(y_temp,xMax-a,knotspan);
-                 triple_end1    = triple_end1      + triple_reccurence_end_modified(x_temp,xMax-a,knotspan)       *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-% %               triple_end2    = triple_end2      + triple_reccurence_end_modified(x_temp,xMax,knotspan)         *   triple_reccurence_end_modified(y_temp,xMax-a,knotspan);
-                double_end1    = double_end1      + Double_reccurence_end_modified(x_temp,xMax-a,knotspan)       *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
-%               double_end2    = double_end2      + Double_reccurence_end_modified(x_temp,xMax,knotspan)         *   Double_reccurence_end_modified(y_temp, xMax-a,knotspan);  
-                basic_start1     =  basic_start1+ Basis_Spline_modified(x_temp,xMin,knotspan)   * Basis_Spline_modified(y_temp,xMin,knotspan); 
+                 %STARTING SPLINES
+                  quadruple_start1 = quadruple_start1   + quadruple_reccurence_start_modified(x_temp,xMin,knotspan)   *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+                  quadruple_start2 =  quadruple_start2   + quadruple_reccurence_start_modified(x_temp,xMin,knotspan)   *  quadruple_reccurence_end_modified(y_temp,xMax,knotspan);
+                  quadruple_end1 = quadruple_end1       + quadruple_reccurence_end_modified(x_temp,xMax,knotspan)     *  quadruple_reccurence_end_modified(y_temp,xMax,knotspan); 
+                  quadruple_end2 = quadruple_end2       + quadruple_reccurence_end_modified(x_temp,xMax,knotspan)     *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+                  
+                  
+%                  triple_start1    = triple_start1      + triple_reccurence_start_modified(x_temp,xMin+a,knotspan)      *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+% % %              triple_start2    = triple_start2      + triple_reccurence_start_modified(x_temp,xMin,knotspan)        *   triple_reccurence_start_modified(y_temp,xMin+a,knotspan);              
+%                  double_start1    = double_start1      + Double_reccurence_start_modified(x_temp,xMin+a,knotspan)      *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+% % %              double_start2    = double_start2      + Double_reccurence_start_modified(x_temp,xMin,knotspan)        *   Double_reccurence_start_modified(y_temp, xMin+a,knotspan);                            
+% % %              %ENDING SPLINES
+ %                quadruple_end1 = quadruple_end1   + quadruple_reccurence_end_modified(x_temp,xMax,knotspan)    *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+% % %              quadruple_end2 = quadruple_end2   + quadruple_reccurence_end_modified(x_temp,xMax,knotspan)      *   quadruple_reccurence_end_modified(y_temp,xMax-a,knotspan);
+%                  triple_end1    = triple_end1      + triple_reccurence_end_modified(x_temp,xMax-a,knotspan)       *  quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+% % %              triple_end2    = triple_end2      + triple_reccurence_end_modified(x_temp,xMax,knotspan)         *   triple_reccurence_end_modified(y_temp,xMax-a,knotspan);
+%                  double_end1    = double_end1      + Double_reccurence_end_modified(x_temp,xMax-a,knotspan)       *   quadruple_reccurence_start_modified(y_temp,xMin,knotspan);
+% %                double_end2    = double_end2      + Double_reccurence_end_modified(x_temp,xMax,knotspan)         *   Double_reccurence_end_modified(y_temp, xMax-a,knotspan);  
+%                  basic_start1     =  basic_start1+ Basis_Spline_modified(x_temp,xMin,knotspan)   * Basis_Spline_modified(y_temp,xMin,knotspan); 
 
 
 
 
 
        end  
-            add1 (i,j) = quadruple_start1+ triple_start1+ double_start1;
+            add1 (i,j) = quadruple_start1+ quadruple_start2+ quadruple_end1+quadruple_end2;
             add2 (i,j) = quadruple_start2 + triple_start2 + double_start2;
             add3 (i,j)=  quadruple_end1+triple_end1+double_end1;
             add4 (i,j)=  quadruple_end2+triple_end2+double_end2;
@@ -308,7 +312,7 @@ for i = 1:length(xVec)
     end
 end
 
-surf(add1+add3)
+surf(add1)
 % hold on
 % surf(add3)
 % surf (add5)
