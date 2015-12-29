@@ -1,3 +1,4 @@
+
 function [value , derv]  = calculate_spline ( knotspan , knots , vector_length , vector )
 nknots = length(knots);
 firstKnot = knots (1);

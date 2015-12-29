@@ -59,21 +59,25 @@ for i = 1:lenx
     h(i)=hh;  
     
 end
-% for i = 1:lenx
-%        add(i)=a(i)+b(i)+c(i)+d1(i)+d2(i)+d3(i)+d4(i)+d5(i)+d6(i)+d7(i)+d8(i)+d9(i)+e(i)+f(i)+g(i)+h(i);
-% end
+ for i = 1:lenx
+        add(i)=d1(i)+d2(i)+d3(i)+d4(i)+d5(i)+d6(i)+d7(i)+d8(i)+d9(i)
+end
 % plot ( xLin,add)
 % hold on
- plot (xLin,a,'b',xLin,b,'b',xLin,c,'b',xLin,e,xLin,f,xLin,g,xLin,h )
 
-%plot (xLin,a,'b')
-hold on
-plot (xLin,d1,'r',xLin,d2,'r',xLin,d3,'r',xLin,d4,'r',xLin,d5,xLin,d6,xLin,d7,xLin,d8,xLin,d9);
 for i = 1:lenx
        add(i)=a(i)+b(i)+c(i)+e(i)+f(i)+g(i)+h(i)+add(i);
 end
-plot ( xLin,add)
-hold on
+ plot (xLin,a,'m',xLin,b,'k',xLin,c,'r',xLin,e,'b','LineWidth',1.4);
+ hold on
+ plot ( xLin,add,'k--','LineWidth',1.7)
+  legend ('quadraple','triple','double','basic','Fit');
+ plot(xLin,f,'r',xLin,g,'k',xLin,h,'m' )
+ plot (xLin,d1,'b',xLin,d2,'b',xLin,d3,'b',xLin,d4,'b',xLin,d5,'b',xLin,d6,'b',xLin,d7,'b',xLin,d8,'b',xLin,d9,'b');
+xlabel(['\fontsize{13}Knots---->']);
+ylabel(['\fontsize{13}Weights---->'])
+ title(['\fontsize{15}Open Uniform B-Spline fit']);
+hold off
 
 %axis ([-10 10 0 8])
 

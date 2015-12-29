@@ -39,7 +39,7 @@ lastKnot =knots(end);
 for i=1:xLen
     yVec(i) = dummyCurve(xVec(i),option);
 end
-%plot(xVec, yVec,'g--','LineWidth',3);
+
 %legend ('nknots');
 load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
 xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ignore first 4 samples in random list, due to fixed postions
@@ -52,7 +52,7 @@ ySensors = NaN(nSensors,1);
 for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
 end
-%plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
 weights = BS_value /ySensors'; %calculating weights
 [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
@@ -65,12 +65,21 @@ for i = 1 : nknots
     add_spline_value = sum(spline_value);
     add_spline_derv = sum(spline_derv);
 end
-%figure (1)
+figure (1)
+plot(xVec, yVec,'g--','LineWidth',3);
 hold on
+print_pos=max(ySensors-1);
+plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
+text(xMin+1,print_pos+.4,sprintf('Sensors =%g', nSensors));
+text(xMin+1, print_pos+.3,sprintf('Number of knots= %g', nknots ));
+text(xMin+1,print_pos+.2,sprintf('First Value=%g,Last value=%g ',xMin, xMax));
+text(xMin+1,print_pos+.1,sprintf('Noise= %g ',noise));
+
 %legend('Clean Data','Noisy Measurements','Spines');
 %text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
 %text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));
+
 hold off
 %----------------------------------------------
 %Plotting Smoothing Spline 

@@ -2,8 +2,8 @@ clear;
 
 nSensors = 140;
 noise = 0.1;
-xMin = -5;
-xMax =  8;
+xMin = -6;
+xMax =  9;
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
 %xSensors=linspace(xMin,xMax,nSensors); % only for testing
@@ -30,3 +30,5 @@ end
 
 figure(1);
 plot(xSensors,BS);
+hold on
+plot(sum(BS'));

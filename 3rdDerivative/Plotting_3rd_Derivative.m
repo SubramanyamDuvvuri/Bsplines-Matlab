@@ -1,6 +1,6 @@
 clc
 clear
-nSensors = 140;
+nSensors = 120;
 noise = 0.1;
 knots = -5:8;
 xMin = -5;
@@ -16,9 +16,7 @@ for i=1:xLen
     yVec(i) = dummyCurve(xVec(i));
 end
 
-figure(2)
-    plot(xVec, yVec,'g','LineWidth',2);
-hold on;
+
 xSensors = xMin + (xMax-xMin)*rand(nSensors,1);
 xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
@@ -27,7 +25,7 @@ for i=1:nSensors
     ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
 end
 
-plot(xSensors, ySensors, 'rd');
+
 
 % creating table with influence of knots
 nKnots = length(knots);
@@ -110,11 +108,28 @@ for i = 1:xLen
     h_derv(i)=hhderv*weights(16); 
 end
 %plotiing the splines
+plot(xVec, yVec,'g','LineWidth',2);
+hold on
+plot(xSensors, ySensors, 'rd');
  plot (xVec,a_spline,'b',xVec,b_spline,'b',xVec,c_spline,'b',xVec,f_spline,'b',xVec,g_spline,'b',xVec,h_spline,'b')%Plotting Splines
- hold on
+ 
 add_spline = a_spline+b_spline+c_spline+f_spline+g_spline+h_spline+add_spline;
 plot (xVec,add_spline,'k');
-hold on
+legend ( ' dd','ff');
+print_pos=max(ySensors-1);
+box on
+text(xMin+1,print_pos+.4,sprintf('Sensors =%g', nSensors));
+text(xMin+1, print_pos+.3,sprintf('Number of knots= %g', nKnots ));
+text(xMin+1,print_pos+.2,sprintf('First Value=%g,Last value=%g ',xMin, xMax));
+text(xMin+1,print_pos+.1,sprintf('Noise= %g ',noise));
+box off
+xlabel(['\fontsize{13}Knots---->']);
+ylabel(['\fontsize{13}Weights---->']);
+title(['\fontsize{12}Regression Spline Open Uniform B-Spline fit']);
+hold off;
+
+hold off
+
 
 %plotting the derivatives
  

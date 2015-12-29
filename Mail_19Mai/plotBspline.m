@@ -56,7 +56,7 @@ for k=1:nKnots
    
 end
 
-%plot (xVec,yVec,':')
+plot (xVec,yVec,':')
 
 %plot3(xVec,yVec,zVec,':');
 hold off;
