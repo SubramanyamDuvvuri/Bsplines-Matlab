@@ -3,13 +3,39 @@ clc
 xyMin = -1;
 xyMax = 1;
 nSensors =200;
-knotsPerAxis=10;
+knotsPerAxis = 11;
+splinesPerAxis = knotsPerAxis+2;
+knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
+
+splineNumber = 3;
+
+figure(1);
+xVec = xyMin:0.02:xyMax;
+xLen = length(xVec);
+zVec = NaN(xLen,1);
+sumZ = zeros(xLen,1);
+colors = 'rgbmcykkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk';
+for splineNumberHorizontal = 1:splinesPerAxis
+    for i=1:xLen
+        x = xVec(i);
+        horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+        zVec(i) = horizontal;
+    end
+    plot(xVec, zVec, colors(splineNumberHorizontal));
+    hold on
+    sumZ = sumZ + zVec;
+end
+plot(xVec, sumZ, 'b:');
+hold off;
+axis([xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+stop
+
+
 knots =linspace(xyMin,xyMax,knotsPerAxis);
 cleanLen= 51;
 xClean= linspace(xyMin,xyMax,cleanLen);
 yClean= linspace(xyMin,xyMax,cleanLen);
 yClean=yClean';
-knotspan=(xyMax-xyMin)/(knotsPerAxis);
 knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
 FunctionType =1;
@@ -24,7 +50,7 @@ for xi=1:length(xClean)
         z=0;
        for i= 1:knotsPerAxis
             for k= 1:knotsPerAxis
-               horizontal = calcSpline1D(x, knotsPerAxis, xyMin, xyMax,i );
+               horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,i );
                 vertical = calcSpline1D(y, knotsPerAxis, xyMin, xyMax, k);
                 splineproduct(i,k) =horizontal *vertical;%*weights(i,k) ;
                 z = z+ splineproduct(i,k);
