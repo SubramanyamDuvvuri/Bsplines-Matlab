@@ -1,4 +1,4 @@
-55655555555function spline_sum= get_spline( weights , knotsPerAxis ,knotspan,knots , xMin , xMax,xVec,yVec,X,Y )
+function spline_sum= get_spline( weights , knotsPerAxis ,knotspan,knots , xMin , xMax,xVec,yVec,X,Y )
 %[X,Y] = meshgrid(xVec, yVec);
 add1 = NaN(length( xVec), length (yVec));
 add2 = NaN(length( xVec), length (yVec));

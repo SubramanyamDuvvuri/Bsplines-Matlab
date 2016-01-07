@@ -1,33 +1,55 @@
-function sumVal= calcSpline1D(xy, knotsPerAxis, xyMin, xyMax, number)
+function [sumVal,sumderv]= calcSpline1D(xy, knotsPerAxis, xyMin, xyMax, number)
+%knotspan=(xyMax-xyMin)/(knotsPerAxis-5);
 knotspan=(xyMax-xyMin)/(knotsPerAxis-5);
-%vector=xy;
-%vector_length=length(vector);
-nknots = knotsPerAxis;
-firstKnot = xyMin;
-lastKnot = xyMax;
-%value = NaN(nknots+2,vector_length);
-%derv = NaN(nknots+2,vector_length);
+firstknot = xyMin;
+lastknot=xyMax;
+%Defining knot positions
+knots = linspace(xyMin,xyMax, knotsPerAxis);
 sumVal = 0;
-sumDerv = 0;
-       [value, derv ]=quadruple_reccurence_start_modified(xy,firstKnot,knotspan);
-       sumVal = sumVal + value;
-        [value derv ]=triple_reccurence_start_modified(xy,firstKnot,knotspan);
-        sumVal = sumVal + value;
-        [value, derv ]=Double_reccurence_start_modified(xy,firstKnot,knotspan);   
-        sumVal = sumVal + value;
-%         for k=1:knotsPerAxis-4;
-%             [value(3+k), derv(3+k) ]=Basis_Spline_modified(xs,xy,knotspan);
-%             sumVal = sumVal + value;
-%         end
-        [value ,derv ]=Double_reccurence_end_modified(xy,lastKnot,knotspan);
-        sumVal = sumVal + value;
-        [value, derv] =triple_reccurence_end_modified(xy,lastKnot,knotspan);
-        sumVal = sumVal + value;
-        [value, derv] =quadruple_reccurence_end_modified(xy,lastKnot,knotspan);
-        sumVal = sumVal + value;
- 
+sumderv=0;
+
+[value, derv ]=quadruple_reccurence_start_modified(xy,firstknot,knotspan);
+sumVal = sumVal + value;
+[value ,derv ]=triple_reccurence_start_modified(xy,firstknot,knotspan);
+sumVal = sumVal + value;
+sumderv =sumderv+derv;
+
+[value, derv ]=Double_reccurence_start_modified(xy,firstknot,knotspan);
+sumVal = sumVal + value;
+sumderv =sumderv+derv;
+ [value, derv ]=Basis_Spline_modified(xy, firstknot,knotspan);
+  sumVal = sumVal + value;
+
+% for k = 1: length(knotsPerAxis)-3
+%   [value, derv ]=Basis_Spline_modified(xy, knots (k),knotspan);
+%   sumVal = sumVal + value;
+% end
 
 
+[value ,derv ]=Double_reccurence_end_modified(xy,lastknot,knotspan);
+sumVal = sumVal + value;
+sumderv =sumderv+derv;
+
+[value, derv] =triple_reccurence_end_modified(xy,lastknot ,knotspan);
+sumVal = sumVal + value;
+sumderv =sumderv+derv;
+
+[value, derv] =quadruple_reccurence_end_modified(xy,lastknot ,knotspan);
+sumVal = sumVal + value;
+sumderv =sumderv+derv;
 
 
+end
+%  for i = 1:knotsPerAxis-5
+%  [value, derv ]=Basis_Spline_modified(xy,number+knotspan,knotspan);
+%  sumVal = sumVal + value;
+%  end
 
+% 
+%                [value, derv ]=Basis_Spline_modified(xy,number+knotspan*5,knotspan);
+%               sumVal = sumVal + value;
+% 
+%            [value, derv ]=Basis_Spline_modified(xy,lastKnot-knotspan*4,knotspan);
+%            sumVal = sumVal + value;
+% 
+% 
