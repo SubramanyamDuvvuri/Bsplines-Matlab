@@ -17,6 +17,7 @@ zVec = NaN(xLen,yLen);
 sumZ = zeros(xLen,yLen);
 weights =rand( splinesPerAxis,splinesPerAxis);
 %Basic Spline Plot
+<<<<<<< HEAD
 for splineNumberHorizontal = 1:splinesPerAxis
     for splineNumbervertical = 1:splinesPerAxis
         for i=1:xLen
@@ -31,6 +32,37 @@ for splineNumberHorizontal = 1:splinesPerAxis
          end
 
             sumZ = sumZ + zVec;
+=======
+% for splineNumberHorizontal = 1:splinesPerAxis
+%     for splineNumbervertical = 1:splinesPerAxis
+%         for i=1:xLen
+%             for j=1:yLen
+%                 x = xVec(i);
+%                 y = yVec(j);
+%                 horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+%                 vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+%                 zVec(i,j) = horizontal*vertical;
+%             end
+%          end
+% 
+%             sumZ = sumZ + zVec;
+%     end
+% end
+% figure(1)
+% sumZ=round(sumZ);
+% surf(xVec,yVec, sumZ);
+% hold off;
+% axis([xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+yVec=yVec';
+knots = linspace(xyMin,xyMax, knotsPerAxis);
+zzClean = NaN(cleanLen, cleanLen);
+FunctionType =1;
+[xx,yy] = meshgrid(xVec, yVec);
+z=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+>>>>>>> 344144458665ae882204f9b6cd58771f71a274f2
     end
 end
 figure(1)
@@ -62,6 +94,7 @@ hold off;
 %     hold on;
 %     plot3(x,y,z,'k*'); % plot of clean data with sensors
 % end
+<<<<<<< HEAD
 % %calculating weights
 %   p=0;
 %   for splineNumberHorizontal= 1:splinesPerAxis
@@ -121,3 +154,64 @@ hold off;
 % 
 % 
 % 
+=======
+%calculating weights
+  p=0;
+  for splineNumberHorizontal= 1:splinesPerAxis
+    for splineNumberVertical= 1:splinesPerAxis
+        p=p+1;
+        for q= 1:nSensors
+            x = xSensor (q);
+            y = ySensor (q);
+            horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
+            vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
+           BS(p,q) =horizontal*vertical ;%*weights(i,k) ;
+        end
+   end
+  end
+weights = BS'\zMess;
+%converting weight vector into matrix
+
+count =0;
+for i =1: splinesPerAxis
+    for j =1:splinesPerAxis
+        count=count+1;
+        weights_matrix(i,j) = weights(count);
+    end
+end
+weights_matrix(3,4)=4;
+%Plotting the regression splines
+sumZZ = zeros(xLen,yLen);
+for splineNumberHorizontal = 1:splinesPerAxis
+    for splineNumbervertical = 1:splinesPerAxis
+        for i=1:xLen
+            for j=1:yLen
+                x = xVec(i);
+                y = yVec(j);
+                horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+                vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+                zVec(i,j) = horizontal*vertical *weights_matrix(splinesPerAxis,splinesPerAxis)  ;
+            end
+         end
+
+            sumZZ = sumZZ + zVec;
+    end
+end
+figure(3)
+sumZZ=round(sumZZ);
+surf(xVec,yVec, sumZZ);
+hold off;
+axis([xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+%Calculating smoothing spline
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 344144458665ae882204f9b6cd58771f71a274f2

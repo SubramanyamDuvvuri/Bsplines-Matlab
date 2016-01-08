@@ -1,3 +1,5 @@
+%Function for tstSplines1D_b_new
+
 function [value, derv]= calcSpline1D_Single(xy, knotsPerAxis, xyMin, xyMax, splineNumber)
 %knotspan=(xyMax-xyMin)/(knotsPerAxis-5);
 knotspan=(xyMax-xyMin)/(knotsPerAxis-1);
