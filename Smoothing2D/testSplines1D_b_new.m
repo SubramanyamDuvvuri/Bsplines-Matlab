@@ -36,10 +36,7 @@ sumZ = zeros(xLen,yLen);
 % surf(xVec,yVec, sumZ);
 % hold off;
 % axis([xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-
-
-
-yVec=yVec'
+yVec=yVec';
 knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
 FunctionType =1;
@@ -85,7 +82,7 @@ count =0;
 for i =1: splinesPerAxis
     for j =1:splinesPerAxis
         count=count+1;
-        weights_matrix(j,i) = weights(count);
+        weights_matrix(i,j) = weights(count);
     end
 end
 weights_matrix(3,4)=4;
