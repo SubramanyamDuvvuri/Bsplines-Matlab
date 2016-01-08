@@ -27,7 +27,7 @@ for splineNumberHorizontal = 1:splinesPerAxis
 end
 plot(xVec, sumZ, 'b:');
 hold off;
-axis([xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+
 stop
 
 
