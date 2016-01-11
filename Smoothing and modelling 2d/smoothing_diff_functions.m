@@ -1,9 +1,11 @@
+%Smoothing in 2d USING DIFFERENT FUNCTIONS
+
 clear
 clc
-xyMin = -1;
-xyMax = 1;
+xyMin = -3;
+xyMax = 8;
 nSensors =500;
-noiseLevel = 0.06;
+noiseLevel = 0.02;
 
 knotsPerAxis = 7;
 splinesPerAxis = knotsPerAxis+2;
@@ -19,58 +21,54 @@ yLen = length(yVec);
 zVec = NaN(xLen,yLen);
 sumZ = zeros(xLen,yLen);
 
-yVec=yVec';
-knots = linspace(xyMin,xyMax, knotsPerAxis);
-zzClean = NaN(cleanLen, cleanLen);
-FunctionType =1;
-doEquispaced = 0;
+xSensor = xyMin + (xyMax-xyMin)*rand(nSensors,1);
+xSensor = sort(xSensor);
+ySensor = NaN(nSensors,1);
+ySensor= xyMin + (xyMax-xyMin)*rand(nSensors,1);
 [xx,yy] = meshgrid(xVec, yVec);
-z=0;
-for i=1:cleanLen
-    for k=1:cleanLen
-        zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+for i = 1:cleanLen
+    for j = 1:cleanLen
+        x =xx(i,j);
+         y = yy(i,j);
+        zzClean(i,j) = dummyCurve ( x ,1) *dummyCurve (y,1);
     end
 end
 figure (1)
-surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-hold on
-%load DataSensors2D;
-[xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noiseLevel, FunctionType, doEquispaced);
+title('Clean Data');
+hold on 
+surf (xx,yy,zzClean,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
 
-for i=1:nSensors
-    x = xSensor(i);
-    y = ySensor(i);
-    z = zMess(i);
-    c = zClean(i);
-    plot3([x x], [y y], [c z],'k');
-    plot3(x,y, c,'ro');
-    hold on;
-    plot3(x,y,z,'k*'); % plot of clean data with sensors
+%taking the matrix of sensors
+[XSENSORS,YSENSORS] = meshgrid ( xSensor , ySensor);
+zMess = NaN(nSensors,1);
+for i = 1:nSensors
+zMess(i)= dummyCurve(xSensor(i) ,1) * dummyCurve(ySensor(i),1 ) +noiseLevel*randn();
 end
 
-%calculating Basis of B-SPlines
-%matrix  BS represents Basis
-%The rows of the matrix represent spline number and the colomns represent sensors
+plot3(xSensor,ySensor,zMess,'r.');
+hold off
+
+
+
 
 p=0;
-BS = NaN(splinesPerAxis^2,nSensors);
-for splineNumberHorizontal= 1:splinesPerAxis
+  BS = NaN(splinesPerAxis^2,nSensors);
+  for splineNumberHorizontal= 1:splinesPerAxis
     for splineNumberVertical= 1:splinesPerAxis
         p=p+1;
         for q= 1:nSensors
             x = xSensor (q);
             y = ySensor (q);
-            [horizontal,dervH] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
-            [vertical,dervV] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
-            BS(p,q) =horizontal*vertical ;%*weights(i,k) ;
-            bsD(p,q) = dervV*dervV;
+            horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
+            vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
+           BS(p,q) =horizontal*vertical ;%*weights(i,k) ;
         end
-    end
-end
-
-weights = BS'\zMess; % calculating the weights usi
+   end
+  end
+  weights = BS'\zMess;
 %converting weight vector into matrix
 weights_matrix = NaN(splinesPerAxis, splinesPerAxis);
+
 count =0;
 for i =1: splinesPerAxis
     for j =1:splinesPerAxis
@@ -78,46 +76,35 @@ for i =1: splinesPerAxis
         weights_matrix(j,i) = weights(count);
     end
 end
-%Plotting the regression splines using the calculated weights
+%weights_matrix(3,4)=4;
+%Plotting the regression splines
 sumZZ = zeros(xLen,yLen);
-sumDerv = zeros(xLen,yLen);
 for splineNumberHorizontal = 1:splinesPerAxis
     for splineNumbervertical = 1:splinesPerAxis
         for i=1:xLen
             x = xVec(i);
-            [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+            horizontal = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
             for j=1:yLen
                 y = yVec(j);
-                [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+                vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
                 zVec(i,j) = horizontal*vertical *weights_matrix(splineNumberHorizontal,splineNumbervertical)  ;
-                zVevDerv(i,j)=HorDerv*VerDerv*weights_matrix(splineNumberHorizontal,splineNumbervertical);
-                
             end
-        end
-        sumDerv=sumDerv+zVevDerv;
-        sumZZ = sumZZ + zVec;
+         end
+
+            sumZZ = sumZZ + zVec;
     end
 end
+figure (3)
+title('regression spline')
+hold on
+%plot3(xSensor,ySensor,zMess,'r.');
+surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
+hold off
 
 
-figure(2)
-for i=1:nSensors
-    x = xSensor(i);
-    y = ySensor(i);
-    z = zMess(i);
-    c = zClean(i);
-    plot3([x x], [y y], [c z],'k');
-    plot3(x,y, c,'ro');
-    hold on;
-    plot3(x,y,z,'k*'); % plot of clean data with sensors
-end
-surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
-hold off;
 
-%----------------------------
-%Calculating smoothing spline
-%----------------------------
+
 
 vector = xyMin+knotspan/2:knotspan:xyMax;
 vector_length =length(vector);
@@ -143,7 +130,7 @@ for splineNumberHorizontal= 1:splinesPerAxis
 end
 
 
-lambda = 0.00000009;
+lambda = 0.01;
 opt = [BS,BS_Derv*lambda];
 zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
 weights_opt = opt'\zMess_opt;
@@ -173,20 +160,10 @@ for splineNumberHorizontal = 1:splinesPerAxis
             end
         end
         sumZZ_opt = sumZZ_opt + zVec;
-        sumDerv=sumDerv+zVevDerv;
+        sumDerv_opt=sumDerv_opt+zVevDerv;
         
     end
 end
-figure (3)
+figure (4)
 surf (xx,yy,sumZZ_opt);
 %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-
-
-
-
-
-
-
-
-
-

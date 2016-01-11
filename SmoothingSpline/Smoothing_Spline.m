@@ -52,19 +52,22 @@ ySensors = NaN(nSensors,1);
 for i=1:nSensors
       ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
 end
-plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
-[BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
-weights = BS_value /ySensors'; %calculating weights
-[spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
+ plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+ [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
+ weights = BS_value /ySensors'; %calculating weights
+ [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
+
 for i = 1: nknots     %multiplying with the weights
     spline_value(i,:) = spline_value(i,:)*weights(i);
     spline_derv(i,:) = spline_derv(i,:)*weights(i);
 end
 add_spline_value = 0;
+
 for i = 1 : nknots
     add_spline_value = sum(spline_value);
     add_spline_derv = sum(spline_derv);
 end
+
 figure (1)
 plot(xVec, yVec,'g--','LineWidth',3);
 hold on
