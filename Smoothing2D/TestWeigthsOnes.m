@@ -41,4 +41,5 @@ for splineNumberHorizontal = 1:splinesPerAxis
 end
 figure(1)
 surf(xVec,yVec, sumZ);
+axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
 hold off;
