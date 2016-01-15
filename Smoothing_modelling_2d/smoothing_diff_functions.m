@@ -1,19 +1,17 @@
 %Smoothing in 2d USING DIFFERENT FUNCTIONS
-
 clear
 clc
+
 xyMin = -3;
 xyMax = 8;
 nSensors =500;
 noiseLevel = 0.02;
-
+lambda = .1;
+num =8;
 knotsPerAxis = 7;
 splinesPerAxis = knotsPerAxis+2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=30;
-%splineNumber = 3;
-plotSingleSplines = 0;
-
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);
@@ -123,14 +121,14 @@ for splineNumberHorizontal= 1:splinesPerAxis
                 [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
                 BS_Val(p,q) =horizontal*vertical ;
-                BS_Derv(p,q)= HorDerv*HorDerv;
+                BS_Derv(p,q)= HorDerv*VerDerv;
             end
         end
     end
 end
 
 
-lambda = 0.01;
+
 opt = [BS,BS_Derv*lambda];
 zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
 weights_opt = opt'\zMess_opt;
@@ -146,24 +144,31 @@ end
 
 sumZZ_opt = zeros(xLen,yLen);
 sumDerv_opt = zeros(xLen,yLen);
-for splineNumberHorizontal = 1:splinesPerAxis
-    for splineNumbervertical = 1:splinesPerAxis
-        for i=1:xLen
-            x = xVec(i);
-            [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
-            for j=1:yLen
-                y = yVec(j);
-                [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
-                zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
-                zVevDerv(i,j)=HorDerv*VerDerv;%*weights_opt_matrix(splineNumberHorizontal,splineNumbervertical);
-                
-            end
-        end
-        sumZZ_opt = sumZZ_opt + zVec;
-        sumDerv_opt=sumDerv_opt+zVevDerv;
-        
-    end
-end
-figure (4)
+% for splineNumberHorizontal = 1:splinesPerAxis
+%     for splineNumbervertical = 1:splinesPerAxis
+%         for i=1:xLen
+%             x = xVec(i);
+%             [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+%             for j=1:yLen
+%                 y = yVec(j);
+%                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+%                 zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
+%                 
+%                 
+%             end
+%         end
+%         sumZZ_opt = sumZZ_opt + zVec;
+%        % sumDerv_opt=sumDerv_opt+zVevDerv;
+%         
+%     end
+% end
+
+
 surf (xx,yy,sumZZ_opt);
 %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+
+ 
+ 
+ 
+ 
+ 

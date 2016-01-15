@@ -10,8 +10,9 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
+tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 120; 
+ nSensors = 200; 
 noise = 0.08;
 %Start_point =-2;
 %End_point =2;
@@ -26,9 +27,7 @@ xLen = length(xVec);
 yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
-%lambda=.005;
-lambda=[0.045];
-%lambda = [.04];
+lambda=[0.010,.002 ,.003];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -114,6 +113,7 @@ H = X * inv( X' * X + lambda_new * eye(size(X'*X)) ) * X' ;
 yh_fit = H * y ;
 figure (2)%Plotting the curves
 %plot ( vector, M_splines'); %plotting optimised splines
+title('Smoothing spline using GCV')
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
 %plot( xSensors , yh_fit , 'k-','LineWidth',1.6);
@@ -125,6 +125,6 @@ text(xMin+.3,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
 text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
-title('After Optimisation')
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
+toc

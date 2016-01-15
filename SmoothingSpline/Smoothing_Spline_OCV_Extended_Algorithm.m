@@ -10,10 +10,9 @@ option = input ('\n>>');
 %option  =1 ;
 tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 150; 
+ nSensors = 200; 
 noise = 0.11;
-%Start_point =-2;
-%End_point =2;
+
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -160,14 +159,14 @@ end
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
 plot(xVec, yVec,'g--','LineWidth',3);
-%legend('Clean Data','Spines');
+title('Smoothing with OCV using extended algorithm')
 print_pos=max(yleftout-1);
 text(xMin+.2,print_pos+.4,sprintf('Sensors =>%g', nSensors));
 text(xMin+.2,print_pos+.3,sprintf('Lambda =>%3.9g', lambda_new));
 text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
-title('After Optimisation')
+
 plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
 hold off

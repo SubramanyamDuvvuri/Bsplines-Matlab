@@ -1,4 +1,6 @@
 %Implementation of cross validation using ocv  Algorithm using trace of hat matrix
+
+%implementation using extended algorithm
 clc
 clear
 fprintf('Enter a function for consideration')
