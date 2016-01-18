@@ -84,7 +84,6 @@ for lambda_counter = 1:length(lambda)
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,1, xPoint);
         prediction = M_splines'*weights_opt;
         difference = prediction-yPoint;
-        y = ySensors;
         X = BS_value';
         H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
         sum_Error = sum_Error + difference.^2;

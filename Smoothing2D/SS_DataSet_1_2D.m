@@ -1,12 +1,14 @@
-%Smoothing using manual selection on smoothing parameter
-%WITH TEST DATA SET ONE
+%Smoothing using manual select_DataSetion on smoothing parameter
+%WITH TEST DATA SET ONE AND TWO
+
 tic
 close all
 clear
 clc
+select_DataSet=2;
 xyMin = -1;
 xyMax = 1;
-nSensors =1000;
+nSensors =300;
 noiseLevel = 0.1;
 lambda_start = .007;
 lambda_end = .9;
@@ -18,7 +20,7 @@ totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
 %splineNumber = 3;
-select =1;
+
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);
@@ -30,9 +32,9 @@ knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
 FunctionType =1;
 doEquispaced = 0;
-if select ==1
+if select_DataSet ==1
     [xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noiseLevel, FunctionType, doEquispaced);
-elseif select ==2
+elseif select_DataSet ==2
     [SensorData, CleanData] = loadTestData(nSensors, noiseLevel, 'f', 'r');
     xSensor = SensorData.x;
     ySensor = SensorData.y;
@@ -40,17 +42,20 @@ elseif select ==2
     zClean = SensorData.zClean;
     xVec = CleanData.xVec;
     yVec = CleanData.yVec;
+    zzClean = CleanData.zMatrix;
 end
 
 [xx,yy] = meshgrid(xVec, yVec);
 z=0;
-for i=1:cleanLen
-    for k=1:cleanLen
-        zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+if select_DataSet ==1
+    for i=1:cleanLen
+        for k=1:cleanLen
+            zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+        end
     end
-end                                                                                                                                                                               
+end
 figure (1)
-
+title ( 'Clean data');
 surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
 hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
@@ -163,16 +168,23 @@ plot3 ( xSensor , ySensor , zMess ,'r*');
 legend ( 'Prediction', 'Sensors');
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
 %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
-if lambda_same ==1 
+if lambda_same ==1
     text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_start(1)));
 else
     text(0.5, 0.5, 1, sprintf('\\lambda_1 = %g \\lambda_2 = %g',lambda_start(1), lambda_end));
 end
-    
-text(0.5, 0.5, .9, sprintf('noise = %g',noiseLevel));
-text(0.5, 0.5, .8, sprintf('nSensors %g',nSensors));
-xlabel('x [n]');
-ylabel('y [n]');
-zlabel('z [n]');
+if select_DataSet == 1
+    text(0.5, 0.5, .9, sprintf('noise = %g',noiseLevel));
+    text(0.5, 0.5, .8, sprintf('nSensors %g',nSensors));
+    xlabel('x [n]');
+    ylabel('y [n]');
+    zlabel('z [n]');
+else
+    text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
+    text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
+    xlabel('x [n]');
+    ylabel('y [n]');
+    zlabel('Temperature [°C]');
+end
 %fprintf('Lambda1 was %g  and Lambda2 was %g \n',lambda_start ,lambda_end );
 toc
