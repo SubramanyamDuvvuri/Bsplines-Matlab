@@ -8,17 +8,19 @@ clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =250;
+nSensors =70;
 noiseLevel = 0.1;
-lambda_start = .0001:.0001:.0007;
+lambda_start = .007:.01:.07;
 lambda_end = .5;
-lambda_same =1; RMS=NaN(length(lambda_start),1);% 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
+lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
+
 RMS=NaN(length(lambda_start),1);
 knotsPerAxis = 5;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=30;
+%splineNumber = 3;
 select_DataSet =1;
 
 xVec = linspace(xyMin,xyMax,cleanLen);
@@ -115,7 +117,7 @@ if lambda_same ==1
         leftout_point = 0;
         sum_Error= 0;
         
-        parfor i = 1 : nSensors
+        for i = 1 : nSensors
             [BS]=Calculate_Basis(splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  );%-----
             
             %----------------------------------------------
@@ -138,20 +140,17 @@ if lambda_same ==1
             zCal =zMess(i);
             M_Splines = NaN (totalSplines,1);
              p=0;
-
-            M_Splines= Basis_cal_one_point ( splinesPerAxis,knotsPerAxis,xCal,yCal,xyMin,xyMax);
+           M_Splines= Basis_cal_one_point ( splinesPerAxis,knotsPerAxis,xCal,yCal,xyMin,xyMax);
            
             prediction = M_Splines'*weights_opt;
             difference = prediction-zCal;
             
             X = BS';
-            H = X * inv( X' * X + lambda_start(lambda_counter) * eye(size(X'*X)) ) * X' ;
-          
-            division= ((difference)/(1 - H(i,i)));
-            sum_Error = sum_Error + division.^2;
+            H = X/(X'*X+lambda_start(lambda_counter)*eye(size(X'*X))) * X' ;
+            sum_Error = sum_Error + difference.^2;
         end
-        
-        RMS(lambda_counter)= sqrt(sum_Error/length(zMess));
+        division = sum_Error / (1- inv(length(zMess))*trace (H)).^2;
+       RMS(lambda_counter)= sqrt(division/length(zMess));
         fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
             lambda_start(lambda_counter), RMS(lambda_counter));
         
