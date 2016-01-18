@@ -9,7 +9,7 @@ xyMin = -1;
 xyMax = 1;
 nSensors =70;
 noiseLevel = 0.1;
-lambda_start = [.001,.005,.007];
+lambda_start = .007:.01:.07;
 lambda_end = .5;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
@@ -17,10 +17,10 @@ knotsPerAxis = 5;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
-cleanLen=52;
-%splineNumber = 3;
-select_DataSet =2;
+cleanLen=30;
 
+select_DataSet =1;
+RMS=NaN(length(lambda_start),1);
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);
@@ -45,7 +45,6 @@ elseif select_DataSet ==2
     yVec = CleanData.yVec;
     zzClean = CleanData.zMatrix;
 end
-
 [xx,yy] = meshgrid(xVec, yVec);
 z=0;
 if select_DataSet ==1
@@ -108,7 +107,7 @@ zlabel('z [n]');
 leftout_point = 1; % put 0 to include all the values
 nSensors = nSensors-1;
 if lambda_same ==1 
-    for lambda_counter = 1:length(lambda_start)
+   for lambda_counter = 1:length(lambda_start)
         xleftout = 0;
         yleftout = 0;
         zleftout = 0;
@@ -120,20 +119,20 @@ if lambda_same ==1
             add_spline_value =0;
             leftout_point =leftout_point+1;% comment this incase only one point  or no point needs to be left out
             if isequal (leftout_point,0)
-                xleftout = [xSensor(1:nSensors+1) ];
-                yleftout =  [ySensor(1:nSensors+1) ];
-                zleftout =  [zMess(1:nSensors+1) ];
+                xleftout = xSensor(nSensors+1);
+                yleftout = ySensor(nSensors+1);
+                zleftout = zMess(nSensors+1);
                 nSensors = nSensors +1;
                 break;
             end
             if isequal(leftout_point,1)
-                xleftout = [xSensor(leftout_point +1:nSensors+1) ];
-                yleftout =  [ySensor(leftout_point +1:nSensors+1) ];
-                zleftout =  [zMess(leftout_point +1:nSensors+1) ];
+                xleftout = xSensor(leftout_point +1:nSensors+1);
+                yleftout = ySensor(leftout_point +1:nSensors+1);
+                zleftout = zMess(leftout_point +1:nSensors+1);
             elseif isequal(leftout_point ,nSensors+1)
-                xleftout = [xSensor(1:nSensors) ];
-                yleftout =  [ySensor(1:nSensors) ];
-                zleftout =  [zMess(1:nSensors) ];
+                xleftout = xSensor(1:nSensors);
+                yleftout = ySensor(1:nSensors);
+                zleftout = zMess(1:nSensors);
             else
                 xleftout = [xSensor(1:leftout_point-1) ; xSensor(leftout_point+1:nSensors+1)];
                 yleftout =  [ySensor(1:leftout_point-1) ; ySensor(leftout_point+1:nSensors+1)];
@@ -155,9 +154,9 @@ if lambda_same ==1
             vector_span = 1:vector_length;
             BS_Hori = NaN(vector_length, vector_length);
             BS_Verti = NaN(vector_length, vector_length);
-            BS_Val = NaN(vector_length, vector_length);
+            %BS_Val = NaN(vector_length, vector_length);
             
-            [BS_Val, BS_Hori, BS_Verti] = Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax);
+            [~, BS_Hori, BS_Verti] = Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax);
             
             opt = [BS,BS_Hori*lambda_start(lambda_counter), BS_Verti*lambda_start(lambda_counter)];
             zMess_opt = [zleftout ;zeros(2*size(BS_Hori',1),1) ];
@@ -168,20 +167,8 @@ if lambda_same ==1
             BS_Val = NaN (totalSplines,1);
             
             p=0;
-            for splineNumberHorizontal= 1:splinesPerAxis
-                for splineNumberVertical= 1:splinesPerAxis
-                    p = (splineNumberHorizontal-1) * splinesPerAxis +splineNumberVertical;
-                    %p=p+1;
-                    %count = (i-1)*splinesPerAxis+j;
-                    q=1;
-                    x = xMissing;
-                    y = yMissing;
-                    [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
-                    [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
-                    BS_Val(p,q) =horizontal*vertical ;
-                     
-                end
-            end
+            BS_Val= Basis_cal_one_point ( splinesPerAxis,knotsPerAxis,xMissing,yMissing,xyMin,xyMax);
+            
             prediction = BS_Val'*weights_opt;
             difference = prediction-zMissing;
             sum_Error = sum_Error + difference.^2;
@@ -227,9 +214,9 @@ if lambda_same ==1
     axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
     %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
     if lambda_same ==1
-        text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_start(1)));
+        text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_new));
     else
-        text(0.5, 0.5, 1, sprintf('\\lambda_1 = %g lambda_2 = %g',lambda_start(1), lambda_end));
+        text(0.5, 0.5, 1, sprintf('\\lambda_1 = %g lambda_2 = %g',lambda_new, lambda_end));
     end
     
     text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
