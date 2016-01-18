@@ -1,13 +1,15 @@
 %Smoothing in 2d USING DIFFERENT FUNCTIONS
 clear
 clc
-
+close all
 xyMin = -3;
 xyMax = 8;
-nSensors =500;
+nSensors =400;
 noiseLevel = 0.02;
 lambda = .1;
 num =8;
+
+option =1 ;
 knotsPerAxis = 7;
 splinesPerAxis = knotsPerAxis+2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
@@ -28,7 +30,7 @@ for i = 1:cleanLen
     for j = 1:cleanLen
         x =xx(i,j);
          y = yy(i,j);
-        zzClean(i,j) = dummyCurve ( x ,1) *dummyCurve (y,1);
+        zzClean(i,j) = dummyCurve ( x ,option) *dummyCurve (y,option);
     end
 end
 figure (1)
@@ -36,11 +38,13 @@ title('Clean Data');
 hold on 
 surf (xx,yy,zzClean,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
 
+
+
 %taking the matrix of sensors
 [XSENSORS,YSENSORS] = meshgrid ( xSensor , ySensor);
 zMess = NaN(nSensors,1);
 for i = 1:nSensors
-zMess(i)= dummyCurve(xSensor(i) ,1) * dummyCurve(ySensor(i),1 ) +noiseLevel*randn();
+zMess(i)= dummyCurve(xSensor(i) ,option) * dummyCurve(ySensor(i),option) +noiseLevel*randn();
 end
 
 plot3(xSensor,ySensor,zMess,'r.');
@@ -96,79 +100,77 @@ figure (3)
 title('regression spline')
 hold on
 %plot3(xSensor,ySensor,zMess,'r.');
+plot3(xSensor,ySensor,zMess,'r.');
 surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
 %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
 hold off
 
 
-
-
-
-vector = xyMin+knotspan/2:knotspan:xyMax;
-vector_length =length(vector);
-p=0;
-q=0;
-Derv = NaN(splinesPerAxis^2,nSensors);
-for splineNumberHorizontal= 1:splinesPerAxis
-    for splineNumberVertical= 1:splinesPerAxis
-        p=p+1;
-        q=0;
-        for m= 1:vector_length
-            for n = 1:vector_length
-                q=q+1;
-                x = vector (m);
-                y = vector (n);
-                [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
-                [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
-                BS_Val(p,q) =horizontal*vertical ;
-                BS_Derv(p,q)= HorDerv*VerDerv;
-            end
-        end
-    end
-end
-
-
-
-opt = [BS,BS_Derv*lambda];
-zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
-weights_opt = opt'\zMess_opt;
-
-weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
-count =0;
-for i =1: splinesPerAxis
-    for j =1:splinesPerAxis
-        count=count+1;
-        weights_opt_matrix(j,i) = weights_opt(count);
-    end
-end
-
-sumZZ_opt = zeros(xLen,yLen);
-sumDerv_opt = zeros(xLen,yLen);
-% for splineNumberHorizontal = 1:splinesPerAxis
-%     for splineNumbervertical = 1:splinesPerAxis
-%         for i=1:xLen
-%             x = xVec(i);
-%             [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
-%             for j=1:yLen
-%                 y = yVec(j);
-%                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
-%                 zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
-%                 
-%                 
+% vector = xyMin+knotspan/2:knotspan:xyMax;
+% vector_length =length(vector);
+% p=0;
+% q=0;
+% Derv = NaN(splinesPerAxis^2,nSensors);
+% for splineNumberHorizontal= 1:splinesPerAxis
+%     for splineNumberVertical= 1:splinesPerAxis
+%         p=p+1;
+%         q=0;
+%         for m= 1:vector_length
+%             for n = 1:vector_length
+%                 q=q+1;
+%                 x = vector (m);
+%                 y = vector (n);
+%                 [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
+%                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
+%                BS_Hori(p,q)= vertical*HorDerv;  %%%%%%%%%% Little Change RJ %%%%% [product rule -->(f.g)' = f'.g + g'+f  ]
+%                 BS_Verti(p,q)= horizontal*VerDerv;
 %             end
 %         end
-%         sumZZ_opt = sumZZ_opt + zVec;
-%        % sumDerv_opt=sumDerv_opt+zVevDerv;
-%         
 %     end
 % end
-
-
-surf (xx,yy,sumZZ_opt);
-%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-
- 
- 
- 
+% 
+% 
+% 
+% opt = [BS,BS_Hori*lambda,  BS_ver_lambda];
+% zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
+% weights_opt = opt'\zMess_opt;
+% 
+% weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
+% count =0;
+% for i =1: splinesPerAxis
+%     for j =1:splinesPerAxis
+%         count=count+1;
+%         weights_opt_matrix(j,i) = weights_opt(count);
+%     end
+% end
+% 
+% sumZZ_opt = zeros(xLen,yLen);
+% sumDerv_opt = zeros(xLen,yLen);
+% % for splineNumberHorizontal = 1:splinesPerAxis
+% %     for splineNumbervertical = 1:splinesPerAxis
+% %         for i=1:xLen
+% %             x = xVec(i);
+% %             [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+% %             for j=1:yLen
+% %                 y = yVec(j);
+% %                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+% %                 zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
+% %                 
+% %                 
+% %             end
+% %         end
+% %         sumZZ_opt = sumZZ_opt + zVec;
+% %        % sumDerv_opt=sumDerv_opt+zVevDerv;
+% %         
+% %     end
+% % end
+% 
+% 
+% surf (xx,yy,sumZZ_opt);
+% %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+% 
+%  
+%  
+%  
  
  
