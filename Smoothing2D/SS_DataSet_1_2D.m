@@ -1,4 +1,4 @@
-%Smoothing using manual selection on smoothing parameter
+%Smoothing using manual select_DataSetion on smoothing parameter
 %WITH TEST DATA SET ONE
 tic
 close all
@@ -6,7 +6,7 @@ clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =1000;
+nSensors =200;
 noiseLevel = 0.1;
 lambda_start = .007;
 lambda_end = .9;
@@ -18,7 +18,7 @@ totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
 %splineNumber = 3;
-select =1;
+select_DataSet=2;
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);
@@ -30,9 +30,9 @@ knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
 FunctionType =1;
 doEquispaced = 0;
-if select ==1
+if select_DataSet ==1
     [xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noiseLevel, FunctionType, doEquispaced);
-elseif select ==2
+elseif select_DataSet ==2
     [SensorData, CleanData] = loadTestData(nSensors, noiseLevel, 'f', 'r');
     xSensor = SensorData.x;
     ySensor = SensorData.y;
