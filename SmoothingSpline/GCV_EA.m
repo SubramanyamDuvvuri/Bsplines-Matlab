@@ -13,7 +13,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
-nSensors = 150;
+nSensors = 300;
 noise = 0.08;
 %Start_point =-2;
 %End_point =2;
@@ -29,8 +29,10 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.000001:.000005:.001];
-%lambda = [.04];
+lambda_grid=.4;
+lambda_start =.0000001;
+lambda_end = 1;
+lambda = lambda_start:lambda_grid:lambda_end;
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -59,46 +61,76 @@ end
 %CALCULATING THE ESTIMATION
 %============================
 %--------------------------------------------------------
-M_Derivatives =NaN(nknots-1,nknots+2);
-M_splines = zeros (nknots-1,nknots+2);
-for lambda_counter = 1:length(lambda)
-    sum_Error= 0;
-    for i = 1 : nSensors
-        [BS_value, ~]=calculate_spline(knotspan,knots , nSensors,xSensors);
-        [spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
-        %         ----------------------------------------------
-        %         calculate optimized weights by lambda for one point left out
-        %         ------------------------------------------------
-        add_derv_opt=0;
+for resolution = 1:5
+    lambda = lambda_start:lambda_grid:lambda_end;
+    for lambda_counter =1:length(lambda)
         
-        vector=xMin:Grid_opt:xMax;
-        vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
-        vector_length =length(vector);
-        vector_span = 1:vector_length;
-        [~,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
-        opt = [BS_value,M_Derivatives*lambda(lambda_counter)];
-        ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
-        weights_opt = opt'\ySensors_opt;   %calculating the optimised weights
-        xPoint = xSensors(i);
-        yPoint= ySensors(i);
-        [M_splines ,~] = calculate_spline(knotspan,knots,1, xPoint);
-        prediction = M_splines'*weights_opt;
-        difference = prediction-yPoint;
-        X = BS_value';
-        H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
-        sum_Error = sum_Error + difference.^2;
+        
+        sum_Error= 0;
+        
+        for i = 1 : nSensors
+            [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
+            
+            
+            %----------------------------------------------
+            %calculate optimized weights by lambda for one point left out
+            %------------------------------------------------
+            
+            M_Derivatives =NaN(nknots-1,nknots+2);
+            M_splines = zeros (nknots-1,nknots+2);
+            vector=xMin:Grid_opt:xMax;
+            vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
+            
+                vector_length =length(vector);
+                vector_span = 1:vector_length;
+                [~,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
+                opt = [BS_value,M_Derivatives*lambda(lambda_counter)];
+                ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
+                weights_opt = opt'\ySensors_opt;   %calculating the optimised weights
+                xPoint = xSensors(i);
+                yPoint= ySensors(i);
+                [M_splines ,~] = calculate_spline(knotspan,knots,1, xPoint);
+                prediction = M_splines'*weights_opt;
+                difference = prediction-yPoint;
+                X = BS_value';
+                H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
+                sum_Error = sum_Error + difference.^2;
+            end
+            division = sum_Error / (1- inv(length(ySensors))*trace (H)).^2;
+            RMS(lambda_counter)= sqrt(division/length(ySensors));
+            fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
+                lambda(lambda_counter), RMS(lambda_counter));
+            if lambda_counter > 1
+                if RMS(lambda_counter-1)< RMS(lambda_counter)
+                    if resolution == 1
+                        increament1 = -2;
+                        increament2 = -1;
+                    end
+                    if lambda_counter+increament1 == 0
+                        lambda_counter = lambda_counter +1;
+                    end
+                    lambda_start = lambda(lambda_counter+increament1);
+                    lambda_end = lambda(lambda_counter+increament2);
+                    lambda_grid =lambda_grid/5;
+                    if resolution == 1
+                        increament1 = increament1 +1;
+                        increament2 = increament1 +1;
+                    end
+                    fprintf('adding more resolution\n');
+                    break;
+                end
+            end
+        end
     end
-    division = sum_Error / (1- inv(length(ySensors))*trace (H)).^2;
-    RMS(lambda_counter)= sqrt(division/length(ySensors));
-    fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
-        lambda(lambda_counter), RMS(lambda_counter));
-end
+
+
+
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
-lambda_new = lambda ( find ( RMS == min (RMS)));
 vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
 vector_length =length(vector);
 [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
-lambda_new = lambda ( find ( RMS == min (RMS)));
+lambda_new = max (lambda ( find ( RMS == min (RMS))));
+fprintf('using lambda %3.12f\n',lambda_new);
 opt = [BS_value,M_Derivatives*lambda_new];
 ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
 weights_opt = opt'\ySensors_opt;                   %calculating the optimised weights
@@ -108,10 +140,7 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-y=ySensors;
-H = X * inv( X' * X + lambda_new * eye(size(X'*X)) ) * X' ;
-yh_fit = H * y ;
-figure (2)%Plotting the curves
+%figure (4)%Plotting the curves
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
@@ -124,14 +153,8 @@ text(xMin+.3,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
 % text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 % text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 % text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
-title('Smoothing Parameter selection using GCV')
+title('Smoothing Parameter selection using GCV-Advanced Algorithm')
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 xlabel('X[n]');
 ylabel('Y[n]');
 toc
-hold off
-figure(5)
-plot (lambda,RMS,'-','LineWidth',3)
-title('RMS vs \Lambda plot' );
-xlabel('\Lambda');
-ylabel('RMS')
