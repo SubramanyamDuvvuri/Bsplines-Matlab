@@ -1,3 +1,4 @@
+tic
 clc
 clear
 nSensors = 100;
@@ -63,7 +64,7 @@ for s=1:nSensors
     BS(1,s) =quadruple_reccurence_start(xs,firstKnot);
     BS(2,s)=triple_reccurence_start(xs,firstKnot);
     BS(3,s)=Double_reccurence_start(xs,firstKnot);        
-    for k=1:nknots-4;
+    parfor k=1:nknots-4;
         BS(3+k,s)=Basic_Spline_start(xs,knots(k));
     end
      BS(nknots,s)=Double_reccurence_end(xs,lastKnot);
@@ -74,7 +75,7 @@ end
 
 weights = BS'\ySensors;
 %weights = ones (16,1);
-
+toc
 for i = 1:xLen
     [aaval,aaderv]= quadruple_reccurence_start(xVec(i),firstKnot);
     a_spline(i)=aaval*weights(1);               %spline values
@@ -156,110 +157,110 @@ hold off
 %%%PLOTTING THE SMOOTHING SPLINE%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-hold on;
-
-add_derv_opt=0
-M_Derivatives =NaN(nknots-1,nknots+2);
-M_splines = zeros (nknots-1,nknots+2);
-count=0; 
-%%Finding M_Derivatives
-for x = xMin:.1 :xMax
-    
-    count=count+1;
-    xx(count)=x;
-    [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
-    M_Derivatives(count,1)=aaderv;
-    
-    [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
-    M_Derivatives(count,2)=bbderv;
-    
-    [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
-    M_Derivatives(count,3)=ccderv;
-    
-    for j= 1:nknots-4
-        [ddval,ddderv] =Basic_Spline_start(x,knots(j));
-         M_Derivatives(count,j+3)=ddderv;
-    end  
-    [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
-     M_Derivatives(count,nknots)=ffderv;
-    
-    [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
-     M_Derivatives(count,nknots+1)=ggderv;
-    
-    [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
-    M_Derivatives(count,nknots+2)=hhderv;
-    
-end  
-   lamda = 0;
-   %for i = .1:.0.1:.2
-   for i=0:0.05:0.5
-       lamda = lamda +i;
-       hold on
- opt = [BS,M_Derivatives'*lamda];
- ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
-weights_opt = opt'\ySensors_opt;                   %Finding the weights
-
-%%%%%%%
-%SPLINES 
-%%%%%%%
-
- for x = xMin:.1:xMax 
-     count=count+1;
-     xxVec(count)=x;
-     [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
-     M_splines(count,1) = aaval*weights_opt(1);    
-     [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
-     M_splines(count,2) = bbval*weights_opt(2);     
-     [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
-     M_splines(count,3) = ccval*weights_opt(3);
-     
-     for j= 1:nknots-4
-         [ddval,ddderv] =Basic_Spline_start(x,knots(j));
-          M_splines(count,j+3) = ddval*weights_opt(j+3);
-     end  
-     [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
-     M_splines(count,nknots) = ffval*weights_opt(nknots);
-     
-       [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
-      M_splines(count,nknots+1) = ggval*weights_opt(nknots+1);     
-     [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
-      M_splines(count,nknots+2) = hhval*weights_opt(nknots+2);     
- end  
-
-figure (4);
-xxLen =length (xx);
-yyVec = NaN(xxLen,1);
-for i=1:xxLen
-    yyVec(i) = example_curve(xx(i));
-    %yyVec(i) = dummyCurve(xx(i));
-end
-%plot ( xx , yyVec, 'r--');
- plot(xx, yyVec,'g--','LineWidth',3);
-hold on
-add_opt = 0;
-add_spline_opt = 0;
-
-%%%%%%%%%%%
-%%%Calculating the fitting Curve
-%%%%%%%%%%%%
- for i = 1:nknots+2
-        add_opt = add_opt + M_Derivatives ( :,i)';
-        add_spline_opt = add_spline_opt + M_splines( :,i)';
- end
-     
-     plot (xxVec,M_splines,'b','LineWidth',1.3)
-     plot (xxVec, add_spline_opt, 'k-','LineWidth',1.6)
-     
-      legend('Clean Data','Spines');
-      text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
-      text(xMin+2,2.8,sprintf('Lambda =%g', lamda));
-      text(xMin+2, 2.7,sprintf('Number of knots= %g', nknots +2));
-      text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
-      title('After Optimisation')
-      plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
-      hold off
-   end
-   
+% hold on;
+% 
+% add_derv_opt=0
+% M_Derivatives =NaN(nknots-1,nknots+2);
+% M_splines = zeros (nknots-1,nknots+2);
+% count=0; 
+% %%Finding M_Derivatives
+% for x = xMin:.1 :xMax
+%     
+%     count=count+1;
+%     xx(count)=x;
+%     [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
+%     M_Derivatives(count,1)=aaderv;
+%     
+%     [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
+%     M_Derivatives(count,2)=bbderv;
+%     
+%     [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
+%     M_Derivatives(count,3)=ccderv;
+%     
+%     for j= 1:nknots-4
+%         [ddval,ddderv] =Basic_Spline_start(x,knots(j));
+%          M_Derivatives(count,j+3)=ddderv;
+%     end  
+%     [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
+%      M_Derivatives(count,nknots)=ffderv;
+%     
+%     [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
+%      M_Derivatives(count,nknots+1)=ggderv;
+%     
+%     [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
+%     M_Derivatives(count,nknots+2)=hhderv;
+%     
+% end  
+%    lamda = 0;
+%    %for i = .1:.0.1:.2
+%    for i=0:0.05:0.5
+%        lamda = lamda +i;
+%        hold on
+%  opt = [BS,M_Derivatives'*lamda];
+%  ySensors_opt = [ySensors ;zeros(size(M_Derivatives,1),1) ];
+% weights_opt = opt'\ySensors_opt;                   %Finding the weights
+% 
+% %%%%%%%
+% %SPLINES 
+% %%%%%%%
+% 
+%  for x = xMin:.1:xMax 
+%      count=count+1;
+%      xxVec(count)=x;
+%      [aaval,aaderv]= quadruple_reccurence_start(x,firstKnot);
+%      M_splines(count,1) = aaval*weights_opt(1);    
+%      [bbval,bbderv]= triple_reccurence_start(x,firstKnot);
+%      M_splines(count,2) = bbval*weights_opt(2);     
+%      [ccval,ccderv]= Double_reccurence_start(x,firstKnot);
+%      M_splines(count,3) = ccval*weights_opt(3);
+%      
+%      for j= 1:nknots-4
+%          [ddval,ddderv] =Basic_Spline_start(x,knots(j));
+%           M_splines(count,j+3) = ddval*weights_opt(j+3);
+%      end  
+%      [ffval,ffderv]=Double_reccurence_end(x,lastKnot);
+%      M_splines(count,nknots) = ffval*weights_opt(nknots);
+%      
+%        [ggval,ggderv]=triple_reccurence_end(x,lastKnot);
+%       M_splines(count,nknots+1) = ggval*weights_opt(nknots+1);     
+%      [hhval,hhderv]=quadruple_reccurence_end(x,lastKnot);
+%       M_splines(count,nknots+2) = hhval*weights_opt(nknots+2);     
+%  end  
+% 
+% figure (4);
+% xxLen =length (xx);
+% yyVec = NaN(xxLen,1);
+% for i=1:xxLen
+%     yyVec(i) = example_curve(xx(i));
+%     %yyVec(i) = dummyCurve(xx(i));
+% end
+% %plot ( xx , yyVec, 'r--');
+%  plot(xx, yyVec,'g--','LineWidth',3);
+% hold on
+% add_opt = 0;
+% add_spline_opt = 0;
+% 
+% %%%%%%%%%%%
+% %%%Calculating the fitting Curve
+% %%%%%%%%%%%%
+%  for i = 1:nknots+2
+%         add_opt = add_opt + M_Derivatives ( :,i)';
+%         add_spline_opt = add_spline_opt + M_splines( :,i)';
+%  end
+%      
+%      plot (xxVec,M_splines,'b','LineWidth',1.3)
+%      plot (xxVec, add_spline_opt, 'k-','LineWidth',1.6)
+%      
+%       legend('Clean Data','Spines');
+%       text(xMin+3.2,2.8,sprintf('       Sensors =%g', nSensors));
+%       text(xMin+2,2.8,sprintf('Lambda =%g', lamda));
+%       text(xMin+2, 2.7,sprintf('Number of knots= %g', nknots +2));
+%       text(xMin+2,2.6,sprintf(' First Value= %g    Last value= %g ',xMin, xMax));
+%       title('After Optimisation')
+%       plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+%       hold off
+%    end
+%    
   
    
    

@@ -12,7 +12,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 200; 
+ nSensors = 100; 
 noise = 0.08;
 %Start_point =-2;
 %End_point =2;
@@ -84,6 +84,7 @@ for lambda_counter = 1:length(lambda)
         [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,1, xPoint);
         prediction = M_splines'*weights_opt;
         difference = prediction-yPoint;
+        
         X = BS_value';
         H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
         sum_Error = sum_Error + difference.^2;
@@ -108,6 +109,7 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
+y=ySensors;
 H = X * inv( X' * X + lambda_new * eye(size(X'*X)) ) * X' ;
 yh_fit = H * y ;
 figure (2)%Plotting the curves
@@ -115,7 +117,7 @@ figure (2)%Plotting the curves
 title('Smoothing spline using GCV')
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
-%plot( xSensors , yh_fit , 'k-','LineWidth',1.6);
+plot( xSensors , yh_fit , 'k-','LineWidth',1.6);
 plot(xVec, yVec,'g--','LineWidth',3);
 %legend('Clean Data','Spines');
 print_pos=max(yleftout-1);

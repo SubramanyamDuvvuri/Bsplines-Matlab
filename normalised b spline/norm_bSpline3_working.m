@@ -78,6 +78,11 @@ xlabel(['\fontsize{13}Knots---->']);
 ylabel(['\fontsize{13}Weights---->'])
  title(['\fontsize{15}Open Uniform B-Spline fit']);
 hold off
+figure (11) 
+ plot (xLin,d1,'b',xLin,d2,'b',xLin,d3,'b',xLin,d4,'b',xLin,d5,'b');
+ hold on
+ plot (xLin,d1+d2+d3+d4+d5,'k--');
+axis([ -6 3 0 1.2 ])
 
 %axis ([-10 10 0 8])
 

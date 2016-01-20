@@ -1,8 +1,8 @@
 clear
 clc
-xyMin = -1;
-xyMax = 1;
-knotsPerAxis = 11;
+xyMin = 0;
+xyMax = 4;
+knotsPerAxis = 5;
 splinesPerAxis = knotsPerAxis+2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=50;
@@ -41,11 +41,11 @@ for splineNumberHorizontal = 1:splinesPerAxis
 end
 figure(1)
 surf(xVec,yVec, sumZ);
-title('Open Uniform B-Spline');
+title(['\fontsize{15}Open Uniform B-Spline']);
 hold on
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-xlabel('x [n]');
-ylabel('y [n]');
-zlabel('z [n]');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
 hold off;

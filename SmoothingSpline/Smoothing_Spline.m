@@ -28,7 +28,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=.78;
+lambda=.09;
 %lambda=[.1];
 sum_Error= 0;
 Grid_opt =.01;
@@ -106,18 +106,20 @@ for i = 1 : nknots
 end
 
 figure (3)%Plotting the curves
-plot ( vector, M_splines'); %plotting optimised splines
+%plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
 plot(xVec, yVec,'g--','LineWidth',3);
 %legend('Clean Data','Spines');
 print_pos=max(ySensors-1);
-text(xMin+1,print_pos+.4,sprintf('Sensors =>%g', nSensors));
-text(xMin+1,print_pos+.3,sprintf('Lambda =>%g', lambda));
-text(xMin+1, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
-text(xMin+1,print_pos+.1,sprintf(' First Value=> %g    Last value= %g ',xMin, xMax));
-text(xMin+1,print_pos+0,sprintf(' Knotspan=> %g ',knotspan));
-title('After Optimisation')
+text(xMin+.1,print_pos+.8,sprintf('Sensors =>%g', nSensors));
+text(xMin+.1,print_pos+.7,sprintf('Lambda =>%g', lambda));
+text(xMin+.1, print_pos+.6,sprintf('Number of knots=> %g', nknots +2));
+text(xMin+.1,print_pos+.5,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
+text(xMin+.1,print_pos+.4,sprintf('Knotspan=> %g ',knotspan));
+title ( ' Smoothing Spline parameter  = .09' );
+ xlabel('x [n]');
+ ylabel('y [n]');
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 hold off
 

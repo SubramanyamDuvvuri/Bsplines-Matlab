@@ -3,8 +3,8 @@ clear
 clc
 close all
 xyMin = -3;
-xyMax = 8;
-nSensors =400;
+xyMax = 6;
+nSensors =500;
 noiseLevel = 0.02;
 lambda = .1;
 num =8;
@@ -34,11 +34,11 @@ for i = 1:cleanLen
     end
 end
 figure (1)
+
+
+surf (xx,yy,zzClean,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
 title('Clean Data');
 hold on 
-surf (xx,yy,zzClean,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-
-
 
 %taking the matrix of sensors
 [XSENSORS,YSENSORS] = meshgrid ( xSensor , ySensor);
@@ -48,6 +48,13 @@ zMess(i)= dummyCurve(xSensor(i) ,option) * dummyCurve(ySensor(i),option) +noiseL
 end
 
 plot3(xSensor,ySensor,zMess,'r.');
+legend ( 'CleanData', 'Sensors');
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
+text(1, 0.7, 7, sprintf('noise = %g',noiseLevel));
+text(1, 0.9, 6.5, sprintf('nSensors %g',nSensors));
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
 hold off
 
 
@@ -97,13 +104,23 @@ for splineNumberHorizontal = 1:splinesPerAxis
     end
 end
 figure (3)
-title('regression spline')
-hold on
+
 %plot3(xSensor,ySensor,zMess,'r.');
-plot3(xSensor,ySensor,zMess,'r.');
+
 surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
+title('Estimate using Regression spline')
+hold on
+plot3(xSensor,ySensor,zMess,'r.');
 %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
+legend ( 'CleanData', 'Sensors');
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
+text(1, 0.7, 8, sprintf('noise = %g',noiseLevel));
+text(1, 0.9, 7, sprintf('nSensors %g',nSensors));
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
 hold off
+
 
 
 % vector = xyMin+knotspan/2:knotspan:xyMax;
