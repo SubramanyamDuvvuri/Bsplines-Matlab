@@ -1,6 +1,7 @@
 %New script using functions to shorten the code
 clc
 clear
+close all
 fprintf('Enter a function for consideration')
 fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
@@ -10,8 +11,8 @@ option = input ('\n>>');
 %option  =1 ;
 tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 200; 
-noise = 0.11;
+nSensors = 300; 
+noise = 0.12;
 
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
@@ -26,7 +27,7 @@ add_spline = 0;
 add_derv=0;
 %lambda=.005;
 lambda_grid=.4;
-lambda_start =.001;
+lambda_start =.0000001;
 lambda_end = 1;
 lambda = lambda_start:lambda_grid:lambda_end;
 
@@ -125,6 +126,9 @@ for resolution = 1:5
                              increament1 = -2;
                              increament2 = -1;
                       end
+                      if lambda_counter+increament1 == 0 
+                          lambda_counter = lambda_counter +1;
+                      end
                       lambda_start = lambda(lambda_counter+increament1);
                       lambda_end = lambda(lambda_counter+increament2);
                       lambda_grid =lambda_grid/5;
@@ -158,16 +162,17 @@ end
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
+%plot( xSensors , yh_fit , 'k-','LineWidth',1.6);
 plot(xVec, yVec,'g--','LineWidth',3);
-title('Smoothing with OCV using extended algorithm')
-print_pos=max(yleftout-1);
-text(xMin+.2,print_pos+.4,sprintf('Sensors =>%g', nSensors));
-text(xMin+.2,print_pos+.3,sprintf('Lambda =>%3.9g', lambda_new));
-text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
-text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
-text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
-
-plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
-hold off
-hold off
+%legend('Clean Data','Spines');
+print_pos=max(ySensors-1);
+text(xMin+.3,print_pos+.4,sprintf('Sensors =>%g', nSensors));
+text(xMin+.3,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
+% text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
+% text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
+% text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
+title('Smoothing Parameter selection using OCV-Advanced Algorithm')
+plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+xlabel('X[n]');
+ylabel('Y[n]');
 toc

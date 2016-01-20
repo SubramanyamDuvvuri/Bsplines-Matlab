@@ -1,19 +1,20 @@
 %New script using functions to shorten the code
 clc
 clear
+close all
 fprintf('Enter a function for consideration')
 fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
-            '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
-            ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
-            '\n 4--> y = cos(x)'...
-            '\n 5-->y = cos(x) * sin (x)'...
-            '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
-            '\n 7 --> y =x*x']);
+    '\n  2-->y= 3^i - 2^i + exp(-5*i) + exp (-20 * (i-.5)^2)' , ...
+    ' \n 3-->y = 4.26 * (exp(-i)-4 * exp (-2*i) +3 * exp (-3 *i))'...
+    '\n 4--> y = cos(x)'...
+    '\n 5-->y = cos(x) * sin (x)'...
+    '\n 6--> y = sqrt(1-(abs(x)-1)^2), acos((1-abs(x))-pi)'...
+    '\n 7 --> y =x*x']);
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
- nSensors = 200; 
-noise = 0.08;
+nSensors = 100;
+noise = 0.00001;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -26,7 +27,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.010,.002 ,.003];
+lambda=[0.001:.005:1];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -42,19 +43,19 @@ end
 %plot(xVec, yVec,'g--','LineWidth',3);
 %legend ('nknots');
 %hold on;
-load DataRandom1000;  %randomXpositions  randomYpositions  randomZ   
+load DataRandom1000;  %randomXpositions  randomYpositions  randomZ
 xSensors = xMin + (xMax-xMin)* (0.5 *randomXpositions(5:nSensors+4)+0.5);  % ignore first 4 samples in random list, due to fixed postions
 xSensors = sort(xSensors); %Determining X posotion of sensors
 ySensors = NaN(nSensors,1);
 for i=1:nSensors
-      ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
+    ySensors(i)=dummyCurve(xSensors(i),option) + noise*randomZ(i); %Determining Y posotion of sensors
 end
 %plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 %--------------------------------------------------------
 %CALCULATING THE ESTIMATION
 %============================
 %--------------------------------------------------------
- leftout_point =1; % put 0 to include all the values
+leftout_point =1; % put 0 to include all the values
 nSensors = nSensors -1;
 for lambda_counter = 1:length(lambda)
     xleftout = 0;
@@ -63,10 +64,10 @@ for lambda_counter = 1:length(lambda)
     sum_Error= 0;
     
     for i = 1 : nSensors+1
-         add_M_splines= 0;
-         add_spline_value =0;
-         leftout_point =leftout_point +1;% comment this incase only one point  or no point needs to be left out
-         if isequal (leftout_point,0)
+        add_M_splines= 0;
+        add_spline_value =0;
+        leftout_point =leftout_point +1;% comment this incase only one point  or no point needs to be left out
+        if isequal (leftout_point,0)
             xleftout = [xSensors(1:nSensors+1) ];
             yleftout =  [ySensors(1:nSensors+1) ];
             nSensors = nSensors +1;
@@ -82,12 +83,12 @@ for lambda_counter = 1:length(lambda)
             xleftout = [xSensors(1:leftout_point-1) ; xSensors(leftout_point+1:nSensors+1)];
             yleftout =  [ySensors(1:leftout_point-1) ; ySensors(leftout_point+1:nSensors+1)];
         end
-
+        
         [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xleftout);
         %[spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
         hold off
         %----------------------------------------------
-        %calculate optimized weights by lambda for one point left out 
+        %calculate optimized weights by lambda for one point left out
         %------------------------------------------------
         add_derv_opt=0;
         M_Derivatives =NaN(nknots-1,nknots+2);
@@ -135,12 +136,20 @@ plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the
 plot(xVec, yVec,'g--','LineWidth',3);
 %legend('Clean Data','Spines');
 print_pos=max(yleftout-1);
-text(xMin+.2,print_pos+.4,sprintf('Sensors =>%g', nSensors));
-text(xMin+.2,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
-text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
-text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
-text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
-title('After Optimisation')
+text(xMin+.2,print_pos+.4,sprintf('Sensors = %g', nSensors));
+text(xMin+.2,print_pos+.3,sprintf('Lambda = %g', lambda_new));
+% text(xMin+.2, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
+% text(xMin+.2,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
+% text(xMin+.2,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
+text(xMin+.2, print_pos+.2,sprintf('Noise = %g ',noise));
+title('Smoothing Parameter selection using OCV')
 plot(xleftout, yleftout, 'mo','MarkerFaceColor',[.10 1 .63]);
+xlabel('X[n]');
+ylabel('Y[n]');
 hold off
 toc
+figure(5)
+plot (lambda,RMS,'-','LineWidth',3)
+title('RMS vs \Lambda plot' );
+xlabel('\Lambda');
+ylabel('RMS')
