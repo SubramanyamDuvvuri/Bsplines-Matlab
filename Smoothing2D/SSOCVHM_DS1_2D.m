@@ -1,6 +1,6 @@
 %Contains code to find optimised smoothing parameter using ordinary cross validation.
 
-%WITH DATA SET ONE
+%WITH DATA SET ONE ANS TWO
 
 tic
 close all

@@ -1,13 +1,15 @@
+% contains parfor loop example , needed to optimize the code
+
 tic
 clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =300;
+nSensors =500;
 noiseLevel = 0.1;
 lambda_start = [.001,.005,.007];
-lambda_end = .5;
-lambda_same =1; % 0 to use different lambdas , 1 ofr same lambdas as lambda_start
+lambda_end = 0.007;  % for corners
+lambda_same =0; % 0 to use different lambdas , 1 ofr same lambdas as lambda_start
 figNumSmooth = 302;
 knotsPerAxis = 8;
 splinesPerAxis = knotsPerAxis+2;
@@ -143,8 +145,10 @@ weights_opt = opt'\zMess_opt;
 weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
 count =0;
 for i =1: splinesPerAxis
-    for j =1:splinesPerAxis
-        count=count+1;
+    parfor j =1:splinesPerAxis   % example for parfor loop but only little advanteage here #####
+        %countOld=count+1;
+        count = (i-1)*splinesPerAxis+j;
+        %fprintf('c1/c2 = %i %i \n', count, countOld);
         weights_opt_matrix(j,i) = weights_opt(count);
     end
 end
@@ -152,8 +156,8 @@ end
 zz= plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_opt_matrix); % function to plot spline
 figure (figNumSmooth)
 title ( ' Smoothing Spline ' );
-hold on
 surf (xx,yy,zz);
+hold on
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
 %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
 text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_start(1)));
@@ -286,7 +290,7 @@ if lambda_same ==1
     figure (5)
     hold on
     title ('cross Validation implementation');
-    text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_new));
+    text(0.5, 0.5, 1.1, sprintf('\\lambda = %g',lambda_new));
     surf (xx,yy,zz);
     axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
     hold off

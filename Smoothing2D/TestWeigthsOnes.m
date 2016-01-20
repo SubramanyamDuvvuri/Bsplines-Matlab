@@ -41,11 +41,6 @@ for splineNumberHorizontal = 1:splinesPerAxis
 end
 figure(1)
 surf(xVec,yVec, sumZ);
-title('Open Uniform B-Spline');
-hold on
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-xlabel('x [n]');
-ylabel('y [n]');
-zlabel('z [n]');
 hold off;

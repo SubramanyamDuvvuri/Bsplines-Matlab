@@ -1,6 +1,3 @@
-%Contains code to find optimised smoothing parameter using ordinary cross validation. 
-
-
 tic
 clear
 clc
@@ -8,17 +5,17 @@ xyMin = -1;
 xyMax = 1;
 nSensors =300;
 noiseLevel = 0.1;
-lambda_start = [.001,.005,.007];
-lambda_end = .5;
-lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
-figNumSmooth =5;
-knotsPerAxis = 5;
+lambda_start = [.007,.005,.007];
+lambda_end = .007;
+lambda_same =0; % 0 to use different lambdas , 1 ofr same lambdas as lambda_start
+figNumSmooth = 302;
+knotsPerAxis = 8;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
 %splineNumber = 3;
-select =1;
+select =2;
 
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
@@ -50,17 +47,31 @@ for i=1:cleanLen
     for k=1:cleanLen
         zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
     end
-end                                                                                                                                                                               
+end
 figure (1)
 title ( 'Clean data');
-hold on
 surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-plot3 ( xSensor , ySensor , zMess ,'r*');
+hold on
+%load DataSensors2D;
+
+
+for i=1:nSensors
+    x = xSensor(i);
+    y = ySensor(i);
+    z = zMess(i);
+    c = zClean(i);
+    plot3([x x], [y y], [c z],'k');
+    plot3(x,y, c,'ro');
+    hold on;
+    plot3(x,y,z,'k*'); % plot of clean data with sensors
+end
+
 hold off
 %calculating Basis of B-SPlines
 %matrix  BS represents Basis
 %The rows of the matrix represent spline number and the colomns represent sensors
 BS= Calculate_Basis( splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  ); % Function to calculate Basis functions
+
 weights = BS'\zMess; % calculating the weights usi
 %converting weight vector into matrix
 weights_matrix = NaN(splinesPerAxis, splinesPerAxis);
@@ -72,23 +83,103 @@ for i =1: splinesPerAxis
     end
 end
 %Plotting the regression splines using the calculated weights
+
 zz=plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_matrix); % Function to plot the splines
+
 figure(2)
-title ( 'Regression Spline') ;
-hold on
+title ( 'Regression Spline ' ) ;
+for i=1:nSensors
+    x = xSensor(i);
+    y = ySensor(i);
+    z = zMess(i);
+    c = zClean(i);
+    plot3([x x], [y y], [c z],'k');
+    hold on
+    plot3(x,y, c,'ro');
+    hold on;
+    plot3(x,y,z,'k*'); % plot of clean data with sensors
+end
 surf(xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-plot3 ( xSensor , ySensor , zMess ,'r*');
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
 hold off;
+hold off;
 
+%----------------------------
+%Calculating smoothing spline
+%----------------------------
+
+vector = xyMin+knotspan/2:knotspan:xyMax;
+vector_length =length(vector);
+p=0;
+q=0;
+BS_Hori = NaN(vector_length, vector_length);
+BS_Verti = NaN(vector_length, vector_length);
+BS_Val = NaN(vector_length, vector_length);
+[  BS_Val, BS_Hori, BS_Verti]= Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax); %function to calculate Basis Functions
+
+%opt = [BS,BS_Derv*lambda];
+%zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
+%algorithm to multiply higher value of lambda for for quadruple triple and
+%double splines
+
+if lambda_same ==1
+    lambda_end = lambda_start;
+end
+
+squared_vector = vector_length^2;
+BS_Hor_lambda = NaN (totalSplines, squared_vector);
+count =0;
+for i = 1:totalSplines^2
+    for j = 1:splinesPerAxis
+        if count == totalSplines
+            break;
+        elseif (j >= 1)&(j<=splinesPerAxis-3)
+            count = count +1;
+            BS_Hor_lambda(count,:) = BS_Hori (count,:)*lambda_start(1);
+            BS_ver_lambda (count,:) =BS_Verti ( count,:) *lambda_start(1);
+        elseif (j > splinesPerAxis-3) & (j<=splinesPerAxis)
+            count = count +1;
+            BS_Hor_lambda(count,:) =BS_Hori (count,:)*lambda_end(1);
+            BS_ver_lambda (count,:) =BS_Verti( count,:) *lambda_end(1);
+            
+        end
+    end
+end
+
+%opt = [BS,BS_Hori*lambda, BS_Verti*lambda];
+opt = [BS,BS_Hor_lambda,  BS_ver_lambda];
+zMess_opt = [zMess ;zeros(2*size(BS_Hori',1),1) ];
+
+weights_opt = opt'\zMess_opt;
+
+weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
+count =0;
+for i =1: splinesPerAxis
+    for j =1:splinesPerAxis
+        count=count+1;
+        weights_opt_matrix(j,i) = weights_opt(count);
+    end
+end
+
+zz= plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_opt_matrix); % function to plot spline
+figure (figNumSmooth)
+title ( ' Smoothing Spline ' );
+surf (xx,yy,zz);
+hold on
+axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
+%text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
+text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_start(1)));
+%fprintf('Lambda1 was %g  and Lambda2 was %g \n',lambda_start ,lambda_end );
 
 %--------------------------------------------------
 %Selection using Ordinary cross validation
 %-------------------------------------------------
 
-leftout_point = 1; % put 0 to include all the values
-nSensors = nSensors-1;
-if lambda_same ==1 
+leftout_point =1; % put 0 to include all the values
+nSensors = nSensors -1;
+if lambda_same ==1
+    
+    
     for lambda_counter = 1:length(lambda_start)
         xleftout = 0;
         yleftout = 0;
@@ -96,7 +187,7 @@ if lambda_same ==1
         leftout_point = 0;
         sum_Error= 0;
         
-       for i = 1 : nSensors+1
+        for i = 1 : nSensors+1
             add_M_splines= 0;
             add_spline_value =0;
             leftout_point =leftout_point+1;% comment this incase only one point  or no point needs to be left out
@@ -151,18 +242,24 @@ if lambda_same ==1
             p=0;
             for splineNumberHorizontal= 1:splinesPerAxis
                 for splineNumberVertical= 1:splinesPerAxis
-                    p = (splineNumberHorizontal-1) * splinesPerAxis +splineNumberVertical;
-                    %p=p+1;
-                    %count = (i-1)*splinesPerAxis+j;
-                    q=1;
-                    x = xMissing;
-                    y = yMissing;
-                    [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
-                    [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
-                    BS_Val(p,q) =horizontal*vertical ;
-                     
+                    p=p+1;
+                    q=0;
+                    for m= 1:1
+                        for n = 1:1
+                            q=q+1;
+                            x = xMissing;
+                            y = yMissing;
+                            [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
+                            [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
+                            BS_Val(p,q) =horizontal*vertical ;
+                            %BS_Derv(p,q)= HorDerv*VerDerv;
+                            
+                        end
+                    end
                 end
             end
+            
+            
             prediction = BS_Val'*weights_opt;
             difference = prediction-zMissing;
             sum_Error = sum_Error + difference.^2;
