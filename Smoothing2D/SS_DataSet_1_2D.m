@@ -8,14 +8,14 @@ clc
 select_DataSet=2;
 xyMin = -1;
 xyMax = 1;
-nSensors =300;
+nSensors =1000;
 noiseLevel = 0.1;
 lambda_start = .007;
 lambda_end = .9;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
-knotsPerAxis = 5;
-splinesPerAxis = knotsPerAxis+2;
+knotsPerAxis = sqrt(nSensors/6);
+splinesPerAxis = floor(knotsPerAxis)+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
