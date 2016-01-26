@@ -1,10 +1,6 @@
 %Smoothing using manual select_DataSetion on smoothing parameter
-<<<<<<< HEAD
-%WITH TEST DATA SET ONE
-=======
 %WITH TEST DATA SET ONE AND TWO
 
->>>>>>> b3890c56f1079a7df56bb6de9e2ef4aa3814a32d
 tic
 close all
 clear
@@ -12,27 +8,19 @@ clc
 select_DataSet=2;
 xyMin = -1;
 xyMax = 1;
-<<<<<<< HEAD
-nSensors =200;
-=======
-nSensors =300;
->>>>>>> b3890c56f1079a7df56bb6de9e2ef4aa3814a32d
+nSensors =1000;
 noiseLevel = 0.1;
 lambda_start = .007;
 lambda_end = .9;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
-knotsPerAxis = 5;
-splinesPerAxis = knotsPerAxis+2;
+knotsPerAxis = sqrt(nSensors/6);
+splinesPerAxis = floor(knotsPerAxis)+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
 %splineNumber = 3;
-<<<<<<< HEAD
-select_DataSet=2;
-=======
 
->>>>>>> b3890c56f1079a7df56bb6de9e2ef4aa3814a32d
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);

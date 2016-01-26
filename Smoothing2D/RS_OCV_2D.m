@@ -1,15 +1,15 @@
 %Contains code to find optimised smoothing parameter using ordinary cross validation. 
 
-%WITH DATA SET ONE AND TWO
+%WITH DATA SET ONE
 
 tic
 clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =500;
+nSensors =250;
 noiseLevel = 0.1;
-lambda_start = [.0001:.001:.05]; 
+lambda_start = .007:.01:.07;
 lambda_end = .5;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
@@ -17,7 +17,7 @@ knotsPerAxis = 5;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
-cleanLen=51;
+cleanLen=30;
 
 select_DataSet =1;
 RMS=NaN(length(lambda_start),1);
@@ -82,10 +82,10 @@ for i =1: splinesPerAxis
     end
 end
 %Plotting the regression splines using the calculated weights
-zz_rs=plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_matrix); % Function to plot the splines
+zz=plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_matrix); % Function to plot the splines
 figure(2)
 
-surf(xx,yy,zz_rs,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+surf(xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
 title ( 'Regression Spline') ;
 
 hold on
@@ -106,11 +106,8 @@ zlabel('z [n]');
 
 leftout_point = 1; % put 0 to include all the values
 nSensors = nSensors-1;
-
 if lambda_same ==1 
-   
    for lambda_counter = 1:length(lambda_start)
-        tic
         xleftout = 0;
         yleftout = 0;
         zleftout = 0;
@@ -182,9 +179,8 @@ if lambda_same ==1
         RMS(lambda_counter)= sqrt(sum_Error/length(zMess));
         fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
             lambda_start(lambda_counter), RMS(lambda_counter));
-         toc 
     end
-  
+    
     nSensors = nSensors+1;
     BS= Calculate_Basis( splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  );
     vector = xyMin+knotspan/2:knotspan:xyMax;
@@ -211,7 +207,7 @@ if lambda_same ==1
     figure (3)
     
     surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-    title ( ' Smoothing Spline parameter choosen with OCV ' );
+    title ( ' Smoothing Spline parameter choosen manually ' );
     hold on
     plot3 ( xSensor , ySensor , zMess ,'r*');
     legend ( 'Prediction', 'Sensors');
@@ -231,45 +227,3 @@ if lambda_same ==1
 end
 
 toc
-% calucalte final RMSE
-sumError=0;
-for i=1:cleanLen
-    for k=1:cleanLen
-        error = zz(k,i)-CleanRef.zzMatrix(i,k);
-        sumError = sumError +error^2;
-    end
-end
-RMSE = sqrt(sumError/(cleanLen*cleanLen));
-fprintf('RMSE = %3.5f \n',RMSE);
-
-figure(4);
-surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-title ( ' Comparing Smoothing Spline  result and clean data ' );
-hold on
-surf (xx,yy,CleanRef.zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
-theLegend = [...
-    {'Smoothed data'}
-    {'Clean Reference'}
-];
-legend(theLegend,'Location','NorthWest');
-xlabel('x [n]');
-ylabel('y [n]');
-zlabel('z [n]');
-hold off;
-
-figure(5);
-surf (xx,yy,zz_rs,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-title ( ' Comparing Regression spline result and clean data ' );
-hold on
-surf (xx,yy,CleanRef.zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
-theLegend = [...
-    {'Estimate data'}
-    {'Clean Reference'}
-];
-legend(theLegend,'Location','NorthWest');
-xlabel('x [n]');
-ylabel('y [n]');
-zlabel('z [n]');
-
-
-

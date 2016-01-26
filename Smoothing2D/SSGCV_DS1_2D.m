@@ -1,14 +1,13 @@
 %Contains code to find optimised smoothing parameter using ordinary cross validation.
 
-%WITH DATA SET ONE
-
+%WITH DATA SET ONE ANS TWO
 tic
 close all
 clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =70;
+nSensors =200;
 noiseLevel = 0.1;
 lambda_start = .007:.01:.07;
 lambda_end = .5;
@@ -19,7 +18,7 @@ knotsPerAxis = 5;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
-cleanLen=30;
+cleanLen=51;
 %splineNumber = 3;
 select_DataSet =1;
 
@@ -201,3 +200,26 @@ if lambda_same ==1
 end
 
 toc
+
+% calucalte final RMSE
+sumError=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        error = zz(k,i)-CleanRef.zzMatrix(i,k);
+        sumError = sumError +error^2;
+    end
+end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE = %3.5f \n',RMSE);
+
+figure(4);
+surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
+title ( ' Compare result and clean data ' );
+hold on
+surf (xx,yy,CleanRef.zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
+theLegend = [...
+    {'Smoothed data'}
+    {'Clean Reference'}
+];
+legend(theLegend,'Location','NorthWest');
+hold off;

@@ -2,7 +2,7 @@
 %Contains code to find optimised smoothing parameter using ordinary cross validation.
 
 
-tic
+
 clear
 clc
 xyMin = -1;
