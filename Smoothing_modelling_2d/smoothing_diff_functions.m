@@ -34,10 +34,10 @@ for i = 1:cleanLen
     end
 end
 figure (1)
-title('Clean Data');
-hold on 
 surf (xx,yy,zzClean,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
+title('Clean Data');
 
+hold on
 
 
 %taking the matrix of sensors
@@ -48,6 +48,12 @@ zMess(i)= dummyCurve(xSensor(i) ,option) * dummyCurve(ySensor(i),option) +noiseL
 end
 
 plot3(xSensor,ySensor,zMess,'r.');
+legend ( 'Clean Data', 'Sensors');
+text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
+text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors));
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
 hold off
 
 
@@ -97,11 +103,20 @@ for splineNumberHorizontal = 1:splinesPerAxis
     end
 end
 figure (3)
+
+%plot3(xSensor,ySensor,zMess,'r.');
+
+surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
 title('regression spline')
 hold on
-%plot3(xSensor,ySensor,zMess,'r.');
 plot3(xSensor,ySensor,zMess,'r.');
-surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
+plot3(xSensor,ySensor,zMess,'r.');
+legend ( 'Prediction', 'Sensors');
+text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
+text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors));
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
 %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
 hold off
 

@@ -7,7 +7,7 @@ splinesPerAxis = knotsPerAxis+2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=50;
 %splineNumber = 3;
-plotSingleSplines = 0;
+plotSingleSplines = 1;
 
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
@@ -33,7 +33,7 @@ for splineNumberHorizontal = 1:splinesPerAxis
     if(plotSingleSplines)
         figure(2)
         surf(xVec,yVec, zVec);
-        pause(0.2);
+        pause(3);
     end
     
     sumZ = sumZ + zVec;
