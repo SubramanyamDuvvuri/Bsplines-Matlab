@@ -29,7 +29,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[.4];
+lambda=[.4 ,.5 ,.6];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -58,6 +58,12 @@ end
 %============================
 %--------------------------------------------------------
 
+
+
+
+
+
+AIC_value =NaN(length(lambda));
 for lambda_counter = 1:length(lambda)
     xleftout = 0;
     yleftout = 0;

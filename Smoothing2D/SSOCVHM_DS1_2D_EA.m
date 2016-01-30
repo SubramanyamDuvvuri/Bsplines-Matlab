@@ -1,6 +1,6 @@
 %Contains code to find optimised smoothing parameter using ordinary cross validation.
 
-%WITH DATA SET ONE ANS TWO
+%WITH DATA SET ONE AND TWO
 
 
 close all
@@ -8,14 +8,14 @@ clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =50;
+nSensors =250;
 noiseLevel = 0.1;
 lambda_grid=.4;
 lambda_start =.0000001;
 lambda_end = 1;
 lambda = lambda_start:lambda_grid:lambda_end;
 
-knotsPerAxis = 5;
+knotsPerAxis = 6;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
@@ -117,10 +117,10 @@ zlabel('z [n]');
 
 for resolution = 1:5
     lambda = lambda_start:lambda_grid:lambda_end;
-    for lambda_counter = 1:length(lambda)
+    parfor lambda_counter = 1:length(lambda)
         
         sum_Error= 0;
-       
+       tic
         for i = 1 : nSensors
             [BS]=Calculate_Basis(splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  );%-----
             
@@ -151,7 +151,7 @@ for resolution = 1:5
             division= ((difference)/(1 - H(i,i)));
             sum_Error = sum_Error + division.^2;
         end
-       
+       toc
         RMS(lambda_counter)= sqrt(sum_Error/length(zMess));
         fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
             lambda(lambda_counter), RMS(lambda_counter));
@@ -213,7 +213,7 @@ axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
 %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
 
 text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_new));
-disply(ME.message);
+%disply(ME.message);
 
 text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
