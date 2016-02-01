@@ -8,14 +8,14 @@ clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =250;
+nSensors =405;
 noiseLevel = 0.1;
 lambda_grid=.4;
 lambda_start =.0000001;
 lambda_end = 1;
 lambda = lambda_start:lambda_grid:lambda_end;
 
-knotsPerAxis = 6;
+knotsPerAxis = 7;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
