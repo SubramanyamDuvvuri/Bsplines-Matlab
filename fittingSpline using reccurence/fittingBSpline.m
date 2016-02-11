@@ -4,9 +4,9 @@ clc
 clear
 nSensors = 140;
 noise = 0.1;
-knots = -5:15;
-xMin = -5;
-xMax =  15;
+knots = 0:1;
+xMin = 0;
+xMax =  1;
 xGrid = 10;
 xVec= xMin:1/xGrid:xMax;
 xLen = length(xVec);
@@ -14,7 +14,7 @@ yVec = NaN(xLen,1);
 add = 0;
 
 for i=1:xLen
-    yVec(i) = dummyCurve(xVec(i));
+    yVec(i) = dummyCurve(xVec(i),1);
 end
 
 figure(2)
@@ -25,7 +25,7 @@ xSensors = sort(xSensors);
 ySensors = NaN(nSensors,1);
 
 for i=1:nSensors
-    ySensors(i)=dummyCurve(xSensors(i)) + noise*randn();
+    ySensors(i)=dummyCurve(xSensors(i),1) + noise*randn();
 end
 
 plot(xSensors, ySensors,'mo', 'MarkerFaceColor',[.10 1 .63]);

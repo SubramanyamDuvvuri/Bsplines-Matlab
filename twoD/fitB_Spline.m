@@ -78,7 +78,7 @@ for k=1:nKnots
             yFit(indexY)=yFit(indexY)+ weights(k)*y;
         end
     end
-    plot(xSpline, weights(k)*ySpline, 'g','LineWidth',1.3);
+    plot(xSpline, weights(k)*ySpline, '','LineWidth',1.3);
     plot(xMin,0,'b'); % dummy for legend
     %hold on;
     %yFit(xIndex:xIndex+xPoints-1) = yFit(xIndex:xIndex+xPoints-1) + weights(k)*ySpline;
@@ -96,14 +96,12 @@ text(xMin+1,print_pos+.1,sprintf('Noise= %g ',noise));
 box off
 xlabel(['\fontsize{13}Knots---->']);
 ylabel(['\fontsize{13}Weights---->']);
-title(['\fontsize{14}Regression Spline Uniform B-Spline fit']);
+title(['\fontsize{13}Regression Spline -Uniform B-Spline fit']);
 hold off;
 
 
 for i=1:nKnots
     fprintf('Spline height %3.3f at postion %3.3f \n',weights(i),knots(i));
 end
-
-
 
 
