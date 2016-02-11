@@ -2,11 +2,11 @@
 clear
 clc
 close all
-xyMin = -3;
-xyMax = 8;
+xyMin = -5;
+xyMax = 9;
 nSensors =400;
-noiseLevel = 0.02;
-lambda = .1;
+noiseLevel = .1;
+lambda = .003;
 num =8;
 
 option =1 ;
@@ -102,18 +102,20 @@ for splineNumberHorizontal = 1:splinesPerAxis
             sumZZ = sumZZ + zVec;
     end
 end
-figure (3)
+figure (2)
 
 %plot3(xSensor,ySensor,zMess,'r.');
 
 surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
-title('regression spline')
+title('Estimation')
 hold on
 plot3(xSensor,ySensor,zMess,'r.');
 plot3(xSensor,ySensor,zMess,'r.');
 legend ( 'Prediction', 'Sensors');
 text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors));
+text(0.5, 0.9, max(zMess+2), sprintf('Total Knots %g',knotsPerAxis^2));
+
 xlabel('x [n]');
 ylabel('y [n]');
 zlabel('z [n]');
@@ -121,71 +123,113 @@ zlabel('z [n]');
 hold off
 
 
-% vector = xyMin+knotspan/2:knotspan:xyMax;
-% vector_length =length(vector);
-% p=0;
-% q=0;
-% Derv = NaN(splinesPerAxis^2,nSensors);
-% for splineNumberHorizontal= 1:splinesPerAxis
-%     for splineNumberVertical= 1:splinesPerAxis
-%         p=p+1;
-%         q=0;
-%         for m= 1:vector_length
-%             for n = 1:vector_length
-%                 q=q+1;
-%                 x = vector (m);
-%                 y = vector (n);
-%                 [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
-%                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
-%                BS_Hori(p,q)= vertical*HorDerv;  %%%%%%%%%% Little Change RJ %%%%% [product rule -->(f.g)' = f'.g + g'+f  ]
-%                 BS_Verti(p,q)= horizontal*VerDerv;
-%             end
-%         end
-%     end
-% end
-% 
-% 
-% 
-% opt = [BS,BS_Hori*lambda,  BS_ver_lambda];
-% zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
-% weights_opt = opt'\zMess_opt;
-% 
-% weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
-% count =0;
-% for i =1: splinesPerAxis
-%     for j =1:splinesPerAxis
-%         count=count+1;
-%         weights_opt_matrix(j,i) = weights_opt(count);
-%     end
-% end
-% 
-% sumZZ_opt = zeros(xLen,yLen);
-% sumDerv_opt = zeros(xLen,yLen);
-% % for splineNumberHorizontal = 1:splinesPerAxis
-% %     for splineNumbervertical = 1:splinesPerAxis
-% %         for i=1:xLen
-% %             x = xVec(i);
-% %             [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
-% %             for j=1:yLen
-% %                 y = yVec(j);
-% %                 [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
-% %                 zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
-% %                 
-% %                 
-% %             end
-% %         end
-% %         sumZZ_opt = sumZZ_opt + zVec;
-% %        % sumDerv_opt=sumDerv_opt+zVevDerv;
-% %         
-% %     end
-% % end
-% 
-% 
-% surf (xx,yy,sumZZ_opt);
-% %axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
-% 
-%  
-%  
-%  
+figure (3)
+%compare
+surf(xx,yy, sumZZ,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.8);
+hold on 
+ surf (xx,yy,zzClean,'EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5)
+ plot3(xSensor,ySensor,zMess,'k.');
+ title('Comparing estimation with Clean Data')
+ sumError=0;
+ for i=1:cleanLen
+    for k=1:cleanLen
+        error = sumZZ(k,i)-zzClean(i,k);
+        sumError = sumError +error^2;
+    end
+ end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE = %3.5f \n',RMSE);
+
+theLegend = [...
+    {'Estimted Data'}
+    {'Clean Reference'}
+    {'Sensors'}
+];
+legend(theLegend,'Location','NorthWest');
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
+text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
+text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors));
+text(0.5, 0.9, max(zMess+2), sprintf('Total Knots %g',knotsPerAxis^2));
+hold off;
+
+
+
+vector = xyMin+knotspan/2:knotspan:xyMax;
+vector_length =length(vector);
+p=0;
+q=0;
+Derv = NaN(splinesPerAxis^2,nSensors);
+for splineNumberHorizontal= 1:splinesPerAxis
+    for splineNumberVertical= 1:splinesPerAxis
+        p=p+1;
+        q=0;
+        for m= 1:vector_length
+            for n = 1:vector_length
+                q=q+1;
+                x = vector (m);
+                y = vector (n);
+                [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);
+                [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumberVertical);
+               BS_Hori(p,q)= vertical*HorDerv;  %%%%%%%%%% Little Change RJ %%%%% [product rule -->(f.g)' = f'.g + g'+f  ]
+                BS_Verti(p,q)= horizontal*VerDerv;
+            end
+        end
+    end
+end
+
+
+
+opt = [BS,BS_Hori*lambda,  BS_Verti*lambda];
+%zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
+zMess_opt = [zMess ;zeros(2*size(BS_Hori',1),1) ];
+weights_opt = opt'\zMess_opt;
+
+weights_opt_matrix = NaN(splinesPerAxis, splinesPerAxis);
+count =0;
+for i =1: splinesPerAxis
+    for j =1:splinesPerAxis
+        count=count+1;
+        weights_opt_matrix(j,i) = weights_opt(count);
+    end
+end
+
+sumZZ_opt = zeros(xLen,yLen);
+sumDerv_opt = zeros(xLen,yLen);
+for splineNumberHorizontal = 1:splinesPerAxis
+    for splineNumbervertical = 1:splinesPerAxis
+        for i=1:xLen
+            x = xVec(i);
+            [horizontal,HorDerv] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal );
+            for j=1:yLen
+                y = yVec(j);
+                [vertical,VerDerv] = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+                zVec(i,j) = horizontal*vertical *weights_opt_matrix(splineNumberHorizontal,splineNumbervertical)  ;
+                
+                
+            end
+        end
+        sumZZ_opt = sumZZ_opt + zVec;
+       % sumDerv_opt=sumDerv_opt+zVevDerv;
+        
+    end
+end
+figure (8)
+
+surf (xx,yy,sumZZ_opt);
+ for i=1:cleanLen
+    for k=1:cleanLen
+        error = sumZZ(k,i)-sumZZ_opt(i,k);
+        sumError = sumError +error^2;
+    end
+ end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE = %3.5f \n',RMSE);
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -0.1 1.1]);
+
+ 
+ 
+ 
  
  
