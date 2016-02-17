@@ -1,0 +1,19 @@
+diary off
+diary filename
+diary filename
+sdfg
+{Undefined function or variable 'sdfg'.
+} 
+rg
+{Undefined function or variable 'rg'.
+} 
+erg
+{Undefined function or variable 'erg'.
+} 
+reger
+{Undefined function or variable 'reger'.
+} 
+regter
+{Undefined function or variable 'regter'.
+} 
+diary off

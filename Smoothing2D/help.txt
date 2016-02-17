@@ -1,0 +1,3 @@
+diary on
+diary off
+diary('filename.txt')

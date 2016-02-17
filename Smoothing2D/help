@@ -1,0 +1,5 @@
+diary on
+matlab -logfile "myTextLog.txt"
+{Undefined function or variable 'matlab'.
+} 
+diary ('help.txt')
