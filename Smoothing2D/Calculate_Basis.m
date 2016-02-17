@@ -1,10 +1,10 @@
-function [ BS_val] = Calculate_Basis(splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  )
+function [ BS_val] = Calculate_Basis(splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensor ,xyMin,xyMax  )
 p=0;
-BS_val=NaN(splinesPerAxis*splinesPerAxis,nSensors);
+BS_val=NaN(splinesPerAxis*splinesPerAxis,nSensor);
 for splineNumberHorizontal= 1:splinesPerAxis
     for splineNumberVertical= 1:splinesPerAxis
         p=p+1;
-        for q= 1:nSensors
+        for q= 1:nSensor
             x = xSensor (q);
             y = ySensor (q);
             [horizontal] = calcSpline1D_Single(x, knotsPerAxis, xyMin, xyMax,splineNumberHorizontal);

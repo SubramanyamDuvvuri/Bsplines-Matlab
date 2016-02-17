@@ -8,35 +8,29 @@ clear
 clc
 xyMin = -1;
 xyMax = 1;
-nSensors =405;
+nSensors =250;
 noiseLevel = 0.1;
 lambda_grid=.4;
 lambda_start =.0000001;
 lambda_end = 1;
 lambda = lambda_start:lambda_grid:lambda_end;
-
 knotsPerAxis = 7;
 splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=30;
-select_DataSet =1;
-
+select_DataSet =2;
 try
     RMS=NaN(length(lambda_start),1);% 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 catch ME
     
 end
-
-
-
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
 xLen = length(xVec);
 yLen = length(yVec);
 zVec = NaN(xLen,yLen);
 sumZ = zeros(xLen,yLen);
-
 yVec=yVec';
 knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
@@ -44,6 +38,9 @@ FunctionType =1;
 doEquispaced = 0;
 if select_DataSet ==1
     [xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noiseLevel, FunctionType, doEquispaced);
+      xSensor(1:4)=[-1,-1,1,1];
+     ySensor(1:4)=[-1,1,-1,1];
+     zzMatrix = CleanRef.zzMatrix;
 elseif select_DataSet ==2
     [SensorData, CleanData] = loadTestData(nSensors, noiseLevel, 'f', 'r');
     xSensor = SensorData.x;
@@ -52,7 +49,7 @@ elseif select_DataSet ==2
     zClean = SensorData.zClean;
     xVec = CleanData.xVec;
     yVec = CleanData.yVec;
-    zzClean = CleanData.zMatrix;
+   zzMatrix = CleanData.zMatrix;
 end
 
 [xx,yy] = meshgrid(xVec, yVec);
@@ -60,13 +57,12 @@ z=0;
 if select_DataSet ==1
     for i=1:cleanLen
         for k=1:cleanLen
-            zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+             zzMatrix(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
         end
     end
 end
 figure (1)
-
-surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+surf(xx,yy, zzMatrix','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
 hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
 legend ( 'CleanData', 'Sensors');
@@ -94,10 +90,8 @@ end
 %Plotting the regression splines using the calculated weights
 zz=plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_matrix); % Function to plot the splines
 figure(2)
-
-surf(xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+surf(xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
 title ( 'Regression Spline') ;
-
 hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
@@ -109,7 +103,15 @@ xlabel('x [n]');
 ylabel('y [n]');
 zlabel('z [n]');
 
-
+sumError=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        error = zz(k,i)-zzMatrix(i,k);
+        sumError = sumError +error^2;
+    end
+end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE of Regression Spline = %3.5f \n',RMSE);
 %--------------------------------------------------
 %Selection using Ordinary cross validation
 %-------------------------------------------------
@@ -117,7 +119,7 @@ zlabel('z [n]');
 
 for resolution = 1:5
     lambda = lambda_start:lambda_grid:lambda_end;
-    parfor lambda_counter = 1:length(lambda)
+    for lambda_counter = 1:length(lambda)
         
         sum_Error= 0;
        tic
@@ -220,5 +222,43 @@ text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
 xlabel('x [n]');
 ylabel('y [n]');
 zlabel('z [n]');
+% calucalte final RMSE
+sumError=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        error = zz(k,i)-zzMatrix(i,k)';
+        sumError = sumError +error^2;
+    end
+end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE of Smoothing Spline = %3.5f \n',RMSE);
 
+figure(4);
+surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
+title ( ' Comparing Smoothing Spline  result and clean data ' );
+hold on
+surf (xx,yy,zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
+theLegend = [...
+    {'Smoothed data'}
+    {'Clean Reference'}
+    ];
+legend(theLegend,'Location','NorthWest');
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
+hold off;
+
+figure(5);
+surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
+title ( ' Comparing Regression spline result and clean data ' );
+hold on
+surf (xx,yy,zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
+theLegend = [...
+    {'Estimate data'}
+    {'Clean Reference'}
+    ];
+legend(theLegend,'Location','NorthWest');
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('z [n]');
 
