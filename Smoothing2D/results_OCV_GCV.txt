@@ -1,0 +1,144 @@
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('NaN')" style="font-weight:bold">NaN</a>
+Size inputs must be scalar.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('loadTestData', 'U:\Thesis Matlab\Smoothing2D\loadTestData.m', 20)" style="font-weight:bold">loadTestData</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\loadTestData.m',20,0)">line 20</a>)
+SD.x = NaN(s_max,1);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 45)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',45,0)">line 45</a>)
+                [SensorData, CleanData] = loadTestData(nSensors, noiseLevel, 'f', 'r');
+} 
+SSGCV_DS1_2D_EA
+{Undefined function or variable 'zzClean'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 69)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',69,0)">line 69</a>)
+            surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+} 
+SSGCV_DS1_2D_EA
+{Undefined function or variable 'zzClean'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 69)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',69,0)">line 69</a>)
+            surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('NaN')" style="font-weight:bold">NaN</a>
+Size inputs must be scalar.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Calculate_Basis', 'U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m', 3)" style="font-weight:bold">Calculate_Basis</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m',3,0)">line 3</a>)
+BS_val=NaN(splinesPerAxis*splinesPerAxis,nSensor);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 86)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',86,0)">line 86</a>)
+            BS= Calculate_Basis( splinesPerAxis,knotsPerAxis,xSensor,ySensor,nSensors ,xyMin,xyMax  ); % Function
+            to calculate Basis functions
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('NaN')" style="font-weight:bold">NaN</a>
+Size inputs must be scalar.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Calculate_Basis', 'U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m', 3)" style="font-weight:bold">Calculate_Basis</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m',3,0)">line 3</a>)
+BS_val=NaN(splinesPerAxis*splinesPerAxis,nSensor);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 86)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',86,0)">line 86</a>)
+            BS= Calculate_Basis( splinesPerAxis,knotsPerAxis(knotnumber),xSensor,ySensor,nSensors ,xyMin,xyMax  );
+            % Function to calculate Basis functions
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Undefined function or variable 'lambda_same'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 122)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',122,0)">line 122</a>)
+            if lambda_same ==1
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Undefined function or variable 'lambda_same'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 122)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',122,0)">line 122</a>)
+            if lambda_same ==1
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Calculate_Basis', 'U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m', 13)" style="font-weight:bold">Calculate_Basis</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m',13,0)">line 13</a>)
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 131)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',131,0)">line 131</a>)
+            for lambda_counter = 1:length(lambda_start)
+} 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('linspace', 'C:\Program Files\MATLAB\R2015a\toolbox\matlab\elmat\linspace.m', 31)" style="font-weight:bold">linspace</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2015a\toolbox\matlab\elmat\linspace.m',31,0)">line 31</a>)
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('calcSpline1D_Single', 'U:\Thesis Matlab\Smoothing2D\calcSpline1D_Single.m', 7)" style="font-weight:bold">calcSpline1D_Single</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\calcSpline1D_Single.m',7,0)">line 7</a>)
+knots = linspace(xyMin,xyMax, knotsPerAxis);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('plot_Spline', 'U:\Thesis Matlab\Smoothing2D\plot_Spline.m', 14)" style="font-weight:bold">plot_Spline</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\plot_Spline.m',14,0)">line 14</a>)
+                vertical = calcSpline1D_Single(y, knotsPerAxis, xyMin, xyMax,splineNumbervertical );
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+RMSE of Regression Spline = 0.11818 
+average Error for lambda = 0.0001 --> 0.1187 
+
+{Attempted to access xSensor(221); index out of bounds because numel(xSensor)=220.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Calculate_Basis', 'U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m', 8)" style="font-weight:bold">Calculate_Basis</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\Calculate_Basis.m',8,0)">line 8</a>)
+            x = xSensor (q);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('SSGCV_DS1_2D_EA', 'U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m', 209)" style="font-weight:bold">SSGCV_DS1_2D_EA</a> (<a href="matlab: opentoline('U:\Thesis Matlab\Smoothing2D\SSGCV_DS1_2D_EA.m',209,0)">line 209</a>)
+            BS= Calculate_Basis( splinesPerAxis,knotsPerAxis(knotnumber),xSensor,ySensor,nSensors(q) ,xyMin,xyMax
+            );
+} 
+SSGCV_DS1_2D_EA
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+RMSE of Regression Spline = 0.11818 
+average Error for lambda = 0.0001 --> 0.1187 
+
+if system_dependent('IsDebugMode')==1, dbquit; end
+SSGCV_DS1_2D_EA

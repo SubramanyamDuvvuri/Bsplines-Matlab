@@ -1,0 +1,570 @@
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+RMSE of Regression Spline = 0.11818 
+average Error for lambda = 0.0000 --> 7.5071 
+
+average Error for lambda = 0.4000 --> 8.6555 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 7.5071 
+
+average Error for lambda = 0.0400 --> 4.4215 
+
+average Error for lambda = 0.0800 --> 2.8941 
+
+average Error for lambda = 0.1200 --> 7.8388 
+
+Adding more resolution
+...
+average Error for lambda = 0.0800 --> 2.8941 
+
+average Error for lambda = 0.0840 --> 2.9502 
+
+Adding more resolution
+...
+average Error for lambda = 0.0800 --> 2.8941 
+
+average Error for lambda = 0.0804 --> 2.8979 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.18516 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 49.00000  
+RMSE of Regression Spline = 0.10737 
+average Error for lambda = 0.0000 --> 13.4702 
+
+average Error for lambda = 0.4000 --> 11.3957 
+
+average Error for lambda = 0.8000 --> 23.4413 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 13.4702 
+
+average Error for lambda = 0.0400 --> 6.0166 
+
+average Error for lambda = 0.0800 --> 11.3254 
+
+Adding more resolution
+...
+average Error for lambda = 0.0400 --> 6.0166 
+
+average Error for lambda = 0.0440 --> 6.6810 
+
+Adding more resolution
+...
+average Error for lambda = 0.0400 --> 6.0166 
+
+average Error for lambda = 0.0404 --> 6.0532 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.16659 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 64.00000  
+RMSE of Regression Spline = 0.11767 
+average Error for lambda = 0.0000 --> 0.7278 
+
+average Error for lambda = 0.4000 --> 5.8431 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7278 
+
+average Error for lambda = 0.0400 --> 1.5663 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7278 
+
+average Error for lambda = 0.0040 --> 1.0463 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7278 
+
+average Error for lambda = 0.0004 --> 0.7362 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.11764 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 81.00000  
+RMSE of Regression Spline = 0.09229 
+average Error for lambda = 0.0000 --> 0.1523 
+
+average Error for lambda = 0.4000 --> 3.3923 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1523 
+
+average Error for lambda = 0.0400 --> 0.6242 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1523 
+
+average Error for lambda = 0.0040 --> 0.2549 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1523 
+
+average Error for lambda = 0.0004 --> 0.1557 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.09211 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 100.00000  
+RMSE of Regression Spline = 0.90314 
+average Error for lambda = 0.0000 --> 0.1226 
+
+average Error for lambda = 0.4000 --> 0.5787 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1226 
+
+average Error for lambda = 0.0400 --> 0.3588 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1226 
+
+average Error for lambda = 0.0040 --> 0.1468 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1226 
+
+average Error for lambda = 0.0004 --> 0.0898 
+
+average Error for lambda = 0.0008 --> 0.0889 
+
+average Error for lambda = 0.0012 --> 0.0930 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.05727 
+nSensors(q)= 220.00000  
+Noise= 0.03000  
+Splines= 121.00000  
+RMSE of Regression Spline = 40.69873 
+average Error for lambda = 0.0000 --> 0.0573 
+
+average Error for lambda = 0.4000 --> 0.4083 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.0573 
+
+average Error for lambda = 0.0400 --> 0.2866 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.0573 
+
+average Error for lambda = 0.0040 --> 0.1254 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.0573 
+
+average Error for lambda = 0.0004 --> 0.0645 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.35017 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+RMSE of Regression Spline = 0.11179 
+average Error for lambda = 0.0000 --> 85.3720 
+
+average Error for lambda = 0.4000 --> 6.1347 
+
+average Error for lambda = 0.8000 --> 2.8926 
+
+average Error for lambda = 1.2000 --> 2.7164 
+
+average Error for lambda = 1.6000 --> 6.5075 
+
+Adding more resolution
+...
+average Error for lambda = 0.8000 --> 2.8926 
+
+average Error for lambda = 0.8400 --> 2.7483 
+
+average Error for lambda = 0.8800 --> 246.9609 
+
+Adding more resolution
+...
+average Error for lambda = 0.8400 --> 2.7483 
+
+average Error for lambda = 0.8440 --> 2.4947 
+
+average Error for lambda = 0.8480 --> 2.4739 
+
+average Error for lambda = 0.8520 --> 2.5975 
+
+Adding more resolution
+...
+average Error for lambda = 0.8480 --> 2.4739 
+
+average Error for lambda = 0.8484 --> 2.4804 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.20770 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 49.00000  
+RMSE of Regression Spline = 0.09452 
+average Error for lambda = 0.0000 --> 1.7811 
+
+average Error for lambda = 0.4000 --> 2.9787 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 1.7811 
+
+average Error for lambda = 0.0400 --> 3.4010 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 1.7811 
+
+average Error for lambda = 0.0040 --> 1.6371 
+
+average Error for lambda = 0.0080 --> 1.5727 
+
+average Error for lambda = 0.0120 --> 1.6068 
+
+Adding more resolution
+...
+average Error for lambda = 0.0080 --> 1.5727 
+
+average Error for lambda = 0.0084 --> 1.5716 
+
+average Error for lambda = 0.0088 --> 1.5716 
+
+average Error for lambda = 0.0092 --> 1.5726 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.10965 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 64.00000  
+RMSE of Regression Spline = 0.07270 
+average Error for lambda = 0.0000 --> 2.5187 
+
+average Error for lambda = 0.4000 --> 5.1741 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.5187 
+
+average Error for lambda = 0.0400 --> 17.3180 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.5187 
+
+average Error for lambda = 0.0040 --> 3.8364 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.5187 
+
+average Error for lambda = 0.0004 --> 2.5295 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.07270 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 81.00000  
+RMSE of Regression Spline = 0.05447 
+average Error for lambda = 0.0000 --> 2.9125 
+
+average Error for lambda = 0.4000 --> 7.8670 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.9125 
+
+average Error for lambda = 0.0400 --> 12.8479 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.9125 
+
+average Error for lambda = 0.0040 --> 3.9889 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.9125 
+
+average Error for lambda = 0.0004 --> 2.8898 
+
+average Error for lambda = 0.0008 --> 2.9583 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.04860 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 100.00000  
+RMSE of Regression Spline = 0.05432 
+average Error for lambda = 0.0000 --> 0.1754 
+
+average Error for lambda = 0.4000 --> 3.3618 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1754 
+
+average Error for lambda = 0.0400 --> 3.3375 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1754 
+
+average Error for lambda = 0.0040 --> 0.2612 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.1754 
+
+average Error for lambda = 0.0004 --> 0.1953 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.05368 
+nSensors(q)= 300.00000  
+Noise= 0.03000  
+Splines= 121.00000  
+RMSE of Regression Spline = 0.12792 
+average Error for lambda = 0.0000 --> 0.2702 
+
+average Error for lambda = 0.4000 --> 0.5662 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.2702 
+
+average Error for lambda = 0.0400 --> 4.5338 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.2702 
+
+average Error for lambda = 0.0040 --> 0.4826 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.2702 
+
+average Error for lambda = 0.0004 --> 0.2685 
+
+average Error for lambda = 0.0008 --> 0.2718 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.04154 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 36.00000  
+RMSE of Regression Spline = 0.11092 
+average Error for lambda = 0.0000 --> 343.2942 
+
+average Error for lambda = 0.4000 --> 1.3876 
+
+average Error for lambda = 0.8000 --> 0.9025 
+
+average Error for lambda = 1.2000 --> 94.8085 
+
+Adding more resolution
+...
+average Error for lambda = 0.4000 --> 1.3876 
+
+average Error for lambda = 0.4400 --> 4.3250 
+
+Adding more resolution
+...
+average Error for lambda = 0.4000 --> 1.3876 
+
+average Error for lambda = 0.4040 --> 1.3596 
+
+average Error for lambda = 0.4080 --> 1.3880 
+
+Adding more resolution
+...
+average Error for lambda = 0.4040 --> 1.3596 
+
+average Error for lambda = 0.4044 --> 1.3601 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.20042 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 49.00000  
+RMSE of Regression Spline = 0.09474 
+average Error for lambda = 0.0000 --> 2.6422 
+
+average Error for lambda = 0.4000 --> 8.2991 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.6422 
+
+average Error for lambda = 0.0400 --> 3.8966 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 2.6422 
+
+average Error for lambda = 0.0040 --> 1.7350 
+
+average Error for lambda = 0.0080 --> 3.2306 
+
+Adding more resolution
+...
+average Error for lambda = 0.0040 --> 1.7350 
+
+average Error for lambda = 0.0044 --> 1.6716 
+
+average Error for lambda = 0.0048 --> 1.6278 
+
+average Error for lambda = 0.0052 --> 1.6096 
+
+average Error for lambda = 0.0056 --> 1.6245 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.08930 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 64.00000  
+RMSE of Regression Spline = 0.07003 
+average Error for lambda = 0.0000 --> 0.9392 
+
+average Error for lambda = 0.4000 --> 4.0886 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.9392 
+
+average Error for lambda = 0.0400 --> 1.2921 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.9392 
+
+average Error for lambda = 0.0040 --> 0.9358 
+
+average Error for lambda = 0.0080 --> 0.9922 
+
+Adding more resolution
+...
+average Error for lambda = 0.0040 --> 0.9358 
+
+average Error for lambda = 0.0044 --> 0.9436 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.06986 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 81.00000  
+RMSE of Regression Spline = 0.05117 
+average Error for lambda = 0.0000 --> 0.7733 
+
+average Error for lambda = 0.4000 --> 4.2046 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7733 
+
+average Error for lambda = 0.0400 --> 39.0107 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7733 
+
+average Error for lambda = 0.0040 --> 1.1456 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 0.7733 
+
+average Error for lambda = 0.0004 --> 0.7888 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.05116 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 100.00000  
+RMSE of Regression Spline = 0.04698 
+average Error for lambda = 0.0000 --> 1.8004 
+
+average Error for lambda = 0.4000 --> 11.2050 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 1.8004 
+
+average Error for lambda = 0.0400 --> 10.2227 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 1.8004 
+
+average Error for lambda = 0.0040 --> 6.4940 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 1.8004 
+
+average Error for lambda = 0.0004 --> 1.8276 
+
+Adding more resolution
+...
+RMSE of Smoothing Spline = 0.04689 
+nSensors(q)= 400.00000  
+Noise= 0.03000  
+Splines= 121.00000  
+RMSE of Regression Spline = 0.05846 
+average Error for lambda = 0.0000 --> 5.2171 
+
+average Error for lambda = 0.4000 --> 9.4137 
+
+Adding more resolution
+...
+average Error for lambda = 0.0000 --> 5.2171 
+
+average Error for lambda = 0.0400 --> 0.8015 
+
+average Error for lambda = 0.0800 --> 1.1830 
+
+Adding more resolution
+...
+average Error for lambda = 0.0400 --> 0.8015 
+
+average Error for lambda = 0.0440 --> 0.8217 
+
+Adding more resolution
+...
+average Err
