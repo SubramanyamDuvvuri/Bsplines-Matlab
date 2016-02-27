@@ -1,22 +1,21 @@
-%Contains code to find optimised smoothing parameter using ordinary cross validation.
+%Contains code to find optimised smoothing parameter using Generalised  cross validation.
 
-%WITH DATA SET ONE AND TWO
-
+%WITH DATA SET ONE ANS TWO
 tic
 clear
 clc
 close
-diary ('results_OCV_new.txt');
-noiseLevel_vec =[.03,.05,.08,.1];%[ 0.8,.1,.13,.17,.2];
+diary ('results_GCV_dataSet2_lessSensors.txt');
+noiseLevel_vec =[.01];%[ 0.8,.1,.13,.17,.2];
 for noisevec =1:length(noiseLevel_vec)
     noiseLevel = noiseLevel_vec(noisevec);
-    select_DataSet =2; % SELECT THE DATA SET TO BE USED (1,2)
+    select_DataSet =1; % SELECT THE DATA SET TO BE USED (1,2)
     xyMin = -1;
     xyMax = 1;
-    nSensors =[220,300,400,450];
+    nSensors =[300];
     for q = 1: length(nSensors)
         % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
-        knotsPerAxis = [4,5,6,7,8,9];
+        knotsPerAxis = [8];
         for knotnumber =1:length(knotsPerAxis)
             splinesPerAxis = knotsPerAxis(knotnumber)+2;
             totalSplines = splinesPerAxis^2;
@@ -38,7 +37,7 @@ for noisevec =1:length(noiseLevel_vec)
             knots = linspace(xyMin,xyMax, knotsPerAxis(knotnumber));
             zzMatrix = NaN(cleanLen, cleanLen);
             FunctionType =1;
-            doEquispaced = 0;
+            doEquispaced = 0;           
             if select_DataSet ==1
                 [xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors(q), noiseLevel, FunctionType, doEquispaced);
                 xSensor(1:4)=[-1,-1,1,1];
@@ -54,6 +53,7 @@ for noisevec =1:length(noiseLevel_vec)
                 yVec = CleanData.yVec;
                 zzMatrix = CleanData.zMatrix;
             end
+            
             [xx,yy] = meshgrid(xVec, yVec);
             z=0;
             if select_DataSet ==1
@@ -68,19 +68,17 @@ for noisevec =1:length(noiseLevel_vec)
             hold on
             plot3 ( xSensor , ySensor , zMess ,'r*');
             legend ( 'CleanData', 'Sensors');
-            axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
-            text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, .5, sprintf('nSensors= %g',nSensors(q)));
+            text(0.0, 0.8, max(zMess+.1), sprintf('noise = %g',noiseLevel));
+            text(0.0, 0.8, max(zMess+.25), sprintf('nSensors %g',nSensors(q)));
             xlabel('x [n]');
             ylabel('y [n]');
             zlabel('z [n]');
             hold off
+        
             fprintf('nSensors(q)= %3.5f  \n',nSensors(q));
             fprintf('Noise= %3.5f  \n',noiseLevel);
             fprintf('Splines= %3.5f  \n',totalSplines);
-            
-            
-            
+            hold off
             %calculating Basis of B-SPlines
             %matrix  BS represents Basis
             %The rows of the matrix represent spline number and the colomns represent sensors
@@ -105,9 +103,9 @@ for noisevec =1:length(noiseLevel_vec)
             axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
             legend ( 'Predictor', 'Sensors');
             axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
-            text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors(q)));
-            text(0.5, 0.9, max(zMess+2), sprintf('Total Splines %g',totalSplines));
+            text(0.0, 0.8, max(zMess+.1), sprintf('noise = %g',noiseLevel));
+            text(0.0, 0.8, max(zMess+.25), sprintf('nSensors %g',nSensors(q)));
+            text(0.0, 0.8, max(zMess+.4), sprintf('Total Splines %g',totalSplines));
             xlabel('x [n]');
             ylabel('y [n]');
             zlabel('z [n]');
@@ -120,86 +118,59 @@ for noisevec =1:length(noiseLevel_vec)
             end
             RMSE = sqrt(sumError/(cleanLen*cleanLen));
             fprintf('RMSE of Regression Spline = %3.5f \n',RMSE);
+            
+            
             %--------------------------------------------------
-            %Selection using Ordinary cross validation
+            %Selection using Generalised cross validation
             %-------------------------------------------------
-            leftout_point = 1; % put 0 to include all the values
-            nSensors(q) = nSensors(q)-1;
+            
+            
+            
+            
+            
             resolution_vec =[1:4];
             for resolution = 1:length(resolution_vec)
                 lambda = lambda_start:lambda_grid:lambda_end;
                 
                 for lambda_counter =1:length(lambda)
-                    count =0 ;
-                    xleftout = 0;
-                    yleftout = 0;
-                    zleftout = 0;
-                    leftout_point = 0;
                     sum_Error= 0;
-                    nSensors1 =nSensors(q);
-                    for i = 1 : nSensors1+1
-                        add_M_splines= 0;
-                        add_spline_value =0;
-                        leftout_point =leftout_point+1;% comment this incase only one point  or no point needs to be left out
-                        if isequal (leftout_point,0)
-                            xleftout = xSensor(nSensors1+1);
-                            yleftout = ySensor(nSensors1+1);
-                            zleftout = zMess(nSensors1+1);
-                            nSensors(q) = nSensors1 +1;
-                            break;
-                        end
-                        if isequal(leftout_point,1)
-                            xleftout = xSensor(leftout_point +1:nSensors1+1);
-                            yleftout = ySensor(leftout_point +1:nSensors1+1);
-                            zleftout = zMess(leftout_point +1:nSensors1+1);
-                        elseif isequal(leftout_point ,nSensors1+1)
-                            xleftout = xSensor(1:nSensors1);
-                            yleftout = ySensor(1:nSensors1);
-                            zleftout = zMess(1:nSensors1);
-                        else
-                            xleftout = [xSensor(1:leftout_point-1) ; xSensor(leftout_point+1:nSensors(q)+1)];
-                            yleftout =  [ySensor(1:leftout_point-1) ; ySensor(leftout_point+1:nSensors(q)+1)];
-                            zleftout = [zMess(1:leftout_point-1) ; zMess(leftout_point+1:nSensors(q)+1)];
-                        end
-                        %[spline_value , spline_derv] = calculate_spline (knotspan,knots ,xLen , xVec); %calculating splines
-                        hold off
-                        BS = NaN(totalSplines,nSensors(q));
-                        BS=Calculate_Basis(splinesPerAxis,knotsPerAxis(knotnumber),xleftout,yleftout,nSensors(q) ,xyMin,xyMax);
+                    
+                    for i = 1 : nSensors(q)
+                        [BS]=Calculate_Basis(splinesPerAxis,knotsPerAxis(knotnumber),xSensor,ySensor,nSensors(q) ,xyMin,xyMax  );%-----
+                        
                         %----------------------------------------------
-                        %calculate optimized weights by lambda for one point left out
+                        %calculate optimized weights by lambda
                         %------------------------------------------------
-                        %vector=xMin:Grid_opt:xMax;
+                        
                         vector = xyMin+knotspan/2:knotspan:xyMax;
                         vector_length =length(vector);
-                        vector_span = 1:vector_length;
                         BS_Hori = NaN(vector_length, vector_length);
                         BS_Verti = NaN(vector_length, vector_length);
-                        %BS_Val = NaN(vector_length, vector_length);
+                        BS_Val = NaN(vector_length, vector_length);
                         
-                        [~, BS_Hori, BS_Verti] = Plot_Basis( splinesPerAxis,knotsPerAxis(knotnumber),vector,xyMin,xyMax);
+                        [BS_Val, BS_Hori, BS_Verti] = Plot_Basis( splinesPerAxis,knotsPerAxis(knotnumber),vector,xyMin,xyMax);%-----
                         
                         opt = [BS,BS_Hori*lambda(lambda_counter), BS_Verti*lambda(lambda_counter)];
-                        zMess_opt = [zleftout ;zeros(2*size(BS_Hori',1),1) ];
+                        zMess_opt = [zMess ;zeros(2*size(BS_Hori',1),1) ];
                         weights_opt = opt'\zMess_opt;
-                        xMissing = xSensor(leftout_point);
-                        yMissing = ySensor(leftout_point);
-                        zMissing = zMess(leftout_point);
-                        BS_Val = NaN (totalSplines,1);
-                        
+                        xCal = xSensor(i);
+                        yCal = ySensor(i);
+                        zCal =zMess(i);
+                        M_Splines = NaN (totalSplines,1);
                         p=0;
-                        BS_Val= Basis_cal_one_point ( splinesPerAxis,knotsPerAxis(knotnumber),xMissing,yMissing,xyMin,xyMax);
+                        M_Splines= Basis_cal_one_point ( splinesPerAxis,knotsPerAxis(knotnumber),xCal,yCal,xyMin,xyMax);
                         
-                        prediction = BS_Val'*weights_opt;
-                        difference = prediction-zMissing;
+                        prediction = M_Splines'*weights_opt;
+                        difference = prediction-zCal;
+                        
+                        X = BS';
+                        H = X/(X'*X+lambda(lambda_counter)*eye(size(X'*X))) * X' ;
                         sum_Error = sum_Error + difference.^2;
-                        % fprintf('Leftout point Nr. %i at x= %3.3f y=%3.3f \tPrediction = %3.3f \tdelta = %3.3f \n', ...
-                        %    leftout_point, xMissing, yMissing, prediction, prediction-yMissing);
                     end
-                    
-                    RMS(lambda_counter)= sqrt(sum_Error/length(zMess));
+                    division = sum_Error / (1- inv(length(zMess))*trace (H)).^2;
+                    RMS(lambda_counter)= sqrt(division/length(zMess));
                     fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
                         lambda(lambda_counter), RMS(lambda_counter));
-                    count = count +1;
                     
                     if lambda_counter > 1
                         if RMS(lambda_counter-1)< RMS(lambda_counter)||(lambda_counter == length (lambda)) % change the 15 number for more precise calculation
@@ -235,7 +206,7 @@ for noisevec =1:length(noiseLevel_vec)
                 end
             end
             
-            nSensors(q) = nSensors(q)+1;
+            %nSensors(q) = nSensors(q)+1;
             BS= Calculate_Basis( splinesPerAxis,knotsPerAxis(knotnumber),xSensor,ySensor,nSensors(q) ,xyMin,xyMax  );
             vector = xyMin+knotspan/2:knotspan:xyMax;
             vector_length =length(vector);
@@ -261,21 +232,21 @@ for noisevec =1:length(noiseLevel_vec)
             figure (3)
             
             surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-            title ( ' Smoothing parameter choosen with OCV ' );
+            title ( ' Smoothing parameter choosen with GCV ' );
             hold on
             plot3 ( xSensor , ySensor , zMess ,'r*');
             legend ( 'Prediction', 'Sensors');
             axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2]);
-            %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda_start, lambda_end));
+            %text(0.5, 0.5, 1, sprintf('\\lambda_1= %g \\lambda_2= %g',lambda, lambda_end));
             
-            text(0.5, 0.5, 1, sprintf('\\lambda = %g',lambda_new));
-            text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors(q)));
-            text(0.5, 0.9, max(zMess+2), sprintf('Total Splines %g',totalSplines));
+            text(0.0, 0.8, max(zMess-.05), sprintf('\\lambda = %g',lambda_new));
+             text(0.0, 0.8, max(zMess+.1), sprintf('noise = %g',noiseLevel));
+            text(0.0, 0.8, max(zMess+.25), sprintf('nSensors %g',nSensors(q)));
+            text(0.0, 0.8, max(zMess+.4), sprintf('Total Splines %g',totalSplines));
             xlabel('x [n]');
             ylabel('y [n]');
             zlabel('z [n]');
-            
+            hold off
             
             
             % calucalte final RMSE
@@ -293,10 +264,12 @@ for noisevec =1:length(noiseLevel_vec)
             surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
             title ( ' Comparing Smoothing Spline  result and clean data ' );
             hold on
+            plot3 ( xSensor , ySensor , zMess ,'r*');
             surf (xx,yy,zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
-            text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors(q)));
-            text(0.5, 0.9, max(zMess+2), sprintf('Total Splines %g',totalSplines));
+            
+            text(0.0, 0.8, max(zMess+.1), sprintf('noise = %g',noiseLevel));
+            text(0.0, 0.8, max(zMess+.25), sprintf('nSensors %g',nSensors(q)));
+            text(0.0, 0.8, max(zMess+.4), sprintf('Total Splines %g',totalSplines));
             theLegend = [...
                 {'Smoothed data'}
                 {'Clean Reference'}
@@ -309,15 +282,14 @@ for noisevec =1:length(noiseLevel_vec)
             
             figure(5);
             surf (xx,yy,zz_rs,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
-            text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors(q)));
-            text(0.5, 0.9, max(zMess+2), sprintf('Total Splines %g',totalSplines));
-            title ( ' Comparing Regression spline result and clean data ' );
             hold on
+            plot3 ( xSensor , ySensor , zMess ,'r*');
+            title ( ' Comparing Regression spline result and clean data ' );
+            
             surf (xx,yy,zzMatrix','EdgeColor','r','FaceColor',[1 0.7 0.7],'FaceAlpha',0.5);
-            text(0.5, 0.7, max(zMess+1.5), sprintf('noise = %g',noiseLevel));
-            text(0.5, 0.9, max(zMess+1), sprintf('nSensors %g',nSensors(q)));
-            text(0.5, 0.9, max(zMess+2), sprintf('Total Splines %g',totalSplines));
+            text(0.0, 0.8, max(zMess+.1), sprintf('noise = %g',noiseLevel));
+            text(0.0, 0.8, max(zMess+.25), sprintf('nSensors %g',nSensors(q)));
+            text(0.0, 0.8, max(zMess+.4), sprintf('Total Splines %g',totalSplines));
             theLegend = [...
                 {'Estimate data'}
                 {'Clean Reference'}
@@ -326,12 +298,12 @@ for noisevec =1:length(noiseLevel_vec)
             xlabel('x [n]');
             ylabel('y [n]');
             zlabel('z [n]');
-            
+            hold off
             
             fprintf('************************* \n');
         end
-        
     end
 end
+
 diary off
 toc

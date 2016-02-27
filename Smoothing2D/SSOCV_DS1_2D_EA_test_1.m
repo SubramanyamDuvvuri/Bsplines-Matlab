@@ -6,8 +6,8 @@ tic
 clear
 clc
 close
-diary ('results_OCV_new.txt');
-noiseLevel_vec =[.03,.05,.08,.1];%[ 0.8,.1,.13,.17,.2];
+diary ('results_OCV_dataSet2_noise_1.txt');
+noiseLevel_vec =[.1];%[ 0.8,.1,.13,.17,.2];
 for noisevec =1:length(noiseLevel_vec)
     noiseLevel = noiseLevel_vec(noisevec);
     select_DataSet =2; % SELECT THE DATA SET TO BE USED (1,2)

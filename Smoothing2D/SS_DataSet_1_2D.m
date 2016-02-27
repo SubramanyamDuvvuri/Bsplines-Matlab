@@ -5,17 +5,17 @@ tic
 close all
 clear
 clc
-select_DataSet=2;
+select_DataSet=2; %Choosing the data set
 xyMin = -1;
 xyMax = 1;
-nSensors =100;
-noiseLevel = 0.1;
-lambda_start = .7;
+nSensors =300;
+noiseLevel = 0.3;
+lambda_start = .0062345;
 lambda_end = .9;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
-knotsPerAxis = sqrt(nSensors/6);
-splinesPerAxis = floor(knotsPerAxis)+2;
+knotsPerAxis =7.5;
+splinesPerAxis = knotsPerAxis +2 ;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
@@ -30,10 +30,14 @@ sumZ = zeros(xLen,yLen);
 yVec=yVec';
 knots = linspace(xyMin,xyMax, knotsPerAxis);
 zzClean = NaN(cleanLen, cleanLen);
+zzMatrix = NaN(cleanLen, cleanLen);
 FunctionType =1;
 doEquispaced = 0;
 if select_DataSet ==1
     [xSensor, ySensor, zClean, zMess, CleanRef] = generateTestData2D(nSensors, noiseLevel, FunctionType, doEquispaced);
+    xSensor(1:4)=[-1,-1,1,1];
+    ySensor(1:4)=[-1,1,-1,1];
+    zzMatrix = CleanRef.zzMatrix;
 elseif select_DataSet ==2
     [SensorData, CleanData] = loadTestData(nSensors, noiseLevel, 'f', 'r');
     xSensor = SensorData.x;
@@ -43,6 +47,7 @@ elseif select_DataSet ==2
     xVec = CleanData.xVec;
     yVec = CleanData.yVec;
     zzClean = CleanData.zMatrix;
+    zzMatrix = CleanData.zMatrix;
 end
 
 [xx,yy] = meshgrid(xVec, yVec);
@@ -50,17 +55,17 @@ z=0;
 if select_DataSet ==1
     for i=1:cleanLen
         for k=1:cleanLen
-            zzClean(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
+            zzMatrix(i,k)=getHiddenSpatialFunction(xVec(i),yVec(k), FunctionType);
         end
     end
 end
 figure (1)
 title ( 'Clean data');
-surf(xx,yy,zzClean','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
+surf(xx,yy,zzMatrix','EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);title ( 'Clean data');
 hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
 legend ( 'CleanData', 'Sensors');
-axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
 text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
 xlabel('x [n]');
@@ -92,7 +97,7 @@ hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
 axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.1 1.1]);
 legend ( 'Predictor', 'Sensors');
-axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
+%axis([xyMin-0.1 xyMax+0.1 xyMin-0.1 xyMax+0.1 -1.2 1.2])
 text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
 xlabel('x [n]');
@@ -112,7 +117,7 @@ q=0;
 BS_Hori = NaN(vector_length, vector_length);
 BS_Verti = NaN(vector_length, vector_length);
 BS_Val = NaN(vector_length, vector_length);
-[  BS_Val, BS_Hori, BS_Verti]= Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax); %function to calculate Basis Functions
+[BS_Val, BS_Hori, BS_Verti]= Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax); %function to calculate Basis Functions
 
 %opt = [BS,BS_Derv*lambda];
 %zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
@@ -145,7 +150,7 @@ end
 
 %opt = [BS,BS_Hori*lambda, BS_Verti*lambda];
 opt = [BS,BS_Hor_lambda,  BS_ver_lambda];
-zMess_opt = [zMess ;zeros(2*size(BS_Hori',1),1) ];
+zMess_opt = [zMess ;zeros(2*size(BS_Hori',1),1)];
 
 weights_opt = opt'\zMess_opt;
 
@@ -158,10 +163,10 @@ for i =1: splinesPerAxis
     end
 end
 
-zz= plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_opt_matrix); % function to plot spline
+zz_smoothing= plot_Spline( splinesPerAxis,knotsPerAxis, xVec,yVec,xyMin,xyMax,weights_opt_matrix); % function to plot spline
 figure (3)
 
-surf (xx,yy,zz,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
+surf (xx,yy,zz_smoothing,'EdgeColor',[0.7 0.7 0.7],'FaceAlpha',0.5);
 title ( ' Smoothing Spline parameter choosen manually ' );
 hold on
 plot3 ( xSensor , ySensor , zMess ,'r*');
@@ -189,24 +194,27 @@ end
 %fprintf('Lambda1 was %g  and Lambda2 was %g \n',lambda_start ,lambda_end );
 toc
 
-z_mess_mean =sum(zMess);
 
-ss_tot=0;
 
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_tot = ss_tot +( zzClean(i,j)-z_mess_mean)^2;
+sumError=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        error = zz_smoothing(k,i)-zzMatrix(i,k)';
+        sumError = sumError +error^2;
     end
 end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE of Smoothing Spline = %3.5f \n',RMSE);
 
-ss_res = 0;
 
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_res = ss_res +( zz(i,j)-z_mess_mean)^2;
+
+sumError=0;
+for i=1:cleanLen
+    for k=1:cleanLen
+        error = zz(k,i)-zzMatrix(i,k)';
+        sumError = sumError +error^2;
     end
 end
+RMSE = sqrt(sumError/(cleanLen*cleanLen));
+fprintf('RMSE of regression Spline = %3.5f \n',RMSE);
 
-
-
-R_2 = (1- (ss_res/ss_tot))
