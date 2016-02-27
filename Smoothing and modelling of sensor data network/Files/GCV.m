@@ -14,7 +14,7 @@ option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
 nSensors = 150;
-noise = 0.1;
+noise = 0.08;
 %Start_point =-2;
 %End_point =2;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
@@ -29,7 +29,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[.03:.01:.15];
+lambda=[0.000001:.000005:.001];
 %lambda = [.04];
 sum_Error= 0;
 Grid_opt =.001;

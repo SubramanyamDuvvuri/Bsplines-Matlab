@@ -8,9 +8,9 @@ clc
 select_DataSet=2;
 xyMin = -1;
 xyMax = 1;
-nSensors =100;
+nSensors =1000;
 noiseLevel = 0.1;
-lambda_start = .7;
+lambda_start = .007;
 lambda_end = .9;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
@@ -188,25 +188,3 @@ else
 end
 %fprintf('Lambda1 was %g  and Lambda2 was %g \n',lambda_start ,lambda_end );
 toc
-
-z_mess_mean =sum(zMess);
-
-ss_tot=0;
-
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_tot = ss_tot +( zzClean(i,j)-z_mess_mean)^2;
-    end
-end
-
-ss_res = 0;
-
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_res = ss_res +( zz(i,j)-z_mess_mean)^2;
-    end
-end
-
-
-
-R_2 = (1- (ss_res/ss_tot))

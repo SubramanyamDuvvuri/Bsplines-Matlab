@@ -13,8 +13,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
-nSensors = 100;
-noise = 0.00001;
+nSensors = 200;
+noise = 0.08;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -27,7 +27,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=[0.001:.005:1];
+lambda=[0.000003:.005:.3];
 sum_Error= 0;
 Grid_opt =.001;
 RMS = 0;
@@ -149,7 +149,8 @@ ylabel('Y[n]');
 hold off
 toc
 figure(5)
-plot (lambda,RMS,'-','LineWidth',3)
+plot (lambda(10:44),RMS(10:44),'-','LineWidth',3)
 title('RMS vs \Lambda plot' );
+%axis ([-.015  .25 0.005 .03])
 xlabel('\Lambda');
 ylabel('RMS')

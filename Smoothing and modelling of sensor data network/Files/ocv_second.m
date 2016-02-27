@@ -1,6 +1,4 @@
 %Implementation of cross validation using ocv  Algorithm using trace of hat matrix
-
-%implementation using extended algorithm
 clc
 clear
 fprintf('Enter a function for consideration')
@@ -14,8 +12,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
-nSensors = 150;
-noise = 0.1;
+nSensors = 200;
+noise = 0.08;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
 knots = Start_point:knotspan:End_point;
 xMin = knots(1);
@@ -103,39 +101,34 @@ for resolution = 1:5
             sum_Error = sum_Error + division.^2;
             
         end
-         RMS(lambda_counter)= sqrt(sum_Error/length(ySensors));
-            fprintf('average Error for lambda = %3.9f --> %3.12f \n\n', ...
+        RMS(lambda_counter)=sqrt (sum_Error/length(ySensors));
+        fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
             lambda(lambda_counter), RMS(lambda_counter));
-
-             if lambda_counter > 1 
-                  if RMS(lambda_counter-1)< RMS(lambda_counter)
-                      if resolution == 1
-                             increament1 = -2;
-                             increament2 = -1;
-                      end
-                      if lambda_counter+increament1 == 0 
-                          lambda_counter = lambda_counter +1;
-                      end
-                      lambda_start = lambda(lambda_counter+increament1);
-                      lambda_end = lambda(lambda_counter+increament2);
-                      lambda_grid =lambda_grid/5;
-                      if resolution == 1
-                      increament1 = increament1 +1;
-                      increament2 = increament1 +1;
-                      end
-                      fprintf('Adding more resolution\n');
-                      break;
-                 end 
+        if lambda_counter > 1
+            if RMS(lambda_counter-1)< RMS(lambda_counter)
+                if resolution == 1
+                    increament1 = -2;
+                    increament2 = -1;
+                end
+                lambda_start = lambda(lambda_counter+increament1);
+                lambda_end = lambda(lambda_counter+increament2);
+                lambda_grid =lambda_grid/5;
+                if resolution == 1
+                    increament1 = increament1 +1;
+                    increament2 = increament1 +1;
+                end
+                fprintf('adding more resolution\n');
+                break;
             end
+        end
     end
 end
-
 [BS_value, BS_derv]=calculate_spline(knotspan,knots , nSensors,xSensors);
+lambda_new = lambda ( find ( RMS == min (RMS)));
 vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equations #####
 vector_length =length(vector);
 [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
-lambda_new = max (lambda ( find ( RMS == min (RMS))));
-fprintf('using lambda %3.12f\n',lambda_new);
+lambda_new = lambda ( find ( RMS == min (RMS)));
 opt = [BS_value,M_Derivatives*lambda_new];
 ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
 weights_opt = opt'\ySensors_opt;                   %calculating the optimised weights
@@ -145,7 +138,8 @@ end
 for i = 1 : nknots
     add_M_splines = sum(M_splines);
 end
-%figure (4)%Plotting the curves
+figure (3)%Plotting the curves
+title('Smoothing spline using trace of hatmatrix')
 %plot ( vector, M_splines'); %plotting optimised splines
 hold on
 plot ( vector ,add_M_splines, 'k-','LineWidth',1.6 )%plotting the fitting of the optimised splines
@@ -155,12 +149,9 @@ plot(xVec, yVec,'g--','LineWidth',3);
 print_pos=max(ySensors-1);
 text(xMin+.3,print_pos+.4,sprintf('Sensors =>%g', nSensors));
 text(xMin+.3,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
-% text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
-% text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
-% text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
- text(xMin+.3,print_pos+.2,sprintf('Noise=> %g ',noise));
-title('Smoothing Parameter selection using OCV-Advanced Algorithm')
+text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
+text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
+text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
-xlabel('X[n]');
-ylabel('Y[n]');
+hold off
 toc

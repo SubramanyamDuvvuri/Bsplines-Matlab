@@ -12,7 +12,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
 [Start_point, End_point ] = choose_location (option);
-nSensors = 100;
+nSensors = 200;
 noise = 0.1;
 % Start_point =-5;
 % End_point = 8;
@@ -28,7 +28,7 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda=.09;
+lambda=.001;
 %lambda=[.1];
 sum_Error= 0;
 Grid_opt =.01;
@@ -96,7 +96,7 @@ vector = Start_point+knotspan/2:knotspan:End_point; %########### less extra equa
 vector_length =length(vector);
 [M_splines ,M_Derivatives] = calculate_spline(knotspan,knots,vector_length, vector);
 opt = [BS_value,M_Derivatives*lambda];
-ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
+    ySensors_opt = [ySensors ;zeros(size(M_Derivatives',1),1) ];
 weights_opt = opt'\ySensors_opt;                   %calculating the optimised weights
 for i = 1: nknots     %multiplying with the weights
     M_splines(i,:) = M_splines(i,:)*weights_opt(i);
@@ -117,7 +117,7 @@ text(xMin+.1,print_pos+.7,sprintf('Lambda =>%g', lambda));
 text(xMin+.1, print_pos+.6,sprintf('Number of knots=> %g', nknots +2));
 text(xMin+.1,print_pos+.5,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 text(xMin+.1,print_pos+.4,sprintf('Knotspan=> %g ',knotspan));
-title ( ' Smoothing Spline parameter  = .09' );
+title ( ' Smoothing Spline parameter  = 50' );
  xlabel('x [n]');
  ylabel('y [n]');
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);

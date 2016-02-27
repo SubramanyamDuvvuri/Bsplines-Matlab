@@ -13,8 +13,8 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
 option = input ('\n>>');
 tic
 [Start_point, End_point ] = choose_location (option);
-nSensors = 300;
-noise = 0.08;
+nSensors = 150;
+noise = 0.1;
 %Start_point =-2;
 %End_point =2;
 knotspan=knot_calculation (nSensors,Start_point,End_point); %Automatic Claculation of Knot Span --> Rupert Extimation min(n/4,40)
@@ -29,9 +29,9 @@ yVec = NaN(xLen,1);
 add_spline = 0;
 add_derv=0;
 %lambda=.005;
-lambda_grid=.4;
-lambda_start =.0000001;
-lambda_end = 1;
+lambda_grid=.01;
+lambda_start =.03;
+lambda_end = .15;
 lambda = lambda_start:lambda_grid:lambda_end;
 sum_Error= 0;
 Grid_opt =.001;
@@ -93,11 +93,16 @@ for resolution = 1:5
                 prediction = M_splines'*weights_opt;
                 difference = prediction-yPoint;
                 X = BS_value';
-                H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
-                sum_Error = sum_Error + difference.^2;
+                H = X/(X'*X+lambda(lambda_counter)*eye(size(X'*X))) * X' ;
+               % H = X * inv( X' * X + lambda(lambda_counter) * eye(size(X'*X)) ) * X' ;
+                sum_Error = sum_Error + difference.^2;  
             end
+%             division = sum_Error / (1- inv(length(ySensors))*trace (H)).^2;
+%             RMS(lambda_counter)= sqrt(division/length(ySensors));
+            
             division = sum_Error / (1- inv(length(ySensors))*trace (H)).^2;
             RMS(lambda_counter)= sqrt(division/length(ySensors));
+       
             fprintf('average Error for lambda = %3.4f --> %3.4f \n\n', ...
                 lambda(lambda_counter), RMS(lambda_counter));
             if lambda_counter > 1
@@ -153,8 +158,9 @@ text(xMin+.3,print_pos+.3,sprintf('Lambda =>%g', lambda_new));
 % text(xMin+.3, print_pos+.2,sprintf('Number of knots=> %g', nknots +2));
 % text(xMin+.3,print_pos+.1,sprintf('First Value=> %g    Last value= %g ',xMin, xMax));
 % text(xMin+.3,print_pos+0,sprintf('Knotspan=> %g ',knotspan));
+ text(xMin+.3,print_pos+.2,sprintf('Noise=> %g ',noise));
 title('Smoothing Parameter selection using GCV-Advanced Algorithm')
-plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
+%lot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
 xlabel('X[n]');
 ylabel('Y[n]');
 toc

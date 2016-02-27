@@ -1,25 +1,25 @@
-%Smoothing using manual select_DataSetion on smoothing parameter
-%WITH TEST DATA SET ONE AND TWO
+%Smoothing using manual selection on smoothing parameter
 
+%WITH TEST DATA SET TWO
 tic
 close all
 clear
 clc
-select_DataSet=2;
 xyMin = -1;
 xyMax = 1;
-nSensors =100;
+nSensors =400;
 noiseLevel = 0.1;
-lambda_start = .7;
-lambda_end = .9;
+lambda_start = .006;
+lambda_end = .5;
 lambda_same =1; % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
 figNumSmooth =5;
-knotsPerAxis = sqrt(nSensors/6);
-splinesPerAxis = floor(knotsPerAxis)+2;
+knotsPerAxis = 5;
+splinesPerAxis = knotsPerAxis+2;
 totalSplines = splinesPerAxis^2;
 knotspan = (xyMax-xyMin)/(knotsPerAxis-1);
 cleanLen=52;
-%splineNumber = 3;
+
+select_DataSet =2;
 
 xVec = linspace(xyMin,xyMax,cleanLen);
 yVec = linspace(xyMin,xyMax,cleanLen);
@@ -65,7 +65,7 @@ text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
 xlabel('x [n]');
 ylabel('y [n]');
-zlabel('z [n]');
+zlabel('Temperature [°C]');
 hold off
 %calculating Basis of B-SPlines
 %matrix  BS represents Basis
@@ -97,7 +97,7 @@ text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
 text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
 xlabel('x [n]');
 ylabel('y [n]');
-zlabel('z [n]');
+zlabel('Temperature [°C]');
 hold off;
 
 
@@ -112,7 +112,7 @@ q=0;
 BS_Hori = NaN(vector_length, vector_length);
 BS_Verti = NaN(vector_length, vector_length);
 BS_Val = NaN(vector_length, vector_length);
-[  BS_Val, BS_Hori, BS_Verti]= Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax); %function to calculate Basis Functions
+[BS_Val, BS_Hori, BS_Verti]= Plot_Basis( splinesPerAxis,knotsPerAxis,vector,xyMin,xyMax); %function to calculate Basis Functions
 
 %opt = [BS,BS_Derv*lambda];
 %zMess_opt = [zMess ;zeros(size(BS_Derv',1),1) ];
@@ -173,40 +173,13 @@ if lambda_same ==1
 else
     text(0.5, 0.5, 1, sprintf('\\lambda_1 = %g \\lambda_2 = %g',lambda_start(1), lambda_end));
 end
-if select_DataSet == 1
-    text(0.5, 0.5, .9, sprintf('noise = %g',noiseLevel));
-    text(0.5, 0.5, .8, sprintf('nSensors %g',nSensors));
-    xlabel('x [n]');
-    ylabel('y [n]');
-    zlabel('z [n]');
-else
-    text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
-    text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
-    xlabel('x [n]');
-    ylabel('y [n]');
-    zlabel('Temperature [°C]');
-end
+
+text(0.5, 0.7, .75, sprintf('noise = %g',noiseLevel));
+text(0.5, 0.9, .5, sprintf('nSensors %g',nSensors));
+xlabel('x [n]');
+ylabel('y [n]');
+zlabel('Temperature [°C]');
 %fprintf('Lambda1 was %g  and Lambda2 was %g \n',lambda_start ,lambda_end );
-toc
-
-z_mess_mean =sum(zMess);
-
-ss_tot=0;
-
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_tot = ss_tot +( zzClean(i,j)-z_mess_mean)^2;
-    end
-end
-
-ss_res = 0;
-
-for i =1:cleanLen
-    for j = 1:cleanLen
-    ss_res = ss_res +( zz(i,j)-z_mess_mean)^2;
-    end
-end
-
-
-
-R_2 = (1- (ss_res/ss_tot))
+ff = toc
+text(0.5, 0.9, .35, sprintf('Time Taken = %g',ff));
+hold off
