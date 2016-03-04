@@ -4,7 +4,7 @@ clc
 close all
 xyMin = -5;
 xyMax = 9;
-nSensors =400;
+nSensors =300;
 noiseLevel = .1;
 lambda = .003;
 num =8;
