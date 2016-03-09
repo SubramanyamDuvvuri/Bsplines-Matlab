@@ -11,13 +11,13 @@ close
 noiseLevel_vec =[.01];%[ 0.8,.1,.13,.17,.2];
 for noisevec =1:length(noiseLevel_vec)
     noiseLevel = noiseLevel_vec(noisevec);
-    select_DataSet =1; % SELECT THE DATA SET TO BE USED (1,2)
+    select_DataSet =2; % SELECT THE DATA SET TO BE USED (1,2)
     xyMin = -1;
     xyMax = 1;
-    nSensors =[220];
+    nSensors =[300];
     for q = 1: length(nSensors)
         % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
-        knotsPerAxis = [6];
+        knotsPerAxis = [8];
         for knotnumber =1:length(knotsPerAxis)
             splinesPerAxis = knotsPerAxis(knotnumber)+2;
             totalSplines = splinesPerAxis^2;
