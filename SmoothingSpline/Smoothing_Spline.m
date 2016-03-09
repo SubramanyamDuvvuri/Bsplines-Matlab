@@ -12,7 +12,7 @@ fprintf (['    1-->y = 2*exp(-0.4*(x-2)^2) + 5/(x+10) + 0.1*x -0.2' ...
             '\n 7 --> y =x*x']);
 option = input ('\n>>');
 [Start_point, End_point ] = choose_location (option);
-nSensors = 200;
+nSensors = 120;
 noise = 0.1;
 % Start_point =-5;
 % End_point = 8;
@@ -73,12 +73,15 @@ plot(xVec, yVec,'g--','LineWidth',3);
 hold on
 print_pos=max(ySensors-1);
 plot(xSensors, ySensors, 'mo','MarkerFaceColor',[.10 1 .63]);
-plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
-text(xMin+1,print_pos+.4,sprintf('Sensors =%g', nSensors));
-text(xMin+1, print_pos+.3,sprintf('Number of knots= %g', nknots ));
-text(xMin+1,print_pos+.2,sprintf('First Value=%g,Last value=%g ',xMin, xMax));
-text(xMin+1,print_pos+.1,sprintf('Noise= %g ',noise));
-
+%plot ( xVec , spline_value , 'b',xVec , add_spline_value ,'k');
+text(xMin+1,print_pos+.2,sprintf('Sensors =%g', nSensors));
+%text(xMin+1, print_pos+.3,sprintf('Number of knots= %g', nknots ));
+%text(xMin+1,print_pos+.2,sprintf('First Value=%g,Last value=%g ',xMin, xMax));
+text(xMin+1,print_pos+.3,sprintf('Noise= %g ',noise));
+title ('Clean Data');
+legend('Clean Data', 'Sensors');
+xlabel ('x')
+ylabel('y')
 %legend('Clean Data','Noisy Measurements','Spines');
 %text(xMin+2, 2.7,sprintf('Number of knots: %g', nknots +2));
 %text(xMin+2,2.5,sprintf(' First Value %g,Last value %g ',xMin, xMax));

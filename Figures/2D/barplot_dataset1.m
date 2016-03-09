@@ -1,3 +1,17 @@
+clear all
+clc
+close all
+
+
+
+
+
+
+
+
+
+
+
 z_smooth_01_gcv =[0.01962	0.01809	0.01659
 0.01872	0.0159	0.01437
 0.02353	0.01845	0.01405];
@@ -71,8 +85,7 @@ xlabel(' Noise Level ');
 ylabel ('RMSE');
 legend ('GCV ',' OCVHM','OCV');
 title('Comparision between different methods');
-
-
-axis ([0 .1 0 .13])
+axis([0 .12 0 .12])
+set(gca,'XTick',[ .01 .05 .08 ])
 
 

@@ -15,8 +15,7 @@ function y = dummyCurve(x,option)
               y =x*x;
      elseif option==8 
        y =  sin(0.83.*pi.*x) .* cos(1.25.*pi.*x);
-        
-     end
+        end
 end
 %y=exp(-x^2);
 %y = 1/(x^2+1)+1;

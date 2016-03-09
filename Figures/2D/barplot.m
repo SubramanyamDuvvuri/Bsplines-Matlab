@@ -1,3 +1,50 @@
+clear
+clc
+close all
+regression_01=[0.11854	0.11226	0.11094	0.11001
+0.11012	0.09385	0.09442	0.09086
+0.11589	0.06867	0.06689	0.06005
+0.08916	0.04678	0.04249	0.04198
+0.1884	0.03361	0.0309	0.03184
+57.42233	0.09125	0.03634	0.03438
+];
+
+regression_03=[0.11818	0.11179	0.11092	0.11004
+0.10737	0.09452	0.09474	0.09068
+0.11767	0.0727	0.07003	0.06022
+0.09229	0.05447	0.05117	0.0492
+0.90314	0.05432	0.04698	0.04667
+40.69873	0.12792	0.05846	0.05945
+];
+
+regression_05=[0.1184	0.11153	0.11107	0.11023
+0.10629	0.0956	0.09538	0.09082
+0.12331	0.0781	0.07421	0.0615
+0.14209	0.06692	0.06411	0.063
+1.9189	0.0848	0.06913	0.06806
+24.0125	0.17321	0.08668	0.08919
+];
+
+regression_08=[0.11982	0.11157	0.11162	0.11083
+0.1079	0.09798	0.09692	0.09162
+0.13788	0.0882	0.08206	0.06533
+0.24191	0.09012	0.08731	0.08066
+3.44894	0.13448	0.10541	0.10359
+3.01341	0.2469	0.13194	0.13588
+];
+
+
+regression_1=[0.12148	0.11857	0.11219	0.11144
+0.11105	0.10005	0.09833	0.09254
+0.15076	0.09595	0.08813	0.06899
+0.31298	0.10708	0.10399	0.09548
+4.46975	0.16844	0.13031	0.1281
+18.22565	0.29765	0.16281	0.16749
+];
+
+
+
+
 
 
 z_smooth_01_gcv =[0.11666	0.11219	0.11181	0.11038
@@ -130,11 +177,15 @@ y = NaN(5,5);
 y (1,1)=sum(z_smooth_01_gcv(:))/numel(z_smooth_01_gcv);
 y(1,2) = sum (z_smooth_01_ocvhm(:))/numel(z_smooth_01_ocvhm);
 y(1,3) = sum (z_smooth_01_ocv(:))/numel(z_smooth_01_ocv);
+y(1,4) = sum (regression_01(:))/numel(regression_01);
+
+
 
 
 y (2,1)=sum(z_smooth_03_gcv(:))/numel(z_smooth_03_gcv);
 y(2,2) = sum (z_smooth_03_ocvhm(:))/numel(z_smooth_03_ocvhm);
 y(2,3) = sum (z_smooth_03_ocv(:))/numel(z_smooth_03_ocv);
+y(2,4) = sum (regression_03(:))/numel(regression_03);
 
 
 
@@ -142,30 +193,53 @@ y(2,3) = sum (z_smooth_03_ocv(:))/numel(z_smooth_03_ocv);
 y (3,1)=sum(z_smooth_05_gcv(:))/numel(z_smooth_05_gcv);
 y(3,2) = sum (z_smooth_05_ocvhm(:))/numel(z_smooth_05_ocvhm);
 y(3,3) = sum (z_smooth_05_ocv(:))/numel(z_smooth_05_ocv);
+y(3,4) = sum (regression_05(:))/numel(regression_05);
+
 
 
 
 y (4,1)=sum(z_smooth_08_gcv(:))/numel(z_smooth_08_gcv);
 y(4,2) = sum (z_smooth_08_ocvhm(:))/numel(z_smooth_08_ocvhm);
 y(4,3) = sum (z_smooth_08_ocv(:))/numel(z_smooth_08_ocv);
+y(4,4) = sum (regression_08(:))/numel(regression_08);
 
 
 y (5,1)=sum(z_smooth_1_gcv(:))/numel(z_smooth_1_gcv);
 y(5,2) = sum (z_smooth_1_ocvhm(:))/numel(z_smooth_1_ocvhm);
 y(5,3) = sum (z_smooth_1_ocv(:))/numel(z_smooth_1_ocv);
+y(5,4) = sum (regression_1(:))/numel(regression_1);
 
 
+% 
+% x= [.01 .03 .05 .08 .1 ];
+% y = [ 1 2 3 4 5];
+% bar(x,y);
+% text (x,y,num2str(y,'%0.2f'),...
+%     'HorizontalAlignment','centre',...
+%     'VerticalAlignment','bottom');
+% xlabel(' Noise Level ');
+% ylabel ('RMSE');
+% legend ('GCV ',' OCVHM','OCV','Regression Splines');
+% title('Comparision between different methods');
+axis([0 .15 0 .13])
+% set(gca,'XTick',[ .01 .03 .05 .08 .1])
+% text (x,y,num2str(y,'%0.2f'),...
+%     'HorizontalAlignment','centre',...
+%     'VerticalAlignment','bottom');
 
-x= [.01 .03 .05 .08 .1 ];
+x=[.01 .03 .05 .08 .1]';
+%y=[1 2 3 4 5]';;
+bar(x,y);
+for i =1:4
+text(x,y(:,i),num2str(y(:,i),'%0.2f'),...
+    'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom')
+end
+ xlabel(' Noise Level ');
+ ylabel ('RMSE');
+ legend ('GCV ',' OCVHM','OCV','Regression Splines');
+ title('Comparision between different methods');
 
-
-bar(x,y)
-xlabel(' Noise Level ');
-ylabel ('RMSE');
-legend ('GCV ',' OCVHM','OCV');
-title('Comparision between different methods');
-axis([0 .12 0 .2])
-
-
+axis([0 .15 0 .13])
 
 

@@ -79,12 +79,34 @@ ylabel(['\fontsize{13}Weights---->'])
  title(['\fontsize{15}Open Uniform B-Spline fit']);
 hold off
 figure (11) 
- plot (xLin,d1,'b',xLin,d2,'b',xLin,d3,'b',xLin,d4,'b',xLin,d5,'b');
+plot (xLin,d1,'b',xLin,d2,'b',xLin,d3,'b',xLin,d4,'b',xLin,d5,'b');
+% plot (xLin,d1,'b',xLin,d2,'b',xLin,d3,'b');
  hold on
  plot (xLin,d1+d2+d3+d4+d5,'k--');
 axis([ -6 3 0 1.2 ])
+hold on
+a=-3;
+b=1;
+%plot (xLin(a:b),d1(a:b),'b',xLin(a:b),d2(a:b),'b',xLin(a:b),d3(a:b),'b',xLin(a:b),d4(a:b),'b',xLin(a:b),d5(a:b),'b');
+xlabel('Knots');
+ylabel('weights')
+ title(['\fontsize{15}Uniform B-Spline ']);
 
-%axis ([-10 10 0 8])
+
+
+% plot(1:10)
+% Add lines
+h1 = line([-2.5 -2.5],[0 100]);
+h2 = line([.5 .5],[0 100]);
+% Set properties of lines
+set([h1 h2],'Color','k','LineWidth',2)
+% Add a patch
+% patch([1 -3 1 -3],[0 0 100 100],'g')
+% The order of the "children" of the plot determines which one appears on top.
+% I need to flip it here.
+% set(gca,'children',flipud(get(gca,'children')))
+% 
+% axis ([-10 10 0 8])
 
 
 

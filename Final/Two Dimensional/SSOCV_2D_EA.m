@@ -1,22 +1,26 @@
-%Contains code to find optimised smoothing parameter using ordinary cross validation.
-
-%WITH DATA SET ONE AND TWO
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Date of completion of code : 25-Feb-2016
+%Contains code to find optimised smoothing parameter using ordinary cross
+%validation  in two dimensions
+%Comparision has been made between the estimation through smoothing
+%and clean data AND estimation through regression and clean data
+%Two data sets have been used for comparision
+%One generated through mathematical functions, other through COMSOL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
 clear
 clc
 close
-diary ('results_OCV_new.txt');
-noiseLevel_vec =[.03,.05,.08,.1];%[ 0.8,.1,.13,.17,.2];
+noiseLevel_vec =[.03];%[ 0.8,.1,.13,.17,.2];
 for noisevec =1:length(noiseLevel_vec)
     noiseLevel = noiseLevel_vec(noisevec);
     select_DataSet =2; % SELECT THE DATA SET TO BE USED (1,2)
     xyMin = -1;
     xyMax = 1;
-    nSensors =[220,300,400,450];
+    nSensors =[200];
     for q = 1: length(nSensors)
-        % 0 to use different lambdas , 1 for same lambdas as lambda_start and do cross validation
-        knotsPerAxis = [4,5,6,7,8,9];
+        
+        knotsPerAxis = [8];
         for knotnumber =1:length(knotsPerAxis)
             splinesPerAxis = knotsPerAxis(knotnumber)+2;
             totalSplines = splinesPerAxis^2;
@@ -24,7 +28,7 @@ for noisevec =1:length(noiseLevel_vec)
             cleanLen=51;
             
             lambda_grid=.4;
-            lambda_start =.0001;
+            lambda_start =.0001;                            %Setting the starting value of lambda
             lambda_end = 10;
             lambda = lambda_start:lambda_grid:lambda_end;
             % RMS=NaN(20 ,1);
@@ -123,7 +127,7 @@ for noisevec =1:length(noiseLevel_vec)
             %--------------------------------------------------
             %Selection using Ordinary cross validation
             %-------------------------------------------------
-            leftout_point = 1; % put 0 to include all the values
+            leftout_point = 1; 
             nSensors(q) = nSensors(q)-1;
             resolution_vec =[1:4];
             for resolution = 1:length(resolution_vec)
@@ -140,7 +144,7 @@ for noisevec =1:length(noiseLevel_vec)
                     for i = 1 : nSensors1+1
                         add_M_splines= 0;
                         add_spline_value =0;
-                        leftout_point =leftout_point+1;% comment this incase only one point  or no point needs to be left out
+                          leftout_point =leftout_point+1;
                         if isequal (leftout_point,0)
                             xleftout = xSensor(nSensors1+1);
                             yleftout = ySensor(nSensors1+1);
@@ -165,10 +169,7 @@ for noisevec =1:length(noiseLevel_vec)
                         hold off
                         BS = NaN(totalSplines,nSensors(q));
                         BS=Calculate_Basis(splinesPerAxis,knotsPerAxis(knotnumber),xleftout,yleftout,nSensors(q) ,xyMin,xyMax);
-                        %----------------------------------------------
-                        %calculate optimized weights by lambda for one point left out
-                        %------------------------------------------------
-                        %vector=xMin:Grid_opt:xMax;
+                      
                         vector = xyMin+knotspan/2:knotspan:xyMax;
                         vector_length =length(vector);
                         vector_span = 1:vector_length;
@@ -326,12 +327,10 @@ for noisevec =1:length(noiseLevel_vec)
             xlabel('x [n]');
             ylabel('y [n]');
             zlabel('z [n]');
-            
-            
             fprintf('************************* \n');
         end
         
     end
 end
-diary off
+
 toc
